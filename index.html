@@ -67,6 +67,28 @@ button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
 #snd{position:fixed;right:12px;bottom:12px;z-index:30;width:40px;height:40px;border:2px solid var(--ink);background:#f4ecda;border-radius:2px;
   font-family:var(--han);font-weight:900;font-size:18px;display:grid;place-items:center;box-shadow:2px 2px 0 rgba(29,26,22,.3)}
 #snd.off{color:var(--mute)}
+#setBtn{position:fixed;right:60px;bottom:12px;z-index:30;width:40px;height:40px;border:2px solid var(--ink);background:#f4ecda;border-radius:2px;
+  font-family:var(--han);font-weight:900;font-size:18px;display:grid;place-items:center;box-shadow:2px 2px 0 rgba(29,26,22,.3)}
+#toasts{position:fixed;top:74px;left:50%;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;width:max-content;max-width:92vw}
+.toast{background:var(--ink);color:var(--paper);padding:10px 16px;font-size:16px;font-weight:700;border-left:5px solid var(--red);box-shadow:3px 3px 0 rgba(29,26,22,.25);animation:tin .25s ease-out,tout .4s 3s forwards}
+@keyframes tin{from{opacity:0;transform:translateY(-8px)}}
+@keyframes tout{to{opacity:0;transform:translateY(-8px)}}
+#setOv{position:fixed;inset:0;z-index:50;background:rgba(236,226,203,.88);display:none;align-items:center;justify-content:center}
+#setOv.on{display:flex}
+.setrow{margin-top:18px}
+.setrow .label{display:flex;justify-content:space-between}
+.setrow .label b{font-family:var(--serif);letter-spacing:0;color:var(--ink)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent}
+input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--ink)}
+input[type=range]::-moz-range-track{height:4px;background:var(--ink)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-9px;background:var(--red);border:2px solid var(--ink);border-radius:2px;transform:rotate(45deg)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;background:var(--red);border:2px solid var(--ink);border-radius:2px}
+.picks{display:flex;flex-direction:column;border:2px solid var(--ink)}
+.picks button{text-align:left;padding:11px 12px;font-size:16px;border-bottom:1.5px dashed #bfb090;display:flex;justify-content:space-between;align-items:center}
+.picks button:last-child{border-bottom:0}
+.picks button small{font-size:12px;color:var(--mute)}
+.picks button.on{background:var(--ink);color:var(--paper)}
+.picks button.on small{color:#cfc3a8}
 #snd.off::after{content:'';position:absolute;width:44px;height:2px;background:var(--red);transform:rotate(-45deg)}
 .btn{
   font-family:var(--serif);font-weight:700;font-size:17px;padding:12px 18px;background:var(--ink);color:var(--paper);
@@ -105,14 +127,15 @@ details .deckdesc b{font-family:var(--han);color:var(--ink)}
 /* ---------- 게임 ---------- */
 #game{flex-direction:column;align-items:center;touch-action:none;background:#d9cdb0}
 #hud{width:100%;display:flex;align-items:flex-end;justify-content:space-between;padding:10px 14px 6px;gap:8px}
-#hud .l{font-family:var(--han);font-weight:900;font-size:15px;line-height:1.2}
-#hud .l span{display:block;font-family:var(--serif);font-weight:400;font-size:12px;color:var(--ink2)}
-#hud .c{font-family:var(--brush);font-size:40px;line-height:.8;min-width:90px;text-align:center}
-#hud .r{text-align:right;font-size:12px;color:var(--ink2);line-height:1.35}
-#hud .r b{font-family:var(--han);font-size:17px;color:var(--ink)}
+#hud .l{font-family:var(--han);font-weight:900;font-size:20px;line-height:1.2}
+#hud .l span{display:block;font-family:var(--serif);font-weight:700;font-size:15px;color:var(--ink2);margin-top:2px}
+#hud .c{font-family:var(--brush);font-size:54px;line-height:.8;min-width:100px;text-align:center}
+#hud .r{text-align:right;font-size:15px;font-weight:700;color:var(--ink2);line-height:1.3}
+#hud .r b{font-family:var(--han);font-size:28px;color:var(--ink)}
+#hud .r b i{font-style:normal;font-size:17px;color:var(--ink2)}
 #stage{flex:1;width:100%;display:flex;align-items:center;justify-content:center;position:relative;min-height:0}
 canvas{display:block;box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25)}
-#hint{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:12px;color:var(--ink2);pointer-events:none}
+#hint{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:15px;font-weight:700;color:var(--ink2);pointer-events:none}
 
 /* overlays */
 .ov{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;z-index:5;pointer-events:none}
@@ -133,7 +156,11 @@ canvas{display:block;box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25
 #count{font-family:var(--han);font-weight:900;font-size:96px;line-height:1;color:var(--ink);width:150px;height:150px;display:grid;place-items:center;border-radius:50%;background:rgba(244,236,218,.92);box-shadow:0 0 0 2.5px var(--ink),5px 5px 0 rgba(29,26,22,.25)}
 #count.go{color:var(--red)}
 #hitmark{font-family:var(--han);font-weight:900;color:#f3e7d1;background:var(--red);font-size:44px;padding:10px 12px;border-radius:4px;writing-mode:vertical-rl;letter-spacing:6px;transform:rotate(-8deg);box-shadow:inset 0 0 0 3px var(--red),inset 0 0 0 5px #f3e7d1}
-#hitmsg{margin-top:16px;font-size:16px;background:rgba(236,226,203,.9);padding:6px 12px;border:1.5px solid var(--ink)}
+#hitOv .hitbox{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;
+  transition:left .5s cubic-bezier(.5,0,.2,1),top .5s cubic-bezier(.5,0,.2,1),transform .5s cubic-bezier(.5,0,.2,1);transform-origin:top left}
+#hitOv.side .hitbox{left:12px;top:10px;transform:translate(0,0) scale(.5)}
+#hitOv.side #hitmsg{font-size:30px}
+#hitmsg{margin-top:16px;font-size:18px;background:rgba(236,226,203,.9);padding:6px 12px;border:1.5px solid var(--ink)}
 #hitmsg b{font-family:var(--han);font-size:20px}
 
 .sheet{width:min(92vw,400px);background:#f4ecda;border:2.5px solid var(--ink);padding:20px 18px 18px;box-shadow:7px 7px 0 rgba(29,26,22,.28);max-height:88vh;overflow-y:auto}
@@ -220,6 +247,22 @@ canvas{display:block;box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25
   </div>
 </section>
 <button id="snd" title="소리 켜기/끄기">音</button>
+<button id="setBtn" title="설정">設</button>
+<div id="toasts"></div>
+<div id="setOv"><div class="sheet">
+  <h2>설<em>정</em></h2>
+  <div class="setrow"><div class="label">음 악 크 기 <b id="mvT">80</b></div><input type="range" id="mv" min="0" max="100" step="1"></div>
+  <div class="setrow"><div class="label">효 과 음 크 기 <b id="svT">80</b></div><input type="range" id="sv" min="0" max="100" step="1"></div>
+  <div class="setrow"><div class="label">배 경 음 악</div>
+    <div class="picks" id="bgmPick">
+      <button data-v="alt">판마다 번갈아 <small>두 곡 교대로</small></button>
+      <button data-v="bamboo">Where the Bamboo Bends <small></small></button>
+      <button data-v="dawn">Final Strike at Dawn <small></small></button>
+      <button data-v="synth">합성 국악 <small>가벼움 · 데이터 적게</small></button>
+    </div>
+  </div>
+  <div class="foot"><span class="note">설정은 이 기기에만 저장돼요.</span><button class="btn" id="setClose">닫기</button></div>
+</div></div>
 
 <!-- ======== 게임 ======== -->
 <section id="game" class="screen">
@@ -239,7 +282,7 @@ canvas{display:block;box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25
       </div></div>
     </div>
     <div class="ov" id="countOv"><div id="count">三</div></div>
-    <div class="ov" id="hitOv"><div id="hitmark">中箭</div><div id="hitmsg"></div></div>
+    <div class="ov" id="hitOv"><div class="hitbox"><div id="hitmark">中箭</div><div id="hitmsg"></div></div></div>
     <div class="ov dim" id="waitOv"><div class="sheet"><h2>숲이 <em>시끄럽다</em></h2><p class="meta">이미 한 판이 돌고 있어요. 이번 게임이 끝나면 대기실에서 같이 들어갈 수 있습니다. 지금은 구경만.</p></div></div>
     <div class="ov dim" id="resOv"><div class="sheet" id="resSheet"></div></div>
     <div class="ov dim" id="finOv"><div class="sheet" id="finSheet"></div></div>
@@ -279,8 +322,18 @@ const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},se
 /* ================== 소리 (전부 직접 합성: 자진모리 장단 · 계면조) ================== */
 const AU=(()=>{
   let ctx=null, master, mus, sfx, rv, noise, on=store.get('jr_snd')!=='0';
-  let trk=null, trkSrc=null, trkG=null, trkF=null, trkState='';
-  const bgmFetch=fetch('bgm.mp3').then(r=>r.ok?r.arrayBuffer():null).catch(()=>null);
+  let trkSrc=null, trkG=null, trkF=null, trkState='', musBus=null;
+  const TRACKS={
+    bamboo:{file:'bgm.mp3', a:.64, b:178.1, name:'Where the Bamboo Bends'},
+    dawn:  {file:'bgm2.mp3',a:0,   b:171.4, name:'Final Strike at Dawn'}
+  };
+  const rawP={}, bufs={}, loading={}, failed={};
+  const raw=id=>rawP[id]||(rawP[id]=fetch(TRACKS[id].file).then(r=>r.ok?r.arrayBuffer():null).catch(()=>null));
+  let choice=store.get('jr_bgm')||'alt'; if(!['alt','bamboo','dawn','synth'].includes(choice)) choice='alt';
+  const numOr=(v,d)=>{ const n=parseFloat(v); return isFinite(n)?Math.max(0,Math.min(1,n)):d; };
+  let musVol=numOr(store.get('jr_mv'),.8), sfxVol=numOr(store.get('jr_sv'),.8);
+  let curId=null, lastRd=0;
+  if(choice!=='synth') raw(choice==='dawn'?'dawn':'bamboo'); // 미리 받아두기
   let mode='off', nextT=0, tk=0, bar=0, inten=0, phrase=[], leadPrev=0, gwalk=5, lastWh=0;
   const SC=[0,3,5,7,10]; // 계면조 (미·솔·라·시·레)
   const fq=d=>{const n=5,o=Math.floor(d/n),s=SC[((d%n)+n)%n];return 164.81*Math.pow(2,o+s/12);}; // d=0 → E3
@@ -293,8 +346,9 @@ const AU=(()=>{
       ctx=new AC();
       const comp=ctx.createDynamicsCompressor(); comp.threshold.value=-16; comp.ratio.value=4; comp.connect(ctx.destination);
       master=ctx.createGain(); master.gain.value=on?.9:0; master.connect(comp);
-      mus=ctx.createGain(); mus.gain.value=.5; mus.connect(master);
-      sfx=ctx.createGain(); sfx.gain.value=.8; sfx.connect(master);
+      musBus=ctx.createGain(); musBus.gain.value=musVol; musBus.connect(master);
+      mus=ctx.createGain(); mus.gain.value=.5; mus.connect(musBus);
+      sfx=ctx.createGain(); sfx.gain.value=.8*sfxVol; sfx.connect(master);
       const dl=ctx.createDelay(1), fb=ctx.createGain(), lp=ctx.createBiquadFilter();
       dl.delayTime.value=.27; fb.gain.value=.3; lp.type='lowpass'; lp.frequency.value=2000;
       rv=ctx.createGain(); rv.gain.value=.3; rv.connect(dl); dl.connect(lp); lp.connect(fb); fb.connect(dl); lp.connect(mus);
@@ -303,10 +357,7 @@ const AU=(()=>{
       nextT=ctx.currentTime+.1;
       setInterval(schedule,25);
       trkF=ctx.createBiquadFilter(); trkF.type='lowpass'; trkF.frequency.value=1500; trkF.Q.value=.5;
-      trkG=ctx.createGain(); trkG.gain.value=0; trkF.connect(trkG); trkG.connect(master);
-      bgmFetch.then(ab=>{ if(!ab) return;
-        ctx.decodeAudioData(ab,buf=>{ trk=buf; trackFor(trkState||mode); },()=>{});
-      });
+      trkG=ctx.createGain(); trkG.gain.value=0; trkF.connect(trkG); trkG.connect(musBus);
     }catch(e){ ctx=null; }
   }
   const G0=.0001;
@@ -402,29 +453,48 @@ const AU=(()=>{
     }
   }
   function schedule(){
-    if(!ctx||mode==='off'||trk) return;
+    if(!ctx||mode==='off'||!(choice==='synth'||(curId&&failed[curId]))) return;
     const bpm=mode==='game'?84+30*inten:62, td=60/bpm/3;
     if(nextT<ctx.currentTime-.2) nextT=ctx.currentTime+.05;
     while(nextT<ctx.currentTime+.15){ playTick(nextT,tk%12,td); nextT+=td; tk++; if(tk%12===0) bar++; }
   }
-  // 업로드된 배경음악: Where the Bamboo Bends (앞뒤 무음 빼고 반복)
-  const LOOP_A=.64, LOOP_B=178.1;
-  function trackStart(){
-    if(!trk) return;
-    try{ if(trkSrc) trkSrc.stop(); }catch(_){}
-    const s=ctx.createBufferSource(); s.buffer=trk; s.loop=true; s.loopStart=LOOP_A; s.loopEnd=Math.min(LOOP_B,trk.duration);
-    s.connect(trkF); s.start(ctx.currentTime+.02,LOOP_A); trkSrc=s;
+  // 업로드된 배경음악 두 곡 (앞뒤 무음 빼고 반복)
+  function load(id){
+    if(bufs[id]) return Promise.resolve(bufs[id]);
+    return loading[id]||(loading[id]=raw(id).then(ab=>ab?new Promise(res=>{
+      try{ ctx.decodeAudioData(ab,b=>{bufs[id]=b;res(b)},()=>res(null)); }catch(e){ res(null); }
+    }):null));
   }
-  function trackTo(g,f,tc){ const t=ctx.currentTime; trkG.gain.setTargetAtTime(g,t,tc||.25); trkF.frequency.setTargetAtTime(f,t,tc||.25); }
-  function trackFor(st){
-    trkState=st;
-    if(!ctx||!trk) return;
-    if(st==='play'){ trackStart(); trkG.gain.cancelScheduledValues(ctx.currentTime); trkG.gain.setValueAtTime(.55,ctx.currentTime); trkF.frequency.setValueAtTime(18000,ctx.currentTime); return; }
-    if(!trkSrc) trackStart();
-    if(st==='lobby') trackTo(.26,1500,.4);
+  function want(rd){
+    if(choice==='synth') return null;
+    if(choice==='alt') return rd==null?'bamboo':(rd%2?'dawn':'bamboo');
+    return choice;
+  }
+  function stopSrc(){ try{ if(trkSrc) trkSrc.stop(); }catch(_){} trkSrc=null; }
+  function startSrc(){
+    const b=bufs[curId]; if(!b) return;
+    stopSrc();
+    const T=TRACKS[curId], s=ctx.createBufferSource(); s.buffer=b; s.loop=true; s.loopStart=T.a; s.loopEnd=Math.min(T.b,b.duration);
+    s.connect(trkF); s.start(ctx.currentTime+.02,T.a); trkSrc=s;
+  }
+  function trackTo(g,f,tc){ const t=ctx.currentTime; trkG.gain.cancelScheduledValues(t); trkG.gain.setTargetAtTime(g,t,tc||.25); trkF.frequency.cancelScheduledValues(t); trkF.frequency.setTargetAtTime(f,t,tc||.25); }
+  function levels(){
+    if(!trkSrc) startSrc();
+    const st=trkState, t=ctx.currentTime;
+    if(st==='play'){ trkG.gain.cancelScheduledValues(t); trkG.gain.setValueAtTime(.55,t); trkF.frequency.cancelScheduledValues(t); trkF.frequency.setValueAtTime(18000,t); }
+    else if(st==='lobby') trackTo(.26,1500,.4);
     else if(st==='game') trackTo(.2,900,.3);   // 카드·카운트다운 동안 숨죽이기
     else if(st==='calm') trackTo(.3,2200,.5);
     else if(st==='dead') trackTo(.3,800,.35);
+  }
+  function trackFor(st,rd){
+    trkState=st; if(rd!=null) lastRd=rd;
+    if(!ctx) return;
+    const id=st==='play'?want(lastRd):((curId&&(choice===curId||choice==='alt'))?curId:want(null));
+    if(id!==curId||st==='play'){ stopSrc(); curId=id; }
+    if(!id) return;
+    if(bufs[id]){ levels(); return; }
+    if(!failed[id]) load(id).then(b=>{ if(!b){ failed[id]=true; return; } if(curId===id&&!trkSrc) levels(); });
   }
   function setMode(m){
     if(m===mode) return;
@@ -435,7 +505,14 @@ const AU=(()=>{
   return {
     init, setMode,
     setIntensity(x){ inten=x; },
-    roundGo(){ trackFor('play'); },
+    roundGo(rd){ trackFor('play',rd); },
+    tracks:TRACKS,
+    getChoice(){ return choice; },
+    setChoice(c){ choice=c; store.set('jr_bgm',c); if(ctx) trackFor(trkState==='play'?'play':(trkState||mode),lastRd); },
+    getVol(k){ return k==='m'?musVol:sfxVol; },
+    setVol(k,v){ v=Math.max(0,Math.min(1,v));
+      if(k==='m'){ musVol=v; store.set('jr_mv',v); if(ctx) musBus.gain.setTargetAtTime(v,ctx.currentTime,.05); }
+      else { sfxVol=v; store.set('jr_sv',v); if(ctx) sfx.gain.setTargetAtTime(.8*v,ctx.currentTime,.05); } },
     spectate(){ if(trkState==='play') trackFor('dead'); },
     whoosh(pan){
       if(!ctx||!on) return; const t=ctx.currentTime; if(t-lastWh<.055) return; lastWh=t;
@@ -460,7 +537,7 @@ const AU=(()=>{
       if(survived){ jingAt(t,.9); return; }
       kung(t,.7,sfx); deok(t,.6,sfx); jingAt(t+.05,.45);
       mus.gain.cancelScheduledValues(t); mus.gain.setValueAtTime(.18,t); mus.gain.linearRampToValueAtTime(.5,t+1.8);
-      if(trk) trackFor('dead');
+      if(curId) trackFor('dead');
     },
     toggle(){ on=!on; store.set('jr_snd',on?'1':'0'); if(ctx) master.gain.setTargetAtTime(on?.9:0,ctx.currentTime,.05); return on; },
     isOn(){ return on; }
@@ -482,18 +559,23 @@ const P2P={
       const snap=()=>[...pres].map(([id,p])=>({peer:id,by:null,isMe:id===myId,sameTab:id===myId,kind:'viewer',guest:false,presence:p,updatedAt:Date.now()}));
       let fireQ=false;
       const fire=()=>{ if(fireQ) return; fireQ=true; setTimeout(()=>{ fireQ=false; const s=snap(); subs.forEach(f=>{try{f({peers:s,joined:[],left:[],updated:[]})}catch(e){console.error(e)}}); },16); };
-      const fail=(code)=>{ if(closed) return; closed=true; clearInterval(sendTimer); try{me.destroy()}catch(_){}
+      const sayBye=()=>{ try{ if(create) conns.forEach(c=>c.send({t:'bye'})); else if(hostConn) hostConn.send({t:'bye'}); }catch(_){} };
+      addEventListener('pagehide',()=>{ if(!closed) sayBye(); });
+      addEventListener('beforeunload',()=>{ if(!closed) sayBye(); });
+      const fail=(code)=>{ if(closed) return; closed=true; clearInterval(sendTimer); clearInterval(hbTimer); try{me.destroy()}catch(_){}
         if(!done){ done=true; reject(new Error(code)); } else errSubs.forEach(f=>f({code,message:code})); };
+      const lastSeen=new Map(); let hostSeen=Date.now(), hbTimer=null, flushNow=null;
       const room={
         presence(patch){
           for(const k in patch){ if(patch[k]===null) delete mine[k]; else mine[k]=patch[k]; }
           if(myId){ pres.set(myId,Object.assign({},mine)); dirty.add(myId); }
+          if(flushNow&&('al' in patch||'rd' in patch||'g' in patch||'nm' in patch)) flushNow();
           return Promise.resolve();
         },
         onPeers(f,onErr){ subs.push(f); if(onErr) errSubs.push(onErr); setTimeout(fire,0); return()=>{subs=subs.filter(x=>x!==f)}; },
         peers(){ return snap(); },
         connected(){ return !closed; },
-        leave(){ closed=true; clearInterval(sendTimer); try{ me.destroy(); }catch(_){} return Promise.resolve(); }
+        leave(){ sayBye(); closed=true; clearInterval(sendTimer); clearInterval(hbTimer); setTimeout(()=>{ try{ me.destroy(); }catch(_){} },150); return Promise.resolve(); }
       };
       const timeout=setTimeout(()=>fail(create?'timeout':'noroom'),12000);
       try{ me=new window.Peer(create?hostId:undefined,{debug:0}); }catch(e){ reject(e); return; }
@@ -516,6 +598,13 @@ const P2P={
             conns.forEach(c=>{ try{c.send(msg)}catch(_){} });
             fire();
           },60);
+          hbTimer=setInterval(()=>{
+            const now=Date.now();
+            conns.forEach((c,id)=>{
+              if(now-(lastSeen.get(id)||0)>8000){ lastSeen.delete(id); conns.delete(id); pres.delete(id); gone.add(id); try{c.close()}catch(_){} }
+              else try{ c.send({t:'hb'}); }catch(_){}
+            });
+          },1500);
         });
         me.on('connection',c=>{
           c.on('open',()=>{
@@ -524,8 +613,11 @@ const P2P={
             try{ c.send({t:'s',s:all}); }catch(_){}
             dirty.add(c.peer);
           });
-          c.on('data',d=>{ if(d&&d.t==='p'&&d.p&&typeof d.p==='object'){ pres.set(c.peer,d.p); dirty.add(c.peer); } });
-          const bye=()=>{ if(conns.delete(c.peer)){ pres.delete(c.peer); gone.add(c.peer); } };
+          lastSeen.set(c.peer,Date.now());
+          const bye=()=>{ lastSeen.delete(c.peer); if(conns.delete(c.peer)){ pres.delete(c.peer); gone.add(c.peer); try{c.close()}catch(_){} } };
+          c.on('data',d=>{ if(!d) return; lastSeen.set(c.peer,Date.now());
+            if(d.t==='bye'){ bye(); return; }
+            if(d.t==='p'&&d.p&&typeof d.p==='object'){ pres.set(c.peer,d.p); dirty.add(c.peer); } });
           c.on('close',bye); c.on('error',bye);
         });
       }else{
@@ -535,14 +627,21 @@ const P2P={
           hostConn.on('open',()=>{
             clearTimeout(timeout); done=true; resolve(room);
             let last='';
-            sendTimer=setInterval(()=>{
+            flushNow=()=>{
               if(!dirty.has(myId)) return; dirty.delete(myId);
               const s=JSON.stringify(mine); if(s===last) return; last=s;
               try{ hostConn.send({t:'p',p:JSON.parse(s)}); }catch(_){}
-            },60);
+            };
+            sendTimer=setInterval(flushNow,60);
+            hostSeen=Date.now();
+            hbTimer=setInterval(()=>{
+              try{ hostConn.send({t:'hb'}); }catch(_){}
+              if(Date.now()-hostSeen>9000) fail('hostgone');
+            },1500);
           });
           hostConn.on('data',d=>{
-            if(!d) return;
+            if(!d) return; hostSeen=Date.now();
+            if(d.t==='bye'){ fail('hostgone'); return; }
             if(d.t==='s'){ pres.clear(); for(const id in d.s) pres.set(id,d.s[id]); }
             else if(d.t==='u'){ for(const id in d.u){ if(id!==myId) pres.set(id,d.u[id]); } (d.g||[]).forEach(id=>pres.delete(id)); }
             pres.set(myId,Object.assign({},mine)); fire();
@@ -639,7 +738,7 @@ async function enterRoom(code,create){
   $('#joinErr').textContent='';
   joining=true;
   for(const k in myPres) delete myPres[k];
-  G=null; lastHostG=null; seenAnyG=false; spectateOnly=false; roundLocal=null; peersRaw=[];
+  G=null; lastHostG=null; seenAnyG=false; spectateOnly=false; roundLocal=null; peersRaw=[]; known=new Map(); hostPid=null;
   roomCode=code;
   if(lobbyRoom||P2P.available()){
     $('#joinErr').textContent=create?'방 만드는 중…':'들어가는 중…';
@@ -656,7 +755,7 @@ async function enterRoom(code,create){
       return;
     }
     $('#joinErr').textContent='';
-    room.onPeers(ch=>{ peersRaw=ch.peers; refresh(); },e=>{ leaveRoom(e&&e.code==='hostgone'?'방장이 나가서 방이 닫혔어요.':'연결이 끊겼어요. 다시 들어가 주세요.'); });
+    room.onPeers(ch=>{ peersRaw=ch.peers; refresh(); },e=>{ leaveRoom(e&&e.code==='hostgone'?'방장이 나가서 방이 없어졌어요.':'연결이 끊겼어요. 다시 들어가 주세요.'); });
     joined=true; renderLobby();
     await new Promise(r=>setTimeout(r,900)); // 먼저 와 있던 사람들의 상태를 받을 시간
   }else{ solo=true; room=null; joined=true; }
@@ -671,13 +770,16 @@ async function enterRoom(code,create){
   refresh(); renderLobby();
 }
 function leaveRoom(msg){
-  const r=room; room=null; solo=true; joined=false; joining=false; peersRaw=[];
+  const r=room; room=null; solo=true; joined=false; joining=false; peersRaw=[]; known=new Map(); hostPid=null;
+  if(msg) toast(msg+' 타이틀로 돌아왔어요.');
+  $('#lobby').scrollTop=0;
   if(r) r.leave().catch(()=>{});
   for(const k in myPres) delete myPres[k];
   G=null; lastHostG=null; seenAnyG=false; amHost=false; roundLocal=null; spectateOnly=false;
   show('lobby'); ovs([]); AU.setMode('lobby');
   $('#joinErr').textContent=msg||'';
   renderLobby();
+  requestAnimationFrame(()=>{ $('#lobby').scrollTop=0; });
 }
 $('#codeForm').addEventListener('submit',e=>{
   e.preventDefault();
@@ -696,8 +798,22 @@ $('#copyBtn').addEventListener('click',()=>{
 $('#startBtn').addEventListener('click',()=>{ if(amHost&&allReady()) hostStartGame(roundsN); });
 
 /* ================== 동기화 ================== */
+let known=new Map(), hostPid=null;
+function toast(msg){
+  const t=document.createElement('div'); t.className='toast'; t.textContent=msg;
+  $('#toasts').appendChild(t); setTimeout(()=>t.remove(),3400);
+}
 function refresh(){
   const me=peers().find(p=>p.sameTab); if(me) myPeer=me.peer;
+  if(joined&&!solo){
+    const cur=new Map(players().map(p=>[p.peer,p.presence.nm]));
+    if(hostPid&&hostPid!==myPeer&&!cur.has(hostPid)){
+      leaveRoom('방장이 나가서 방이 없어졌어요.'); return;
+    }
+    known.forEach((nm,pid)=>{ if(!cur.has(pid)&&pid!==myPeer) toast(`${nm}님이 나갔습니다`); });
+    known=cur;
+    const h=players()[0]; if(h&&!hostPid) hostPid=h.peer;
+  }
   const ps=players();
   const host=ps[0];
   const wasHost=amHost;
@@ -839,7 +955,8 @@ function startRound(ng){
   if(roundLocal&&roundLocal.ep===ng.ep) return;
   const card=CARD[ng.cards[ng.rd]]||CARD.calm;
   roundLocal={ep:ng.ep,start:performance.now()+CARD_MS,rd:ng.rd};
-  local.card=card; local.x=W/2; local.y=H*.62; local.vx=local.vy=0; local.t=0;
+  local.card=card; local.x=W/2; local.y=H*.62; local.vx=local.vy=0; local.t=0; local.lastEl=0;
+  $('#hitOv').classList.remove('side'); clearTimeout(hitSideT);
   local.inRoster=ng.ros.includes(myPeer);
   local.alive=local.inRoster;
   local.f=makeField(ng.sd+ng.rd*7919,card);
@@ -909,6 +1026,8 @@ function stepField(f,t){
     f.vNext+=Math.max(3.2,7-st*.06)+r()*2;
   }
   // 화면 밖으로 나간 화살 정리
+}
+function pruneField(f,t){
   f.arrows=f.arrows.filter(a=>{const d=t-a.t0;const x=a.x0+a.vx*d,y=a.y0+a.vy*d;return x>-80&&x<W+80&&y>-80&&y<H+80;});
 }
 
@@ -987,7 +1106,8 @@ function drawPlayer(x,y,col,r,alpha,label){
   ctx.fillStyle=col; ctx.strokeStyle='#1d1a16'; ctx.lineWidth=1.3*Math.max(.7,s); ctx.lineJoin='round';
   ctx.beginPath(); ctx.moveTo(x-12*s,y-1*s); ctx.lineTo(x,y-9*s); ctx.lineTo(x+12*s,y-1*s); ctx.quadraticCurveTo(x,y+2.2*s,x-12*s,y-1*s); ctx.fill(); ctx.stroke();
   if(label){
-    ctx.font='600 10px "Gowun Batang",serif'; ctx.textAlign='center'; ctx.fillStyle='#1d1a16';
+    ctx.globalAlpha=Math.max(alpha,.85);
+    ctx.font='700 13px "Gowun Batang",serif'; ctx.lineWidth=3; ctx.strokeStyle='rgba(239,230,208,.9)'; ctx.textAlign='center'; ctx.strokeText(label,Math.max(18,Math.min(W-18,x)),Math.max(12,y-12*s-3)); ctx.textAlign='center'; ctx.fillStyle='#1d1a16';
     ctx.fillText(label,Math.max(16,Math.min(W-16,x)),Math.max(10,y-12*s-3));
   }
   ctx.globalAlpha=1;
@@ -1027,7 +1147,7 @@ function frame(now){
       ovs(['countOv']);
     }
   }else if(el<.6){
-    if(lastCountTxt!=='始'){ lastCountTxt='始'; $('#count').textContent='始'; $('#count').classList.add('go'); ovs(['countOv']); AU.jing(.7); AU.roundGo(); }
+    if(lastCountTxt!=='始'){ lastCountTxt='始'; $('#count').textContent='始'; $('#count').classList.add('go'); ovs(['countOv']); AU.jing(.7); AU.roundGo(G.rd); }
   }else if(lastCountTxt==='始'){ lastCountTxt=''; ovs(local.inRoster&&!local.alive?['hitOv']:[]); }
 
   // 이동
@@ -1059,16 +1179,21 @@ function frame(now){
     AU.setIntensity(Math.min(1,el/45));
   }
   if(local.alive&&el>=0){
-    if(el>=CAP){ die(CAP*1000,true); }
-    else for(const a of local.f.arrows){
-      for(const back of [0,dt*.5]){
-        const d=el-back-a.t0; if(d<0) continue;
+    // 프레임 사이에 지나간 시간을 잘게 나눠 전부 검사 (탭이 멈췄다 돌아와도 화살이 통과하지 않게)
+    const from=Math.max(0,Math.min(local.lastEl,el)), span=el-from;
+    const n=Math.min(900,Math.max(2,Math.ceil(span/.008)));
+    const hr2=hitR*hitR;
+    outer: for(let i=1;i<=n;i++){
+      const tt=from+span*i/n;
+      if(tt>=CAP){ die(CAP*1000,true); break; }
+      for(const a of local.f.arrows){
+        const d=tt-a.t0; if(d<0) continue;
         const x=a.x0+a.vx*d, y=a.y0+a.vy*d;
-        if((x-local.x)**2+(y-local.y)**2<hitR*hitR){ die(Math.round(el*1000)); break; }
+        if((x-local.x)**2+(y-local.y)**2<hr2){ die(Math.round(tt*1000)); break outer; }
       }
-      if(!local.alive) break;
     }
   }
+  if(el>=0){ local.lastEl=el; pruneField(local.f,Math.min(el,CAP+5)); }
   if(local.alive) local.t=Math.max(0,Math.round(el*1000));
 
   // presence 전송 (초당 ~14회)
@@ -1104,26 +1229,52 @@ function frame(now){
   }
   // HUD
   $('#hudT').textContent=fmt(local.inRoster?local.t:Math.max(0,el*1000));
-  $('#hudR').innerHTML=`남은 사람<br><b>${aliveN} / ${G.ros.length}</b>`;
+  const inRoom=G.ros.filter(pid=>pid===myPeer||peerBy(pid)).length;
+  $('#hudR').innerHTML=`남은 사람<br><b>${aliveN}<i> / ${inRoom}</i></b>`;
 }
 function drawIdle(){
   ctx.setTransform(1,0,0,1,0,0); ctx.drawImage(bg,0,0);
 }
-function die(t,survived){
+let hitSideT=0;
+function die(t,survived,away){
+  if(!local.alive) return;
   local.alive=false; local.t=t;
   setPres({al:false,t,r:G.ep,x:Math.round(local.x),y:Math.round(local.y)});
-  $('#hitmark').textContent=survived?'得道':'中箭';
-  $('#hitmsg').innerHTML=`<b>${fmt(t)}</b>초 버팀 · 이제 구경`;
+  $('#hitmark').textContent=survived?'得道':away?'離席':'中箭';
+  $('#hitmsg').innerHTML=away?`<b>${fmt(t)}</b>초 · 화면을 벗어나서 탈락`:`<b>${fmt(t)}</b>초 버팀 · 이제 구경`;
+  const ho=$('#hitOv'); ho.classList.remove('side'); clearTimeout(hitSideT);
   ovs(['hitOv']);
+  hitSideT=setTimeout(()=>ho.classList.add('side'),1300);
   AU.hit(survived);
   if(navigator.vibrate) try{navigator.vibrate(survived?[40,60,40]:120)}catch(_){}
 }
+function awayCheck(){
+  if(!document.hidden||!G||G.ph!=='round'||!roundLocal||roundLocal.ghostOnly||!local.alive) return;
+  const el=(performance.now()-roundLocal.start)/1000;
+  if(el<0) return; // 카드 보는 중엔 봐줌
+  die(Math.round(Math.min(el,CAP)*1000),false,true);
+}
+document.addEventListener('visibilitychange',awayCheck);
+addEventListener('pagehide',awayCheck);
+addEventListener('blur',()=>setTimeout(awayCheck,50));
 requestAnimationFrame(frame);
 setInterval(()=>{ // 결과 진행바
   const b=$('#resBar'); if(!b||!G||G.ph!=='result'||!resShownAt) return;
   b.style.width=Math.min(100,(performance.now()-resShownAt)/RES_MS*100)+'%';
 },100);
 
+function syncSettings(){
+  const mv=Math.round(AU.getVol('m')*100), sv=Math.round(AU.getVol('s')*100);
+  $('#mv').value=mv; $('#mvT').textContent=mv; $('#sv').value=sv; $('#svT').textContent=sv;
+  [...$('#bgmPick').children].forEach(b=>b.classList.toggle('on',b.dataset.v===AU.getChoice()));
+}
+$('#setBtn').addEventListener('click',()=>{ AU.init(); syncSettings(); $('#setOv').classList.add('on'); });
+$('#setClose').addEventListener('click',()=>$('#setOv').classList.remove('on'));
+$('#setOv').addEventListener('click',e=>{ if(e.target.id==='setOv') $('#setOv').classList.remove('on'); });
+$('#mv').addEventListener('input',e=>{ AU.setVol('m',e.target.value/100); $('#mvT').textContent=e.target.value; });
+$('#sv').addEventListener('input',e=>{ AU.setVol('s',e.target.value/100); $('#svT').textContent=e.target.value; });
+$('#sv').addEventListener('change',()=>AU.clap());
+$('#bgmPick').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; AU.setChoice(b.dataset.v); if(!G) AU.setMode('lobby'); syncSettings(); });
 const sndBtn=$('#snd'); sndBtn.classList.toggle('off',!AU.isOn());
 sndBtn.addEventListener('click',()=>{ AU.init(); const o=AU.toggle(); sndBtn.classList.toggle('off',!o); if(o&&!G) AU.setMode('lobby'); });
 /* ================== 연결 ================== */

@@ -9,4 +9,4 @@
 방장 브라우저가 중계 서버 역할을 합니다 (PeerJS, 별도 서버 필요 없음).
 방장이 나가면 방이 닫힙니다.
 
-배경음악: Where the Bamboo Bends
+배경음악: Where the Bamboo Bends, Final Strike at Dawn (설정에서 선택)
