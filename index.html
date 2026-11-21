@@ -953,6 +953,11 @@ function hostTick(){
         else{
           const pr=p.presence;
           if(pr.r===G.ep && pr.al===false){ dead=true; t=pr.t|0; }
+          else if(pr.hid && pr.al!==false){
+            const ht=pr.r===G.ep?Math.min(pr.ht|0,Math.max(0,Math.round(el*1000))):0;
+            lastAliveAt[pid]=ht;                 // 숨은 시점으로 고정
+            if(el>=.5){ dead=true; t=ht; }
+          }
           else if(pr.r!==G.ep && el>8){ dead=true; t=0; }
           else lastAliveAt[pid]=Math.round(el*1000);
         }
@@ -1059,7 +1064,7 @@ function startRound(ng){
   local.alive=local.inRoster;
   local.f=makeField(ng.sd+ng.rd*7919,card);
   ghosts={};
-  setPres({r:ng.ep,al:local.alive,t:0,x:Math.round(local.x),y:Math.round(local.y)});
+  setPres(Object.assign({r:ng.ep,al:local.alive,t:0,x:Math.round(local.x),y:Math.round(local.y)},hiddenSince!==null?{hid:true,ht:0}:{}));
   // 카드 화면
   $('#cNo').innerHTML=hanRoundH(ng.rd);
   $('#cH').textContent=card.h; $('#cK').textContent=card.k;
@@ -1313,7 +1318,7 @@ function frame(now){
     const pr=p.presence; if(pr.r!==G.ep) { aliveN++; continue; }
     const gh=ghosts[pid]||(ghosts[pid]={x:pr.x??W/2,y:pr.y??H*.62});
     if(typeof pr.x==='number'){ gh.x+=(pr.x-gh.x)*Math.min(1,dt*14); gh.y+=(pr.y-gh.y)*Math.min(1,dt*14); }
-    const al=pr.al!==false; if(al) aliveN++;
+    const al=pr.al!==false&&!(pr.hid&&el>=.5); if(al) aliveN++;
     if(c.fog&&local.alive) continue;
     if(al) drawPlayer(gh.x,gh.y,colOf(pid),6*(c.size||1),.45,nameOf(pid));
     else { ctx.globalAlpha=.35; ctx.strokeStyle=colOf(pid); ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(gh.x-5,gh.y-5); ctx.lineTo(gh.x+5,gh.y+5); ctx.moveTo(gh.x+5,gh.y-5); ctx.lineTo(gh.x-5,gh.y+5); ctx.stroke(); ctx.globalAlpha=1; }
@@ -1348,15 +1353,29 @@ function die(t,survived,away){
   AU.hit(survived);
   if(navigator.vibrate) try{navigator.vibrate(survived?[40,60,40]:120)}catch(_){}
 }
+// 자리 비움: 화면을 벗어난 순간부터 기록. 시작 전에 나가 있었어도 판이 시작되면 0초로 탈락.
+let hiddenSince=null;
 function awayCheck(){
-  if(!document.hidden||!G||G.ph!=='round'||!roundLocal||roundLocal.ghostOnly||!local.alive) return;
-  const el=(performance.now()-roundLocal.start)/1000;
-  if(el<0) return; // 카드 보는 중엔 봐줌
-  die(Math.round(Math.min(el,CAP)*1000),false,true);
+  const rl=roundLocal&&!roundLocal.ghostOnly?roundLocal:null;
+  if(document.hidden&&hiddenSince===null){
+    hiddenSince=performance.now();
+    const e=rl&&G&&G.ph==='round'?(hiddenSince-rl.start)/1000:0;
+    setPres({hid:true,ht:Math.max(0,Math.round(Math.min(e,CAP)*1000))});
+  }
+  if(hiddenSince!==null&&rl&&G&&G.ph==='round'&&local.alive&&local.inRoster){
+    const el=(performance.now()-rl.start)/1000;
+    if(el>=0){ // 카드 보는 동안 돌아오면 봐줌, 시작 시점에 아직 없으면 탈락
+      const hEl=Math.max(0,(hiddenSince-rl.start)/1000);
+      die(Math.round(Math.min(hEl,CAP)*1000),false,true);
+    }
+  }
+  if(!document.hidden&&hiddenSince!==null){ hiddenSince=null; setPres({hid:null,ht:null}); }
 }
 document.addEventListener('visibilitychange',awayCheck);
 addEventListener('pagehide',awayCheck);
-addEventListener('blur',()=>setTimeout(awayCheck,50));
+addEventListener('pageshow',awayCheck);
+addEventListener('focus',awayCheck);
+setInterval(awayCheck,400); // 숨은 탭에서도 (느리게나마) 돌아가는 타이머로 계속 확인
 requestAnimationFrame(frame);
 setInterval(()=>{ // 결과 진행바
   const b=$('#resBar'); if(!b||!G||G.ph!=='result'||!resShownAt) return;
