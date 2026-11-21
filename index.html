@@ -62,7 +62,10 @@ button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
 .codehint{font-size:13px;color:var(--ink2);margin-top:10px}
 .linkbtn{margin-top:22px;font-size:14px;color:var(--mute);text-decoration:underline;text-underline-offset:3px}
 #roster li .rdy{margin-left:auto;font-family:var(--han);font-weight:900;font-size:12px;color:var(--paper);background:var(--ink);padding:3px 5px;border-radius:2px}
-#roster li .nrdy{margin-left:auto;font-size:12px;color:var(--mute)}
+#roster li .nrdy{margin-left:auto;font-size:14px;color:var(--mute)}
+#roster li .tag,#roster li .rdy{font-size:14px!important;padding:4px 7px!important}
+#hud .rd{font-size:14px;color:var(--ink2)}
+.sheet h2 .rd{font-size:20px}
 .btn.on{background:var(--red);border-color:var(--red);box-shadow:3px 3px 0 var(--ink)}
 #snd{position:fixed;right:12px;bottom:12px;z-index:30;width:40px;height:40px;border:2px solid var(--ink);background:#f4ecda;border-radius:2px;
   font-family:var(--han);font-weight:900;font-size:18px;display:grid;place-items:center;box-shadow:2px 2px 0 rgba(29,26,22,.3)}
@@ -155,6 +158,15 @@ canvas{display:block;box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25
 .card .f .d{font-size:12.5px;line-height:1.45;text-align:center;color:var(--ink2);margin-top:6px;min-height:36px}
 #count{font-family:var(--han);font-weight:900;font-size:96px;line-height:1;color:var(--ink);width:150px;height:150px;display:grid;place-items:center;border-radius:50%;background:rgba(244,236,218,.92);box-shadow:0 0 0 2.5px var(--ink),5px 5px 0 rgba(29,26,22,.25)}
 #count.go{color:var(--red)}
+#count{display:flex!important;flex-direction:column;align-items:center;justify-content:center}
+#count small{font-family:var(--serif);font-weight:700;font-size:20px;line-height:1;margin-top:4px;color:var(--ink2)}
+.rd{font-family:var(--serif);font-weight:700;font-size:.55em;color:var(--mute);margin-left:.3em;letter-spacing:0;vertical-align:middle}
+.tag small,.rdy small,.stampmini small{font-family:var(--serif);font-weight:700;opacity:.85;margin-left:3px}
+#hitrd{margin-top:10px;font-family:var(--serif);font-weight:700;font-size:18px;color:#f3e7d1;background:var(--red);padding:3px 10px}
+#hitOv.side #hitrd{font-size:30px}
+#snd,#setBtn{width:46px!important;height:50px!important;display:flex!important;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+#snd small,#setBtn small{font-family:var(--serif);font-weight:700;font-size:11px;margin-top:3px}
+#setBtn{right:66px!important}
 #hitmark{font-family:var(--han);font-weight:900;color:#f3e7d1;background:var(--red);font-size:44px;padding:10px 12px;border-radius:4px;writing-mode:vertical-rl;letter-spacing:6px;transform:rotate(-8deg);box-shadow:inset 0 0 0 3px var(--red),inset 0 0 0 5px #f3e7d1}
 #hitOv .hitbox{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;
   transition:left .5s cubic-bezier(.5,0,.2,1),top .5s cubic-bezier(.5,0,.2,1),transform .5s cubic-bezier(.5,0,.2,1);transform-origin:top left}
@@ -169,7 +181,7 @@ canvas{display:block;box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25
 .sheet .meta{font-size:13px;color:var(--ink2);margin-top:6px}
 .tbl{width:100%;border-collapse:collapse;margin-top:14px}
 .tbl td{padding:8px 4px;border-bottom:1px dashed #bfb090;font-size:15px;vertical-align:middle}
-.tbl td.rk{font-family:var(--han);font-weight:900;width:30px;font-size:17px}
+.tbl td.rk{font-family:var(--han);font-weight:900;width:50px;font-size:17px;white-space:nowrap}
 .tbl td.nm .w{display:flex;align-items:center;gap:8px}
 .tbl td.t{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .tbl td.t small{display:block;font-size:11px;color:var(--mute)}
@@ -190,7 +202,7 @@ canvas{display:block;box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25
 <!-- ======== 대기실 ======== -->
 <section id="lobby" class="screen on">
   <div class="masthead">
-    <div class="sub">竹 林 高 手 俠 客 · ONLINE</div>
+    <div class="sub">竹 林 高 手 俠 客 <span style="letter-spacing:.1em">(죽림고수 협객)</span> · ONLINE</div>
     <h1><small>메가</small>죽림고수<span class="tail">협객온라인</span></h1>
     <div class="seal">俠客</div>
   </div>
@@ -246,8 +258,8 @@ canvas{display:block;box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25
     </details>
   </div>
 </section>
-<button id="snd" title="소리 켜기/끄기">音</button>
-<button id="setBtn" title="설정">設</button>
+<button id="snd" title="소리 켜기/끄기">音<small>소리</small></button>
+<button id="setBtn" title="설정">設<small>설정</small></button>
 <div id="toasts"></div>
 <div id="setOv"><div class="sheet">
   <h2>설<em>정</em></h2>
@@ -281,8 +293,8 @@ canvas{display:block;box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25
         <div class="f"><div class="no" id="cNo">第一局</div><div class="h" id="cH">平穩</div><div class="k" id="cK">평온</div><div class="d" id="cD"></div></div>
       </div></div>
     </div>
-    <div class="ov" id="countOv"><div id="count">三</div></div>
-    <div class="ov" id="hitOv"><div class="hitbox"><div id="hitmark">中箭</div><div id="hitmsg"></div></div></div>
+    <div class="ov" id="countOv"><div id="count">三<small>셋</small></div></div>
+    <div class="ov" id="hitOv"><div class="hitbox"><div id="hitmark">中箭</div><div id="hitrd">화살 맞음</div><div id="hitmsg"></div></div></div>
     <div class="ov dim" id="waitOv"><div class="sheet"><h2>숲이 <em>시끄럽다</em></h2><p class="meta">이미 한 판이 돌고 있어요. 이번 게임이 끝나면 대기실에서 같이 들어갈 수 있습니다. 지금은 구경만.</p></div></div>
     <div class="ov dim" id="resOv"><div class="sheet" id="resSheet"></div></div>
     <div class="ov dim" id="finOv"><div class="sheet" id="finSheet"></div></div>
@@ -312,6 +324,8 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=ms=>(ms/1000).toFixed(2);
 const hanRound=i=>'第'+(HANNUM[i]||String(i+1))+'局';
+const hanRoundH=i=>hanRound(i)+`<small class="rd">${i+1}판</small>`;
+const rankH=i=>(HANNUM[i]||i+1)+`<small class="rd">${i+1}위</small>`;
 
 /* ================== 난수 ================== */
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -700,7 +714,7 @@ function renderLobby(){
   const host=ps[0];
   $('#roster').innerHTML=ps.length?ps.map(p=>{
     const pr=p.presence;
-    const st=p===host?'<span class="tag">房長</span>':pr.rd?'<span class="rdy">準備</span>':'<span class="nrdy">대기</span>';
+    const st=p===host?'<span class="tag">房長<small>방장</small></span>':pr.rd?'<span class="rdy">準備<small>준비</small></span>':'<span class="nrdy">대기</span>';
     return `<li>${hatSVG(COLS[(pr.col|0)%COLS.length])}<span>${esc(pr.nm)}</span>${p.sameTab?'<span class="me">(나)</span>':''}${st}</li>`;
   }).join(''):'<li class="empty">들어가는 중…</li>';
   $('#joinPanel').style.display=joined?'none':'';
@@ -929,9 +943,9 @@ function colOf(pid){ const i=pidx(pid); return COLS[(i>=0?G.pl[i].c|0:0)%COLS.le
 function renderResult(){
   if(!G||G.ph!=='result') return;
   const card=CARD[G.cards[G.rd]];
-  const rows=G.res.map(([pid,t],i)=>`<tr class="${i===0?'top':''}"><td class="rk">${HANNUM[i]||i+1}</td><td class="nm"><div class="w">${hatSVG(colOf(pid))}<span>${esc(nameOf(pid))}</span>${pid===myPeer?'<small style="color:var(--mute)">(나)</small>':''}${t>=CAP*1000?'<span class="stampmini">得道</span>':''}</div></td><td class="t">${fmt(t)}초<small>누적 ${fmt(G.sc[pidx(pid)]||0)}</small></td></tr>`).join('');
+  const rows=G.res.map(([pid,t],i)=>`<tr class="${i===0?'top':''}"><td class="rk">${rankH(i)}</td><td class="nm"><div class="w">${hatSVG(colOf(pid))}<span>${esc(nameOf(pid))}</span>${pid===myPeer?'<small style="color:var(--mute)">(나)</small>':''}${t>=CAP*1000?'<span class="stampmini">得道<small>득도</small></span>':''}</div></td><td class="t">${fmt(t)}초<small>누적 ${fmt(G.sc[pidx(pid)]||0)}</small></td></tr>`).join('');
   const last=G.rd+1>=G.tot;
-  $('#resSheet').innerHTML=`<h2>${hanRound(G.rd)} <em>끝</em></h2><p class="meta">${card.h} · ${card.k} &nbsp;|&nbsp; ${G.rd+1} / ${G.tot}판</p>
+  $('#resSheet').innerHTML=`<h2>${hanRoundH(G.rd)} <em>끝</em></h2><p class="meta">${card.h} · ${card.k} &nbsp;|&nbsp; ${G.rd+1} / ${G.tot}판</p>
     <table class="tbl">${rows}</table>
     <div class="bar"><i id="resBar"></i></div>
     <div class="foot"><span class="note">${amHost?'잠시 후 자동으로 넘어갑니다':'방장이 넘기면 다음 판'}</span>${amHost?`<button class="btn" id="nextBtn">${last?'최종 결과':'다음 판'}</button>`:''}</div>`;
@@ -939,10 +953,10 @@ function renderResult(){
 }
 function renderFinal(){
   const ids=G.pl.map((x,i)=>i).sort((a,b)=>G.sc[b]-G.sc[a]).map(i=>G.pl[i].p);
-  const rows=ids.map((pid,i)=>`<tr class="${i===0?'top':''}"><td class="rk">${HANNUM[i]||i+1}</td><td class="nm"><div class="w">${hatSVG(colOf(pid))}<span>${esc(nameOf(pid))}</span>${G.wins[pidx(pid)]?`<span class="stampmini">${G.wins[pidx(pid)]}勝</span>`:''}</div></td><td class="t">${fmt(G.sc[pidx(pid)]||0)}초</td></tr>`).join('');
+  const rows=ids.map((pid,i)=>`<tr class="${i===0?'top':''}"><td class="rk">${rankH(i)}</td><td class="nm"><div class="w">${hatSVG(colOf(pid))}<span>${esc(nameOf(pid))}</span>${G.wins[pidx(pid)]?`<span class="stampmini">${G.wins[pidx(pid)]}勝<small>${G.wins[pidx(pid)]}승</small></span>`:''}</div></td><td class="t">${fmt(G.sc[pidx(pid)]||0)}초</td></tr>`).join('');
   const champ=ids[0], loser=ids.length>1?ids[ids.length-1]:null;
   $('#finSheet').innerHTML=`<h2>오늘의 <em>죽림고수</em></h2><p class="meta">${G.tot}판 누적 생존 시간</p>
-    <div class="champ"><div class="lbl">竹 林 高 手</div><div class="who">${esc(nameOf(champ))}</div></div>
+    <div class="champ"><div class="lbl">竹 林 高 手 · 죽림고수</div><div class="who">${esc(nameOf(champ))}</div></div>
     ${loser?`<p class="loser">오늘의 화살받이: <b>${esc(nameOf(loser))}</b></p>`:''}
     <table class="tbl">${rows}</table>
     <div class="foot"><span class="note">${amHost?'':'방장이 대기실로 돌아가면 다시 할 수 있어요'}</span>${amHost?'<button class="btn" id="againBtn">대기실로</button>':''}</div>`;
@@ -963,11 +977,11 @@ function startRound(ng){
   ghosts={};
   setPres({r:ng.ep,al:local.alive,t:0,x:Math.round(local.x),y:Math.round(local.y)});
   // 카드 화면
-  $('#cNo').textContent=hanRound(ng.rd);
+  $('#cNo').innerHTML=hanRoundH(ng.rd);
   $('#cH').textContent=card.h; $('#cK').textContent=card.k;
   $('#cD').innerHTML=esc(card.d).replace(/\n/g,'<br>');
   $('#card').classList.remove('flip');
-  $('#hudL').innerHTML=`${hanRound(ng.rd)}<span>${card.h} · ${card.k}</span>`;
+  $('#hudL').innerHTML=`${hanRoundH(ng.rd)}<span>${card.h} · ${card.k}</span>`;
   $('#hint').textContent=local.inRoster?(isTouch?'화면을 대고 끌어서 움직이기':'방향키 / WASD'):'이번 판은 구경 중';
   show('game'); ovs(['cardOv']); resize();
   setTimeout(()=>{ $('#card').classList.add('flip'); AU.flip(); },450);
@@ -1143,11 +1157,11 @@ function frame(now){
   if(el<0){
     if(el>-3) {
       const txt=el<-2?'三':el<-1?'二':'一';
-      if(txt!==lastCountTxt){ lastCountTxt=txt; $('#count').textContent=txt; $('#count').classList.remove('go'); AU.clap(); }
+      if(txt!==lastCountTxt){ lastCountTxt=txt; $('#count').innerHTML=txt+'<small>'+({'三':'셋','二':'둘','一':'하나'})[txt]+'</small>'; $('#count').classList.remove('go'); AU.clap(); }
       ovs(['countOv']);
     }
   }else if(el<.6){
-    if(lastCountTxt!=='始'){ lastCountTxt='始'; $('#count').textContent='始'; $('#count').classList.add('go'); ovs(['countOv']); AU.jing(.7); AU.roundGo(G.rd); }
+    if(lastCountTxt!=='始'){ lastCountTxt='始'; $('#count').innerHTML='始<small>시작</small>'; $('#count').classList.add('go'); ovs(['countOv']); AU.jing(.7); AU.roundGo(G.rd); }
   }else if(lastCountTxt==='始'){ lastCountTxt=''; ovs(local.inRoster&&!local.alive?['hitOv']:[]); }
 
   // 이동
@@ -1241,6 +1255,7 @@ function die(t,survived,away){
   local.alive=false; local.t=t;
   setPres({al:false,t,r:G.ep,x:Math.round(local.x),y:Math.round(local.y)});
   $('#hitmark').textContent=survived?'得道':away?'離席':'中箭';
+  $('#hitrd').textContent=survived?'득도 · 100초 생존':away?'자리 비움':'화살 맞음';
   $('#hitmsg').innerHTML=away?`<b>${fmt(t)}</b>초 · 화면을 벗어나서 탈락`:`<b>${fmt(t)}</b>초 버팀 · 이제 구경`;
   const ho=$('#hitOv'); ho.classList.remove('side'); clearTimeout(hitSideT);
   ovs(['hitOv']);
