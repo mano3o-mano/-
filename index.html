@@ -127,6 +127,24 @@ details[open] summary::before{content:'－ '}
 details .deckdesc{margin-top:10px;font-size:13px;line-height:1.75;color:var(--ink2)}
 details .deckdesc b{font-family:var(--han);color:var(--ink)}
 
+/* ---------- 흑립객 ---------- */
+.npc{display:flex;gap:12px;align-items:flex-end;width:100%;max-width:420px;margin-top:20px}
+.npc .pt{width:104px;height:135px;flex:none;border:2px solid var(--ink);background:var(--paper2);overflow:hidden;box-shadow:3px 3px 0 rgba(29,26,22,.25)}
+.npc .pt svg{width:100%;height:100%;display:block}
+.npc .bub{flex:1;position:relative;background:#f4ecda;border:2px solid var(--ink);padding:10px 12px 12px;box-shadow:3px 3px 0 rgba(29,26,22,.25);cursor:pointer;margin-bottom:8px}
+.npc .bub::before{content:'';position:absolute;left:-10px;bottom:16px;border:8px solid transparent;border-right-color:var(--ink);border-left:0}
+.npc .who{font-family:var(--han);font-weight:900;font-size:13px;color:var(--red);letter-spacing:.1em}
+.npc .who small{font-family:var(--serif);color:var(--mute);letter-spacing:0;margin-left:4px}
+.npc .line{font-size:16.5px;line-height:1.55;margin-top:4px;min-height:3.1em;word-break:keep-all}
+.npc .line::after{content:'▍';color:var(--red);animation:blink 1s steps(2) infinite;margin-left:1px}
+.npc .line.done::after{content:''}
+@keyframes blink{50%{opacity:0}}
+.npc.sm{margin-top:12px}
+.npc.sm .pt{width:60px;height:78px}
+.npc.sm .line{font-size:15px;min-height:0}
+.npc.sm .bub{margin-bottom:4px}
+#cardOv .npc{max-width:340px;width:88%;pointer-events:none}
+
 /* ---------- 게임 ---------- */
 #game{flex-direction:column;align-items:center;touch-action:none;background:#d9cdb0}
 #hud{width:100%;display:flex;align-items:flex-end;justify-content:space-between;padding:10px 14px 6px;gap:8px}
@@ -202,11 +220,12 @@ canvas{display:block;box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25
 <!-- ======== 대기실 ======== -->
 <section id="lobby" class="screen on">
   <div class="masthead">
-    <div class="sub">竹 林 高 手 俠 客 <span style="letter-spacing:.1em">(죽림고수 협객)</span> · ONLINE</div>
+    <div class="sub">竹 林 高 手 俠 客 <span style="letter-spacing:.05em">· 죽림고수 협객</span></div>
     <h1><small>메가</small>죽림고수<span class="tail">협객온라인</span></h1>
     <div class="seal">俠客</div>
   </div>
   <p class="lede">대나무 숲에 모두 같이 들어갑니다. 모두가 <b>똑같은 화살비</b>를 맞고, 매 판 패 한 장이 그 판의 규칙을 바꿉니다. 오래 버틴 시간을 합산해서, 가장 오래 산 사람이 오늘의 고수입니다. <b>화살촉</b>에만 맞지 않으면 됩니다.</p>
+  <div class="npc" id="npcL"><div class="pt"></div><div class="bub"><div class="who">黑笠客<small>흑립객 · 숲지기</small></div><div class="line"></div></div></div>
   <div class="rule"></div>
 
   <div class="panel" id="joinPanel">
@@ -292,6 +311,7 @@ canvas{display:block;box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25
         <div class="b"><div>竹林</div></div>
         <div class="f"><div class="no" id="cNo">第一局</div><div class="h" id="cH">平穩</div><div class="k" id="cK">평온</div><div class="d" id="cD"></div></div>
       </div></div>
+      <div class="npc sm" id="npcC"><div class="pt"></div><div class="bub"><div class="who">黑笠客<small>흑립객</small></div><div class="line"></div></div></div>
     </div>
     <div class="ov" id="countOv"><div id="count">三<small>셋</small></div></div>
     <div class="ov" id="hitOv"><div class="hitbox"><div id="hitmark">中箭</div><div id="hitrd">화살 맞음</div><div id="hitmsg"></div></div></div>
@@ -693,6 +713,59 @@ function players(){
 }
 function peerBy(id){return peers().find(p=>p.peer===id)}
 
+
+/* ================== 흑립객 (배경 인물) ================== */
+const NPC_SVG="<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 200 260\">\n  <defs>\n    <filter id=\"ink\" x=\"-5%\" y=\"-5%\" width=\"110%\" height=\"110%\">\n      <feTurbulence type=\"fractalNoise\" baseFrequency=\".04\" numOctaves=\"2\" seed=\"7\"/>\n      <feDisplacementMap in=\"SourceGraphic\" scale=\"2.6\"/>\n    </filter>\n    <filter id=\"wash\" x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\">\n      <feTurbulence type=\"fractalNoise\" baseFrequency=\".02 .08\" numOctaves=\"3\" seed=\"3\"/>\n      <feDisplacementMap in=\"SourceGraphic\" scale=\"18\"/>\n      <feGaussianBlur stdDeviation=\"1.2\"/>\n    </filter>\n    <linearGradient id=\"robe\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\">\n      <stop offset=\"0\" stop-color=\"#110f0d\"/><stop offset=\".45\" stop-color=\"#2a2620\"/><stop offset=\"1\" stop-color=\"#110f0d\"/>\n    </linearGradient>\n    <linearGradient id=\"veil\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\">\n      <stop offset=\"0\" stop-color=\"#15130f\" stop-opacity=\".95\"/>\n      <stop offset=\".22\" stop-color=\"#1d1a16\" stop-opacity=\".62\"/>\n      <stop offset=\".5\" stop-color=\"#1d1a16\" stop-opacity=\".42\"/>\n      <stop offset=\".78\" stop-color=\"#1d1a16\" stop-opacity=\".62\"/>\n      <stop offset=\"1\" stop-color=\"#15130f\" stop-opacity=\".95\"/>\n    </linearGradient>\n    <linearGradient id=\"veilTop\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0\" stop-color=\"#15130f\" stop-opacity=\".85\"/><stop offset=\".35\" stop-color=\"#15130f\" stop-opacity=\"0\"/>\n    </linearGradient>\n  </defs>\n  <!-- \uba39 \ubc88\uc9d0 \ubc30\uacbd -->\n  <path d=\"M-10 150 C40 120 80 170 130 140 S200 110 220 130 L220 190 C170 200 120 170 60 200 S0 190 -10 200 Z\" fill=\"#1d1a16\" opacity=\".1\" filter=\"url(#wash)\"/>\n  <path d=\"M150 40 C170 50 190 44 210 54\" stroke=\"#1d1a16\" stroke-width=\"6\" opacity=\".12\" fill=\"none\" filter=\"url(#wash)\"/>\n  <g filter=\"url(#ink)\">\n    <!-- \ub4f1 \ub4a4 \ud658\ub3c4 -->\n    <path d=\"M136 176 L176 104\" stroke=\"#1d1a16\" stroke-width=\"7\" stroke-linecap=\"round\"/>\n    <path d=\"M168 110 L184 120\" stroke=\"#1d1a16\" stroke-width=\"5\" stroke-linecap=\"round\"/>\n    <path d=\"M178 96 L186 82\" stroke=\"#1d1a16\" stroke-width=\"5\" stroke-linecap=\"round\"/>\n    <path d=\"M176 104 L183 91\" stroke=\"#efe6d0\" stroke-width=\"1\" opacity=\".6\"/>\n    <path d=\"M186 82 C192 86 194 96 190 104\" stroke=\"#a8231b\" stroke-width=\"1.8\" fill=\"none\"/>\n    <!-- \ub3c4\ud3ec -->\n    <path d=\"M-4 262 C0 238 10 214 40 200 C58 191 78 182 100 180 C122 182 142 191 160 200 C190 214 200 238 204 262 Z\" fill=\"url(#robe)\"/>\n    <path d=\"M24 262 C28 228 40 206 60 192\" stroke=\"#efe6d0\" stroke-width=\"1.1\" fill=\"none\" opacity=\".5\"/>\n    <path d=\"M176 262 C172 230 162 208 142 194\" stroke=\"#efe6d0\" stroke-width=\"1.1\" fill=\"none\" opacity=\".5\"/>\n    <!-- \uae43 -->\n    <path d=\"M82 182 L101 234 L120 182\" fill=\"none\" stroke=\"#e9dfc8\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n    <path d=\"M72 186 L101 250\" stroke=\"#e9dfc8\" stroke-width=\"1.2\" opacity=\".7\"/>\n    <!-- \ud5c8\ub9ac\ub760 \u00b7 \ub178\ub9ac\uac1c -->\n    <path d=\"M14 250 Q100 241 186 250 L186 262 L14 262 Z\" fill=\"#e6dcc4\"/>\n    <path d=\"M14 250 Q100 241 186 250\" stroke=\"#1d1a16\" stroke-width=\"1\" fill=\"none\" opacity=\".4\"/>\n    <!-- \uc5bc\uad74 \uadf8\ub298 -->\n    <path d=\"M76 120 C76 96 124 96 124 120 C124 150 112 166 100 166 C88 166 76 150 76 120 Z\" fill=\"#0e0c0a\"/>\n    <!-- \ub208\ube5b -->\n    <path d=\"M85 130 L96 128\" stroke=\"#e9dfc8\" stroke-width=\"1.8\" stroke-linecap=\"round\" opacity=\".9\"/>\n    <path d=\"M105 128 L115 130\" stroke=\"#e9dfc8\" stroke-width=\"1.8\" stroke-linecap=\"round\" opacity=\".9\"/>\n    <!-- \ub108\uc6b8 -->\n    <path d=\"M30 98 C22 134 20 170 12 204 C28 212 44 198 60 208 C74 216 88 200 100 210 C112 200 126 216 140 208 C156 198 172 212 188 204 C180 170 178 134 170 98 Z\" fill=\"url(#veil)\"/>\n    <path d=\"M30 98 C22 134 20 170 12 204 C28 212 44 198 60 208 C74 216 88 200 100 210 C112 200 126 216 140 208 C156 198 172 212 188 204 C180 170 178 134 170 98 Z\" fill=\"url(#veilTop)\"/>\n    <path d=\"M52 102 C48 140 50 176 46 202\" stroke=\"#efe6d0\" stroke-width=\".9\" fill=\"none\" opacity=\".45\"/>\n    <path d=\"M76 104 C74 144 80 176 78 206\" stroke=\"#efe6d0\" stroke-width=\".6\" fill=\"none\" opacity=\".3\"/>\n    <path d=\"M148 102 C152 140 150 176 156 202\" stroke=\"#efe6d0\" stroke-width=\".9\" fill=\"none\" opacity=\".45\"/>\n    <path d=\"M124 104 C126 144 120 176 122 206\" stroke=\"#efe6d0\" stroke-width=\".6\" fill=\"none\" opacity=\".3\"/>\n    <path d=\"M12 204 C28 212 44 198 60 208 C74 216 88 200 100 210 C112 200 126 216 140 208 C156 198 172 212 188 204\" stroke=\"#efe6d0\" stroke-width=\"1.3\" fill=\"none\" opacity=\".65\"/>\n    <!-- \uc591\ud0dc -->\n    <ellipse cx=\"100\" cy=\"96\" rx=\"97\" ry=\"17\" fill=\"#1d1a16\" opacity=\".96\"/>\n    <ellipse cx=\"100\" cy=\"96\" rx=\"72\" ry=\"12\" fill=\"none\" stroke=\"#3b362f\" stroke-width=\"1\"/>\n    <ellipse cx=\"100\" cy=\"96\" rx=\"50\" ry=\"8.5\" fill=\"none\" stroke=\"#3b362f\" stroke-width=\"1\"/>\n    <path d=\"M4 96 C40 110 160 110 196 96\" stroke=\"#efe6d0\" stroke-width=\"1.2\" fill=\"none\" opacity=\".55\"/>\n    <!-- \ub300\uc6b0 -->\n    <path d=\"M76 95 L80 22 Q100 15 120 22 L124 95 Q100 101 76 95 Z\" fill=\"#1d1a16\"/>\n    <ellipse cx=\"100\" cy=\"22\" rx=\"20\" ry=\"4.5\" fill=\"#2c2823\"/>\n    <path d=\"M120 24 L123.5 92\" stroke=\"#efe6d0\" stroke-width=\"1\" opacity=\".45\"/>\n    <path d=\"M76 86 Q100 93 124 86\" stroke=\"#3b362f\" stroke-width=\"3.5\" fill=\"none\"/>\n    <!-- \uac13\ub048 -->\n    <path d=\"M152 106 C164 142 150 170 166 212 C172 226 168 244 176 262\" stroke=\"#a8231b\" stroke-width=\"2.2\" fill=\"none\"/>\n    <!-- \ub178\ub9ac\uac1c -->\n    <path d=\"M126 251 L126 262\" stroke=\"#a8231b\" stroke-width=\"2.6\"/>\n  </g>\n  <!-- \ud769\ub0a0\ub9ac\ub294 \uc78e -->\n  <g fill=\"#1d1a16\" opacity=\".55\">\n    <path d=\"M20 40 q6 -4 12 0 q-6 4 -12 0z\" transform=\"rotate(-20 26 40)\"/>\n    <path d=\"M178 160 q5 -3 10 0 q-5 3 -10 0z\" transform=\"rotate(30 183 160)\"/>\n    <path d=\"M10 110 q4 -3 8 0 q-4 3 -8 0z\" transform=\"rotate(50 14 110)\"/>\n  </g>\n</svg>";
+let npcN=0;
+function npcSVG(){ const k='n'+(npcN++); return NPC_SVG.replace(/id="(ink|wash|robe|veil|veilTop)"/g,(m,a)=>`id="${a}${k}"`).replace(/url\(#(ink|wash|robe|veil|veilTop)\)/g,(m,a)=>`url(#${a}${k})`); }
+function npcHTML(id,sm){ return `<div class="npc${sm?' sm':''}" id="${id}"><div class="pt">${npcSVG()}</div><div class="bub"><div class="who">黑笠客<small>흑립객</small></div><div class="line"></div></div></div>`; }
+const typing=new WeakMap();
+function say(npcEl,text){
+  if(!npcEl) return;
+  const el=npcEl.querySelector('.line'); if(!el) return;
+  clearInterval(typing.get(el));
+  el.classList.remove('done'); el.textContent='';
+  const chars=[...text]; let i=0;
+  const t=setInterval(()=>{ i++; el.textContent=chars.slice(0,i).join(''); if(i>=chars.length){ clearInterval(t); el.classList.add('done'); } },38);
+  typing.set(el,t);
+}
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function josa(name,a,b){ const c=String(name).charCodeAt(String(name).length-1);
+  if(c>=0xAC00&&c<=0xD7A3) return name+(((c-0xAC00)%28)?a:b); return name+a+'('+b+')'; }
+const LINES={
+  title:['숲에 들어오려는 자, 이름부터 대라.','화살은 촉만 조심하면 된다. …촉이 전부지만.','혼자 왔느냐. 벗을 데려와라. 대숲은 여럿이 흔들어야 운다.',
+         '방을 열 자는 열고, 들어올 자는 코드를 대라.','갓 아래 얼굴이 궁금하냐. 살아남으면 보여주마. …아마도.'],
+  alone:['아직 혼자로군. 저 네 글자를 벗에게 전해라.','숲은 넓다. 혼자 서 있기엔 아깝지.'],
+  hostWait:n=>[`아직 채비 못 한 자가 ${n}명 있다. 기다려 주거라.`,`${n}명이 아직이다. 재촉은 하지 마라… 조금만 해라.`],
+  hostReady:['다들 채비를 마쳤다. 숲으로 들여보내라.','모였구나. 네가 신호를 주면 시위가 당겨진다.'],
+  guestWait:['채비가 끝났으면 \'준비\'를 눌러라.','숨 고르고, 준비.','겁먹을 것 없다. 맞아도 죽지는 않는다. 이 숲에서만.'],
+  guestReady:['좋다. 방장의 신호를 기다려라.','준비된 자의 눈빛이군.'],
+  busy:['지금은 숲이 시끄럽다. 이번 게임이 끝나면 들어와라.'],
+  hostGone:['방장이 떠났다. 숲이 닫혔다. 다시 모여라.'],
+  card:{
+    calm:'고요하다… 이럴 때가 제일 위험하지.', gale:'바람이 빠르다. 발보다 눈을 먼저 움직여라.',
+    rain:'비처럼 쏟아진다. 그래도 틈은 반드시 있다.', cross:'가로세로로만 온다. 비스듬히 서라.',
+    fog:'앞이 안 보이면 소리를 들어라. 슉— 하면 늦은 거다.', rev:'오늘은 숲이 뒤집혔다. 몸 말고 머리로 움직여라.',
+    ice:'미끄럽다. 멈추려면 미리 멈춰라.', tiny:'몸이 작아졌다. 대신 화살이 많다. 공짜는 없지.',
+    giant:'몸이 커졌다. 욕심내지 말고 크게 피해라.'
+  }
+};
+let npcKey='';
+function npcLobby(){
+  const el=$('#npcL'); if(!el) return;
+  let key, pool;
+  const ps=players(), inGame=G&&G.ph!=='lobby';
+  if(!joined){ key='title'+($('#joinErr').textContent.includes('방장이 나가')?'g':''); pool=key==='titleg'?LINES.hostGone:LINES.title; }
+  else if(inGame){ key='busy'; pool=LINES.busy; }
+  else if(amHost){
+    const w=ps.filter(p=>!p.sameTab&&!p.presence.rd).length;
+    if(ps.length<2){ key='alone'; pool=LINES.alone; }
+    else if(w){ key='hw'+w; pool=LINES.hostWait(w); } else { key='hr'+ps.length; pool=LINES.hostReady; }
+  }else{ key=myPres.rd?'gr':'gw'; pool=myPres.rd?LINES.guestReady:LINES.guestWait; }
+  if(key===npcKey) return;
+  npcKey=key; el._pool=pool; say(el,pick(pool));
+}
+
 /* ================== 대기실 UI ================== */
 function hatSVG(col){
   return `<svg class="hat" viewBox="0 0 26 18"><ellipse cx="13" cy="15.5" rx="9" ry="2" fill="rgba(29,26,22,.18)"/><circle cx="13" cy="11" r="4.2" fill="#1d1a16"/><path d="M1.5 9.5 L13 1.5 L24.5 9.5 Q13 12.5 1.5 9.5Z" fill="${col}" stroke="#1d1a16" stroke-width="1.2" stroke-linejoin="round"/></svg>`;
@@ -731,6 +804,7 @@ function renderLobby(){
   $('#waitTxt').textContent=inGame?'지금 한 게임이 돌고 있어요. 끝나면 같이 들어갑니다':myPres.rd?'방장이 시작하기를 기다리는 중':'준비를 누르면 방장이 시작할 수 있어요';
   const sb=$('#startBtn');
   sb.disabled=waiting>0;
+  npcLobby();
   sb.textContent=waiting>0?`${waiting}명 준비 기다리는 중`:ps.length<2?'혼자 연습하기':`${ps.length}명이서 숲으로`;
 }
 
@@ -946,10 +1020,16 @@ function renderResult(){
   const rows=G.res.map(([pid,t],i)=>`<tr class="${i===0?'top':''}"><td class="rk">${rankH(i)}</td><td class="nm"><div class="w">${hatSVG(colOf(pid))}<span>${esc(nameOf(pid))}</span>${pid===myPeer?'<small style="color:var(--mute)">(나)</small>':''}${t>=CAP*1000?'<span class="stampmini">得道<small>득도</small></span>':''}</div></td><td class="t">${fmt(t)}초<small>누적 ${fmt(G.sc[pidx(pid)]||0)}</small></td></tr>`).join('');
   const last=G.rd+1>=G.tot;
   $('#resSheet').innerHTML=`<h2>${hanRoundH(G.rd)} <em>끝</em></h2><p class="meta">${card.h} · ${card.k} &nbsp;|&nbsp; ${G.rd+1} / ${G.tot}판</p>
+    ${npcHTML('npcR',true)}
     <table class="tbl">${rows}</table>
     <div class="bar"><i id="resBar"></i></div>
     <div class="foot"><span class="note">${amHost?'잠시 후 자동으로 넘어갑니다':'방장이 넘기면 다음 판'}</span>${amHost?`<button class="btn" id="nextBtn">${last?'최종 결과':'다음 판'}</button>`:''}</div>`;
   const nb=$('#nextBtn'); if(nb) nb.onclick=hostNext;
+  { const r=G.res, w=r.length?nameOf(r[0][0]):'', l=r.length>1?nameOf(r[r.length-1][0]):'';
+    const line=r.length<2?pick([`${josa(w,'이','가')} 혼자서도 잘 버티는군.`,'혼자 맞는 화살도 아프긴 마찬가지다.'])
+      :r[0][1]-r[r.length-1][1]<150?'다 같이 맞았군. 사이가 좋구나.'
+      :pick([`${w}, 제법이다. 촉이 너를 비켜 가는군. ${josa(l,'은','는')}… 촉을 보거라.`,`이번 판은 ${josa(w,'이','가')} 가져갔다. ${l}, 너무 서둘렀다.`,`${w}의 발이 가볍구나. ${l}, 숲은 다음 판에도 열린다.`]);
+    say($('#npcR'),line); }
 }
 function renderFinal(){
   const ids=G.pl.map((x,i)=>i).sort((a,b)=>G.sc[b]-G.sc[a]).map(i=>G.pl[i].p);
@@ -958,9 +1038,13 @@ function renderFinal(){
   $('#finSheet').innerHTML=`<h2>오늘의 <em>죽림고수</em></h2><p class="meta">${G.tot}판 누적 생존 시간</p>
     <div class="champ"><div class="lbl">竹 林 高 手 · 죽림고수</div><div class="who">${esc(nameOf(champ))}</div></div>
     ${loser?`<p class="loser">오늘의 화살받이: <b>${esc(nameOf(loser))}</b></p>`:''}
+    ${npcHTML('npcF',true)}
     <table class="tbl">${rows}</table>
     <div class="foot"><span class="note">${amHost?'':'방장이 대기실로 돌아가면 다시 할 수 있어요'}</span>${amHost?'<button class="btn" id="againBtn">대기실로</button>':''}</div>`;
   const ab=$('#againBtn'); if(ab) ab.onclick=hostLobby;
+  { const c=nameOf(champ), l=loser?nameOf(loser):'';
+    say($('#npcF'), loser?`오늘 이 숲의 주인은 ${josa(c,'이다','다')}. 갓을 벗어 예를 표하마. …벗지는 않겠다. ${josa(l,'은','는')} 화살받이로 기억되리라.`
+      :`${c}, 혼자서 끝까지 왔구나. 다음엔 벗들과 오너라.`); }
 }
 
 /* ================== 라운드 (로컬 시뮬레이션) ================== */
@@ -981,6 +1065,7 @@ function startRound(ng){
   $('#cH').textContent=card.h; $('#cK').textContent=card.k;
   $('#cD').innerHTML=esc(card.d).replace(/\n/g,'<br>');
   $('#card').classList.remove('flip');
+  $('#npcC .line').textContent=''; setTimeout(()=>say($('#npcC'),LINES.card[card.id]||LINES.card.calm),900);
   $('#hudL').innerHTML=`${hanRoundH(ng.rd)}<span>${card.h} · ${card.k}</span>`;
   $('#hint').textContent=local.inRoster?(isTouch?'화면을 대고 끌어서 움직이기':'방향키 / WASD'):'이번 판은 구경 중';
   show('game'); ovs(['cardOv']); resize();
@@ -1292,6 +1377,9 @@ $('#sv').addEventListener('change',()=>AU.clap());
 $('#bgmPick').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; AU.setChoice(b.dataset.v); if(!G) AU.setMode('lobby'); syncSettings(); });
 const sndBtn=$('#snd'); sndBtn.classList.toggle('off',!AU.isOn());
 sndBtn.addEventListener('click',()=>{ AU.init(); const o=AU.toggle(); sndBtn.classList.toggle('off',!o); if(o&&!G) AU.setMode('lobby'); });
+document.querySelectorAll('#npcL .pt,#npcC .pt').forEach(e=>e.innerHTML=npcSVG());
+$('#npcL .bub').addEventListener('click',()=>{ const el=$('#npcL'); const pool=el._pool||LINES.title; const cur=el.querySelector('.line').textContent;
+  const opts=pool.filter(x=>x!==cur); say(el,pick(opts.length?opts:pool)); AU.init(); });
 /* ================== 연결 ================== */
 renderDeck(); renderLobby(); resize();
 (async()=>{
