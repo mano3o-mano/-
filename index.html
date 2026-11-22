@@ -27,7 +27,55 @@ button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
 .screen.on{display:flex}
 
 /* ---------- 대기실 ---------- */
-#lobby{flex-direction:column;align-items:center;overflow-y:auto;padding:28px 20px 90px}
+#lobby{align-items:center;justify-content:center;overflow:auto;padding:10px 14px}
+#lwrap{width:100%;max-width:440px;margin:auto;display:flex;flex-direction:column;gap:14px}
+#lobby.wide #lwrap{max-width:none;width:auto;flex-direction:row;align-items:center;gap:56px}
+#lobby.wide .lcol{width:420px}
+.lcol{display:flex;flex-direction:column}
+.lede{display:none}
+#lobby.wide .lede{display:block}
+.lgap{margin-top:14px}
+.infobtns{display:flex;gap:8px;margin-top:12px}
+.infobtns .btn{flex:1;font-size:14px;padding:9px 8px;box-shadow:2px 2px 0 var(--ink)}
+.rowline{display:flex;align-items:center;gap:14px}
+.custombtn{margin-top:8px;width:100%;text-align:left;border:2px dashed var(--ink);padding:9px 12px;background:rgba(245,238,221,.7);display:flex;flex-direction:column;gap:2px}
+.custombtn span{font-weight:700;font-size:15px}
+.custombtn small{font-size:12.5px;color:var(--ink2)}
+.modal{position:fixed;inset:0;z-index:50;background:rgba(236,226,203,.9);display:none;align-items:center;justify-content:center;padding:10px}
+.modal.on{display:flex}
+.modal .sheet{max-height:none}
+/* 좁은 화면: 대기실 압축 */
+#lobby:not(.wide) .masthead h1{font-size:58px}
+#lobby:not(.wide) .masthead h1 small{font-size:30px}
+#lobby:not(.wide) .masthead h1 .tail{font-size:34px;margin-top:10px}
+#lobby:not(.wide) .seal{width:48px;height:48px;top:14px;font-size:17px;line-height:19px}
+#lobby.joined:not(.wide) .masthead .sub,#lobby.joined:not(.wide) .seal{display:none}
+#lobby.joined:not(.wide) .masthead h1{font-size:30px;line-height:1;margin:0}
+#lobby.joined:not(.wide) .masthead h1 small,#lobby.joined:not(.wide) .masthead h1 .tail{display:inline;font-size:24px;margin:0;transform:none}
+#lobby:not(.wide) .npc{margin-top:8px}
+#lobby:not(.wide) .npc .pt{width:64px;height:83px}
+#lobby:not(.wide) .npc .line{font-size:15px;min-height:3em}
+#lobby:not(.wide) .infobtns{margin-top:8px}
+#lobby:not(.wide) .swatches{grid-template-columns:repeat(12,1fr);gap:3px}
+#lobby:not(.wide) .swatches button{height:34px}
+#lobby:not(.wide) .swatches button .hat{width:24px;height:17px}
+#roster li{padding:7px 2px!important}
+#roster.many{display:grid;grid-template-columns:1fr 1fr;column-gap:12px}
+#roster.many li{font-size:15px!important}
+#lobby:not(.wide) .label{font-size:13px;margin-bottom:6px}
+#lobby:not(.wide) .lsub{font-size:13px}
+#lobby.joined:not(.wide) .codeshow{font-size:36px}
+#lobby.joined:not(.wide) .codebox{padding-bottom:8px}
+#lobby.joined:not(.wide) .codehint{margin-top:6px;font-size:13px}
+#lobby.joined:not(.wide) .lgap{margin-top:10px}
+#lobby.joined:not(.wide) .npc .line{min-height:3em}
+#lobby.joined:not(.wide) .npc .pt{width:52px;height:68px}
+#lobby.joined:not(.wide) .infobtns .btn{padding:7px 6px;font-size:13.5px}
+#lobby.joined:not(.wide) #roster li{padding:5px 2px!important}
+#lobby.joined:not(.wide) .hostbox{gap:9px;margin-top:10px}
+#lobby.joined:not(.wide) .seg button{padding:8px 13px}
+.custom-on #modeNote{display:none}
+.npc .line{min-height:4.65em}
 .masthead{position:relative;width:100%;max-width:420px;margin-top:6px}
 .masthead .sub{font-family:var(--han);font-weight:600;font-size:12px;letter-spacing:.5em;color:var(--mute)}
 .masthead h1{font-family:var(--brush);font-weight:400;font-size:76px;line-height:.82;letter-spacing:-1px;margin-top:10px}
@@ -54,13 +102,13 @@ button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
 .field{width:100%;display:block}
 .codein{text-transform:uppercase;font-family:var(--han)!important;font-weight:900;letter-spacing:.45em;text-align:center}
 .codein::placeholder{color:#c4b694;letter-spacing:.45em}
-.or{display:flex;align-items:center;gap:10px;margin:18px 0;color:var(--mute);font-size:13px}
+.or{display:flex;align-items:center;gap:10px;margin:12px 0;color:var(--mute);font-size:13px}
 .or::before,.or::after{content:'';flex:1;border-top:1px dashed #bfb090}
 .err{color:var(--red);font-size:14px;margin-top:12px;min-height:1em}
 .codebox{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:2px solid var(--ink)}
-.codeshow{font-family:var(--han);font-weight:900;font-size:46px;letter-spacing:.18em;line-height:1}
+.codeshow{font-family:var(--han);font-weight:900;font-size:42px;letter-spacing:.18em;line-height:1}
 .codehint{font-size:13px;color:var(--ink2);margin-top:10px}
-.linkbtn{margin-top:22px;font-size:14px;color:var(--mute);text-decoration:underline;text-underline-offset:3px}
+.linkbtn{margin-top:12px;font-size:14px;color:var(--mute);text-decoration:underline;text-underline-offset:3px}
 #roster li .rdy{margin-left:auto;font-family:var(--han);font-weight:900;font-size:12px;color:var(--paper);background:var(--ink);padding:3px 5px;border-radius:2px}
 #roster li .nrdy{margin-left:auto;font-size:14px;color:var(--mute)}
 #roster li .tag,#roster li .rdy{font-size:14px!important;padding:4px 7px!important}
@@ -111,8 +159,8 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;background:var(--red)
 .seg button{padding:9px 16px;font-weight:700;border-right:2px solid var(--ink)}
 .seg button:last-child{border-right:0}
 .seg button.on{background:var(--ink);color:var(--paper)}
-.hostbox{margin-top:22px;display:flex;flex-direction:column;gap:14px}
-.waitmsg{margin-top:22px;font-size:15px;color:var(--ink2);line-height:1.6}
+.hostbox{margin-top:14px;display:flex;flex-direction:column;gap:12px}
+.waitmsg{margin-top:12px;font-size:15px;color:var(--ink2);line-height:1.6}
 .waitmsg .dots::after{content:'';animation:dots 1.4s steps(4) infinite}
 @keyframes dots{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
 .status{margin-top:26px;font-size:12px;color:var(--mute);line-height:1.6}
@@ -153,14 +201,11 @@ details .deckdesc b{font-family:var(--han);color:var(--ink)}
 
 /* ---------- 큰 화면 ---------- */
 @media (min-width:900px) and (min-height:640px){
-  #lobby{zoom:1.28}
   #hud{zoom:1.25}
   #setBtn,#snd{zoom:1.2}
   #toasts{zoom:1.2}
-  .ov .sheet{zoom:1.15}
   #cardOv{zoom:1.15}
 }
-@media (min-width:1400px) and (min-height:860px){ #lobby{zoom:1.4} }
 #hud{margin:0 auto}
 /* ---------- 흑립객 ---------- */
 .npc{display:flex;gap:12px;align-items:flex-end;width:100%;max-width:420px;margin-top:20px}
@@ -245,7 +290,7 @@ canvas{display:block;box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25
 #hitmsg{margin-top:16px;font-size:18px;background:rgba(236,226,203,.9);padding:6px 12px;border:1.5px solid var(--ink)}
 #hitmsg b{font-family:var(--han);font-size:20px}
 
-.sheet{width:min(92vw,400px);background:#f4ecda;border:2.5px solid var(--ink);padding:20px 18px 18px;box-shadow:7px 7px 0 rgba(29,26,22,.28);max-height:88vh;overflow-y:auto}
+.sheet{width:min(92vw,400px);background:#f4ecda;border:2.5px solid var(--ink);padding:20px 18px 18px;box-shadow:7px 7px 0 rgba(29,26,22,.28)}
 .sheet h2{font-family:var(--brush);font-weight:400;font-size:44px;line-height:.9}
 .sheet h2 em{font-style:normal;color:var(--red)}
 .sheet .meta{font-size:13px;color:var(--ink2);margin-top:6px}
@@ -271,21 +316,25 @@ canvas{display:block;box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25
 
 <!-- ======== 대기실 ======== -->
 <section id="lobby" class="screen on">
-  <div class="masthead">
-    <div class="sub">竹 林 高 手 俠 客 <span style="letter-spacing:.05em">· 죽림고수 협객</span></div>
-    <h1><small>메가</small>죽림고수<span class="tail">협객온라인</span></h1>
-    <div class="seal">俠客</div>
+ <div id="lwrap">
+  <div class="lcol lhead">
+    <div class="masthead">
+      <div class="sub">竹 林 高 手 俠 客 <span style="letter-spacing:.05em">· 죽림고수 협객</span></div>
+      <h1><small>메가</small>죽림고수<span class="tail">협객온라인</span></h1>
+      <div class="seal">俠客</div>
+    </div>
+    <p class="lede">대나무 숲에 다 같이 들어가 <b>똑같은 화살비</b>를 맞습니다. 판마다 뒤집히는 <b>패</b>가 그 판의 규칙을 바꾸고, 오래 버틴 시간을 합산해 가장 오래 산 사람이 오늘의 고수. <b>빨간 화살촉</b>에만 맞지 않으면 됩니다.</p>
+    <div class="npc" id="npcL"><div class="pt"></div><div class="bub"><div class="who">黑笠客<small>흑립객 · 숲지기</small></div><div class="line"></div></div></div>
+    <div class="infobtns"><button type="button" class="btn ghost" id="openDeck">규칙 카드(패) 16장</button><button type="button" class="btn ghost" id="openHow">하는 법 · 조작</button></div>
   </div>
-  <p class="lede">대나무 숲에 모두 같이 들어갑니다. 모두가 <b>똑같은 화살비</b>를 맞고, 매 판 패 한 장이 그 판의 규칙을 바꿉니다. 오래 버틴 시간을 합산해서, 가장 오래 산 사람이 오늘의 고수입니다. <b>화살촉</b>에만 맞지 않으면 됩니다.</p>
-  <div class="npc" id="npcL"><div class="pt"></div><div class="bub"><div class="who">黑笠客<small>흑립객 · 숲지기</small></div><div class="line"></div></div></div>
-  <div class="rule"></div>
 
-  <div class="panel" id="joinPanel">
+  <div class="lcol lmain">
+   <div class="panel" id="joinPanel">
     <div class="label">이 름</div>
     <input id="nameIn" class="field" maxlength="8" placeholder="닉네임 (8자까지)" autocomplete="off">
-    <div class="label" style="margin-top:20px">갓 색 <span class="lsub">내 캐릭터 색</span> <b class="colname" id="colName1"></b></div>
+    <div class="label lgap">갓 색 <span class="lsub">내 캐릭터 색</span> <b class="colname" id="colName1"></b></div>
     <div class="swatches" id="sw1"></div>
-    <div class="label" style="margin-top:20px">軍號 군호 <span class="lsub">= 방 코드 (숲에 들어가는 암호 4자리)</span></div>
+    <div class="label lgap">軍號 군호 <span class="lsub">= 방 코드 (숲에 들어가는 암호 4자리)</span></div>
     <form class="namerow" id="codeForm">
       <input id="codeIn" class="field codein" maxlength="4" placeholder="ABCD" autocomplete="off" autocapitalize="characters" spellcheck="false">
       <button class="btn" type="submit">숲에 들어가기</button>
@@ -293,37 +342,27 @@ canvas{display:block;box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25
     <div class="or"><span>또는</span></div>
     <button class="btn ghost big" id="makeBtn">새 숲 열기 <small style="font-weight:400">(새 방 만들기)</small></button>
     <p class="err" id="joinErr"></p>
-  </div>
+   </div>
 
-  <div class="panel" id="roomPanel" style="display:none">
+   <div class="panel" id="roomPanel" style="display:none">
     <div class="codebox">
       <div><div class="label">軍號 군호 <span class="lsub">= 방 코드</span></div><div class="codeshow" id="codeShow">----</div></div>
       <button class="btn ghost" id="copyBtn">군호 복사</button>
     </div>
     <p class="codehint" id="codeHint">친구에게 이 주소와 군호(방 코드)를 같이 보내주세요.</p>
-    <div class="label" style="margin-top:20px">갓 색 <span class="lsub">내 캐릭터 색 · 언제든 바꿀 수 있어요</span> <b class="colname" id="colName2"></b></div>
+    <div class="label lgap">갓 색 <span class="lsub">언제든 바꿀 수 있어요</span> <b class="colname" id="colName2"></b></div>
     <div class="swatches" id="sw2"></div>
-    <div class="label" style="margin-top:22px">숲 에 들 어 온 사 람 &nbsp;<span id="pcount"></span></div>
+    <div class="label lgap">숲 에 들 어 온 사 람 &nbsp;<span id="pcount"></span></div>
     <ul id="roster"></ul>
     <div id="hostBox" class="hostbox" style="display:none">
       <div>
         <div class="label">놀 이 방 식</div>
         <div class="seg" id="modeSeg"><button data-m="normal" class="on">보통</button><button data-m="fierce">흉악 <small>凶惡</small></button><button data-m="random">랜덤 <small>亂</small></button><button data-m="custom">커스텀</button></div>
         <p class="modenote" id="modeNote"></p>
-        <div id="customBox" style="display:none">
-          <div class="crow"><div class="label">쓸 패 <span class="lsub">누르면 켜고 끄기 · 켠 것 중에서만 나와요</span></div><div class="chips" id="cPool"></div>
-            <div class="minis"><button type="button" id="cAll">전부</button><button type="button" id="cNone">전부 끄기</button></div></div>
-          <div class="crow"><div class="label">판 당 패</div><div class="seg" id="cK"><button data-v="1">1장</button><button data-v="2">2장</button><button data-v="3">3장</button></div></div>
-          <div class="crow"><div class="label">판 중 간 에 새 패</div><div class="seg" id="cMid"><button data-v="0">없음</button><button data-v="1">20초·40초에 끼어듦</button></div></div>
-          <div class="crow"><div class="label">화 살 세 기</div><div class="seg" id="cDf"><button data-v="0.8">순하게</button><button data-v="1">보통</button><button data-v="1.25">매섭게</button></div></div>
-          <div class="crow"><div class="label">득 도 시 간 <span class="lsub">이만큼 버티면 그 판 만점</span></div><div class="seg" id="cCap"><button data-v="60">60초</button><button data-v="100">100초</button><button data-v="150">150초</button></div></div>
-        </div>
+        <button type="button" class="custombtn" id="openCustom" style="display:none"><span>커스텀 설정 바꾸기</span><small id="customSum"></small></button>
       </div>
-      <div>
-        <div class="label">판 수</div>
-        <div class="seg" id="roundsSeg">
-          <button data-n="3">3판</button><button data-n="5" class="on">5판</button><button data-n="7">7판</button>
-        </div>
+      <div class="rowline"><div class="label" style="margin:0">판 수</div>
+        <div class="seg" id="roundsSeg"><button data-n="3">3판</button><button data-n="5" class="on">5판</button><button data-n="7">7판</button></div>
       </div>
       <button class="btn big" id="startBtn">숲으로 들어가기</button>
     </div>
@@ -332,22 +371,35 @@ canvas{display:block;box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25
     </div>
     <p class="waitmsg" id="waitMsg" style="display:none"><span id="waitTxt">방장이 시작하기를 기다리는 중</span><span class="dots"></span></p>
     <button class="linkbtn" id="leaveBtn">방 나가기</button>
+   </div>
   </div>
-
-  <div class="panel">
-    <details>
-      <summary>규칙 카드(패) 살펴보기 <span class="lsub">· 판마다 뒤집혀서 그 판의 규칙을 바꿔요</span></summary>
-      <p class="deckintro">판이 시작될 때마다 <b>패(카드)</b>가 뒤집히고, 그 판은 패에 적힌 규칙대로 진행돼요. 보통 방식은 판마다 한 장(첫 판은 늘 평온, 마지막 판은 두 장), <b>흉악</b> 방식은 판마다 두 장 이상이 겹쳐요.</p>
-      <div class="deckgrid" id="deckGrid"></div>
-    </details>
-    <details>
-      <summary>하는 법 · 조작법</summary>
-      <div class="deckdesc">① 한 사람이 <b>새 숲 열기</b>를 누르면 <b>군호</b>(방 코드 4자리)가 나와요.<br>② 친구들은 같은 주소로 들어와서 그 군호를 넣고 <b>숲에 들어가기</b>.<br>③ 모두 <b>준비</b>를 누르면 방장이 시작해요.<br><br>
-      <b>폰</b>: 화면 아무 데나 대고 끌면 그만큼 움직여요 (트랙패드처럼).<br><b>PC</b>: 방향키 또는 WASD.<br><br>
-      화살은 시간이 갈수록 빨라지고 많아져요. <b>빨간 화살촉</b>에만 안 맞으면 돼요. 100초를 버티면 득도(그 판 만점). 판 도중에 다른 탭으로 가면 자리 비움으로 탈락해요.</div>
-    </details>
-  </div>
+ </div>
 </section>
+<div class="modal" id="deckOv"><div class="sheet">
+  <h2>규칙 카드 <em>패</em></h2>
+  <p class="deckintro">판이 시작될 때마다 <b>패(카드)</b>가 뒤집히고, 그 판은 패에 적힌 규칙대로 진행돼요.<br>보통: 판마다 한 장 (첫 판은 평온, 마지막 판은 두 장) · 흉악: 판마다 두 장 이상 · 랜덤: 판 도중에 새 패가 끼어듦 · 커스텀: 방장 마음대로</p>
+  <div class="deckgrid" id="deckGrid"></div>
+  <div class="foot"><span class="note"></span><button class="btn" data-close>닫기</button></div>
+</div></div>
+<div class="modal" id="howOv"><div class="sheet">
+  <h2>하는 <em>법</em></h2>
+  <div class="deckdesc" style="font-size:15px">① 한 사람이 <b>새 숲 열기</b>를 누르면 <b>군호</b>(방 코드 4자리)가 나와요.<br>② 친구들은 같은 주소로 들어와서 그 군호를 넣고 <b>숲에 들어가기</b>.<br>③ 모두 <b>준비</b>를 누르면 방장이 시작해요.<br><br>
+  <b>폰</b>: 화면 아무 데나 대고 끌면 그만큼 움직여요 (트랙패드처럼).<br><b>PC</b>: 방향키 또는 WASD.<br><br>
+  화살은 시간이 갈수록 빨라지고 많아져요. <b>빨간 화살촉</b>에만 안 맞으면 돼요. 득도 시간(보통 100초)을 버티면 그 판 만점. 판 도중에 다른 탭으로 가면 자리 비움으로 탈락해요.</div>
+  <div class="foot"><span class="note"></span><button class="btn" data-close>닫기</button></div>
+</div></div>
+<div class="modal" id="customOv"><div class="sheet">
+  <h2>커스텀 <em>설정</em></h2>
+  <div id="customBox">
+    <div class="crow"><div class="label">쓸 패 <span class="lsub">누르면 켜고 끄기 · 켠 것 중에서만 나와요</span></div><div class="chips" id="cPool"></div>
+      <div class="minis"><button type="button" id="cAll">전부 켜기</button><button type="button" id="cNone">전부 끄기</button></div></div>
+    <div class="crow"><div class="label">판 당 패</div><div class="seg" id="cK"><button data-v="1">1장</button><button data-v="2">2장</button><button data-v="3">3장</button></div></div>
+    <div class="crow"><div class="label">판 중 간 에 새 패</div><div class="seg" id="cMid"><button data-v="0">없음</button><button data-v="1">20초·40초에 끼어듦</button></div></div>
+    <div class="crow"><div class="label">화 살 세 기</div><div class="seg" id="cDf"><button data-v="0.8">순하게</button><button data-v="1">보통</button><button data-v="1.25">매섭게</button></div></div>
+    <div class="crow"><div class="label">득 도 시 간 <span class="lsub">이만큼 버티면 그 판 만점</span></div><div class="seg" id="cCap"><button data-v="60">60초</button><button data-v="100">100초</button><button data-v="150">150초</button></div></div>
+  </div>
+  <div class="foot"><span class="note">이 기기에 저장돼요.</span><button class="btn" data-close>다 정했다</button></div>
+</div></div>
 <button id="snd" title="소리 켜기/끄기">音<small>소리</small></button>
 <button id="setBtn" title="설정">設<small>설정</small></button>
 <div id="toasts"></div>
@@ -934,17 +986,20 @@ function renderCustom(){
 }
 function renderModeNote(){
   $('#modeNote').textContent=MODE_NOTE[gameMode];
-  $('#customBox').style.display=gameMode==='custom'?'':'none';
-  if(gameMode==='custom') renderCustom();
+  $('#openCustom').style.display=gameMode==='custom'?'':'none';
+  $('#hostBox').classList.toggle('custom-on',gameMode==='custom');
+  const c=customCfg;
+  $('#customSum').textContent=`패 ${c.pool.length}종 · 판당 ${c.k}장 · ${c.mid?'중간에 새 패 · ':''}화살 ${({0.8:'순하게',1:'보통',1.25:'매섭게'})[c.df]} · 득도 ${c.cap}초`;
+  if(typeof fitLobby==='function') fitLobby();
 }
 $('#modeSeg').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; gameMode=b.dataset.m;
   [...$('#modeSeg').children].forEach(x=>x.classList.toggle('on',x===b)); renderModeNote(); });
 $('#cPool').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; const id=b.dataset.id, i=customCfg.pool.indexOf(id);
   if(i>=0){ if(customCfg.pool.length>1) customCfg.pool.splice(i,1); else toast('패는 한 장 이상 켜 두어야 해요.'); } else customCfg.pool.push(id);
-  saveCustom(); renderCustom(); });
+  saveCustom(); renderCustom(); renderModeNote(); });
 $('#cAll').addEventListener('click',()=>{ customCfg.pool=CARDS.map(c=>c.id); saveCustom(); renderCustom(); });
 $('#cNone').addEventListener('click',()=>{ customCfg.pool=['calm']; saveCustom(); renderCustom(); toast('평온만 남겼어요. 쓸 패를 골라 주세요.'); });
-const segPick=(id,fn)=>$(id).addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; fn(b.dataset.v); saveCustom(); renderCustom(); });
+const segPick=(id,fn)=>$(id).addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; fn(b.dataset.v); saveCustom(); renderCustom(); renderModeNote(); });
 segPick('#cK',v=>customCfg.k=+v); segPick('#cMid',v=>customCfg.mid=v==='1'); segPick('#cDf',v=>customCfg.df=+v); segPick('#cCap',v=>customCfg.cap=+v);
 renderModeNote();
 $('#roundsSeg').addEventListener('click',e=>{
@@ -976,7 +1031,7 @@ function renderLobby(){
   $('#waitTxt').textContent=inGame?'지금 한 게임이 돌고 있어요. 끝나면 같이 들어갑니다':myPres.rd?'방장이 시작하기를 기다리는 중':'준비를 누르면 방장이 시작할 수 있어요';
   const sb=$('#startBtn');
   sb.disabled=waiting>0;
-  npcLobby(); renderSwatches();
+  npcLobby(); renderSwatches(); fitLobby();
   sb.textContent=waiting>0?`${waiting}명 준비 기다리는 중`:ps.length<2?'혼자 연습하기':`${ps.length}명이서 숲으로`;
 }
 
@@ -1160,7 +1215,7 @@ setInterval(hostTick,250);
 
 /* ================== 상태 전이 ================== */
 let roundLocal=null, resShownAt=0, spectateOnly=false;
-function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id)); }
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id)); if(id==='lobby') fitLobby(); }
 function ovs(on){ ['cardOv','countOv','hitOv','waitOv','resOv','finOv'].forEach(o=>$('#'+o).classList.toggle('on',on.includes(o))); }
 
 function applyG(ng,fromSelf){
@@ -1200,6 +1255,7 @@ function renderResult(){
     <div class="bar"><i id="resBar"></i></div>
     <div class="foot"><span class="note">${amHost?'잠시 후 자동으로 넘어갑니다':'방장이 넘기면 다음 판'}</span>${amHost?`<button class="btn" id="nextBtn">${last?'최종 결과':'다음 판'}</button>`:''}</div>`;
   const nb=$('#nextBtn'); if(nb) nb.onclick=hostNext;
+  requestAnimationFrame(fitSheets);
   { const r=G.res, w=r.length?nameOf(r[0][0]):'', l=r.length>1?nameOf(r[r.length-1][0]):'';
     const line=r.length<2?pick([`${josa(w,'이','가')} 혼자서도 잘 버티는군.`,'혼자 맞는 화살도 아프긴 마찬가지다.'])
       :r[0][1]-r[r.length-1][1]<150?'다 같이 맞았군. 사이가 좋구나.'
@@ -1217,6 +1273,7 @@ function renderFinal(){
     <table class="tbl">${rows}</table>
     <div class="foot"><span class="note">${amHost?'':'방장이 대기실로 돌아가면 다시 할 수 있어요'}</span>${amHost?'<button class="btn" id="againBtn">대기실로</button>':''}</div>`;
   const ab=$('#againBtn'); if(ab) ab.onclick=hostLobby;
+  requestAnimationFrame(fitSheets);
   { const c=nameOf(champ), l=loser?nameOf(loser):'';
     say($('#npcF'), loser?`오늘 이 숲의 주인은 ${josa(c,'이다','다')}. 갓을 벗어 예를 표하마. …벗지는 않겠다. ${josa(l,'은','는')} 화살받이로 기억되리라.`
       :`${c}, 혼자서 끝까지 왔구나. 다음엔 벗들과 오너라.`); }
@@ -1640,7 +1697,7 @@ function syncSettings(){
   $('#mv').value=mv; $('#mvT').textContent=mv; $('#sv').value=sv; $('#svT').textContent=sv;
   [...$('#bgmPick').children].forEach(b=>b.classList.toggle('on',b.dataset.v===AU.getChoice()));
 }
-$('#setBtn').addEventListener('click',()=>{ AU.init(); syncSettings(); $('#setOv').classList.add('on'); });
+$('#setBtn').addEventListener('click',()=>{ AU.init(); syncSettings(); $('#setOv').classList.add('on'); fitSheets(); });
 $('#setClose').addEventListener('click',()=>$('#setOv').classList.remove('on'));
 $('#setOv').addEventListener('click',e=>{ if(e.target.id==='setOv') $('#setOv').classList.remove('on'); });
 $('#mv').addEventListener('input',e=>{ AU.setVol('m',e.target.value/100); $('#mvT').textContent=e.target.value; });
@@ -1652,6 +1709,38 @@ sndBtn.addEventListener('click',()=>{ AU.init(); const o=AU.toggle(); sndBtn.cla
 document.querySelectorAll('#npcL .pt,#npcC .pt').forEach(e=>e.innerHTML=npcSVG());
 $('#npcL .bub').addEventListener('click',()=>{ const el=$('#npcL'); const pool=el._pool||LINES.title; const cur=el.querySelector('.line').textContent;
   const opts=pool.filter(x=>x!==cur); say(el,pick(opts.length?opts:pool)); AU.init(); });
+/* ---------- 창에 꼭 맞추기 (스크롤 없이) ---------- */
+function fitTo(el,availW,availH,maxZ,minZ){
+  el.style.zoom=1;
+  const h=el.scrollHeight, w=el.scrollWidth;
+  const z=Math.max(minZ,Math.min(maxZ,availH/h,availW/w));
+  el.style.zoom=z; return z;
+}
+var fitQ=false;
+function fitLobby(){
+  if(fitQ) return; fitQ=true;
+  requestAnimationFrame(()=>{ fitQ=false;
+    const lb=$('#lobby'); if(!lb.classList.contains('on')) return;
+    const wide=innerWidth>=860&&innerWidth/innerHeight>1.15;
+    lb.classList.toggle('wide',wide); lb.classList.toggle('joined',joined);
+    $('#roster').classList.toggle('many',players().length>4);
+    fitTo($('#lwrap'),innerWidth-20,innerHeight-(wide?24:62),wide?1.55:1.2,.68);
+  });
+}
+function fitSheets(){
+  const st=$('#stage'); if(!st) return;
+  for(const id of ['resSheet','finSheet']){ const el=$('#'+id); if(el&&el.offsetParent) fitTo(el,st.clientWidth-16,st.clientHeight-16,innerWidth>=900?1.2:1,.6); }
+  document.querySelectorAll('.modal.on .sheet,#setOv.on .sheet').forEach(el=>fitTo(el,innerWidth-20,innerHeight-20,innerWidth>=900?1.25:1,.6));
+}
+addEventListener('resize',()=>{ fitLobby(); fitSheets(); });
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{ fitLobby(); fitSheets(); });
+function openModal(id){ $('#'+id).classList.add('on'); fitSheets(); }
+document.querySelectorAll('.modal').forEach(m=>{
+  m.addEventListener('click',e=>{ if(e.target===m||e.target.closest('[data-close]')){ m.classList.remove('on'); if(m.id==='customOv') renderModeNote(); } });
+});
+$('#openDeck').addEventListener('click',()=>openModal('deckOv'));
+$('#openHow').addEventListener('click',()=>openModal('howOv'));
+$('#openCustom').addEventListener('click',()=>{ renderCustom(); openModal('customOv'); });
 /* ================== 연결 ================== */
 renderDeck(); renderLobby(); resize();
 (async()=>{
