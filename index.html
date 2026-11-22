@@ -36,6 +36,10 @@ button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
 #lobby.wide .lede{display:block}
 .lgap{margin-top:14px}
 .infobtns{display:flex;gap:8px;margin-top:12px}
+.infobtns .btn.setb{flex:0 0 auto;padding-left:12px;padding-right:12px}
+.infobtns .btn.setb small{font-weight:400}
+.hudset{flex:none;align-self:center;border:2px solid var(--ink);background:#f4ecda;width:42px;height:46px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--han);font-weight:900;font-size:17px;line-height:1;box-shadow:2px 2px 0 rgba(29,26,22,.3);margin-left:4px}
+.hudset small{font-family:var(--serif);font-size:10.5px;margin-top:2px}
 .infobtns .btn{flex:1;font-size:14px;padding:9px 8px;box-shadow:2px 2px 0 var(--ink)}
 .rowline{display:flex;align-items:center;gap:14px}
 .custombtn{margin-top:8px;width:100%;text-align:left;border:2px dashed var(--ink);padding:9px 12px;background:rgba(245,238,221,.7);display:flex;flex-direction:column;gap:2px}
@@ -224,10 +228,26 @@ details .deckdesc b{font-family:var(--han);color:var(--ink)}
 .npc.sm .line{font-size:15px;min-height:0}
 .npc.sm .bub{margin-bottom:4px}
 #cardOv .npc{max-width:340px;width:88%;pointer-events:none}
+#cardOv.dim{opacity:.28;transition:opacity .4s}
+#cardOv.dim .npc{visibility:hidden}
+#countOv{z-index:7}
 
 /* ---------- 게임 ---------- */
 #game{flex-direction:column;align-items:center;touch-action:none;background:#d9cdb0}
-#hud{width:100%;display:flex;align-items:flex-end;justify-content:space-between;padding:10px 14px 6px;gap:8px}
+#hud{width:100%;display:flex;align-items:flex-end;justify-content:space-between;padding:10px 14px 6px;gap:8px;white-space:nowrap;flex:none}
+#hud .l{flex:1 1 0;min-width:0}
+#hud .l span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+#hud .c{flex:none}
+#hud .r{flex:none}
+@media (max-width:520px){
+  #hud{padding:8px 8px 4px;gap:6px}
+  #hud .l{font-size:17px}
+  #hud .l span{font-size:13px}
+  #hud .c{font-size:44px;min-width:0}
+  #hud .r{font-size:12.5px}
+  #hud .r b{font-size:24px}
+  .hudset{width:36px;height:42px;font-size:15px}
+}
 #hud .l{font-family:var(--han);font-weight:900;font-size:20px;line-height:1.2}
 #hud .l span{display:block;font-family:var(--serif);font-weight:700;font-size:15px;color:var(--ink2);margin-top:2px}
 #hud .c{font-family:var(--brush);font-size:54px;line-height:.8;min-width:100px;text-align:center}
@@ -236,14 +256,20 @@ details .deckdesc b{font-family:var(--han);color:var(--ink)}
 #hud .r b i{font-style:normal;font-size:17px;color:var(--ink2)}
 #stage{flex:1;width:100%;display:flex;align-items:center;justify-content:center;position:relative;min-height:0}
 canvas{display:block;box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25)}
- #newCard{position:absolute;top:10px;left:50%;transform:translate(-50%,-140%);z-index:6;background:var(--ink);color:var(--paper);padding:8px 14px 9px;border-left:6px solid var(--red);
-  display:flex;flex-direction:column;align-items:flex-start;gap:1px;max-width:92%;transition:transform .35s cubic-bezier(.3,1.4,.5,1);pointer-events:none;box-shadow:4px 4px 0 rgba(29,26,22,.3)}
-#newCard{visibility:hidden;opacity:0}
-#newCard.on{transform:translate(-50%,0);visibility:visible;opacity:1}
-#newCard .nh{font-family:var(--han);font-weight:900;color:#ff7a66;font-size:13px;letter-spacing:.3em}
-#newCard .nk{font-size:18px;font-weight:700}
-#newCard .nk b{font-family:var(--han)}
-#newCard .nd{font-size:13px;color:#d9ccb0}
+#newCard{position:absolute;top:12px;left:50%;transform:translate(-50%,-30px) scale(.9);z-index:6;background:rgba(29,26,22,.94);color:var(--paper);
+  padding:10px 18px 12px;border:2px solid #f3e7d1;outline:3px solid var(--red);box-shadow:6px 6px 0 rgba(29,26,22,.35);min-width:min(320px,86%);max-width:92%;
+  transition:transform .3s cubic-bezier(.3,1.5,.5,1),opacity .25s;pointer-events:none;visibility:hidden;opacity:0;text-align:left}
+#newCard.on{transform:translate(-50%,0) scale(1);visibility:visible;opacity:1}
+#newCard .nh{font-family:var(--han);font-weight:900;color:#ff8a76;font-size:14px;letter-spacing:.15em}
+#newCard .nrow{display:flex;align-items:center;gap:14px;margin-top:6px}
+#newCard .nhan{font-family:var(--han);font-weight:900;font-size:44px;line-height:1;color:#fff4e0;white-space:nowrap;flex:none}
+#newCard .nd{white-space:normal}
+#newCard .nk{font-family:var(--brush);font-size:34px;line-height:1;color:#ff8a76}
+#newCard .nd{font-size:15px;color:#e8dcc2;margin-top:3px;line-height:1.35}
+#newCard.warn{text-align:center}
+#newCard .nwarn{font-family:var(--han);font-weight:900;font-size:52px;line-height:1.05;color:#fff4e0}
+#stage.flash canvas{animation:flash .9s}
+@keyframes flash{0%{box-shadow:0 0 0 6px var(--red),0 0 30px 8px rgba(168,35,27,.7)}100%{box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25)}}
 #hint{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:15px;font-weight:700;color:var(--ink2);pointer-events:none}
 
 /* overlays */
@@ -325,7 +351,7 @@ canvas{display:block;box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25
     </div>
     <p class="lede">대나무 숲에 다 같이 들어가 <b>똑같은 화살비</b>를 맞습니다. 판마다 뒤집히는 <b>패</b>가 그 판의 규칙을 바꾸고, 오래 버틴 시간을 합산해 가장 오래 산 사람이 오늘의 고수. <b>빨간 화살촉</b>에만 맞지 않으면 됩니다.</p>
     <div class="npc" id="npcL"><div class="pt"></div><div class="bub"><div class="who">黑笠客<small>흑립객 · 숲지기</small></div><div class="line"></div></div></div>
-    <div class="infobtns"><button type="button" class="btn ghost" id="openDeck">규칙 카드(패) 16장</button><button type="button" class="btn ghost" id="openHow">하는 법 · 조작</button></div>
+    <div class="infobtns"><button type="button" class="btn ghost" id="openDeck">규칙 카드(패) 16장</button><button type="button" class="btn ghost" id="openHow">하는 법 · 조작</button><button type="button" class="btn ghost setb" data-open-set>設 <small>설정</small></button></div>
   </div>
 
   <div class="lcol lmain">
@@ -400,11 +426,10 @@ canvas{display:block;box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25
   </div>
   <div class="foot"><span class="note">이 기기에 저장돼요.</span><button class="btn" data-close>다 정했다</button></div>
 </div></div>
-<button id="snd" title="소리 켜기/끄기">音<small>소리</small></button>
-<button id="setBtn" title="설정">設<small>설정</small></button>
 <div id="toasts"></div>
 <div id="setOv"><div class="sheet">
   <h2>설<em>정</em></h2>
+  <div class="setrow"><div class="label">소 리</div><div class="seg" id="sndSeg"><button data-v="1">켜기</button><button data-v="0">모두 끄기</button></div></div>
   <div class="setrow"><div class="label">음 악 크 기 <b id="mvT">80</b></div><input type="range" id="mv" min="0" max="100" step="1"></div>
   <div class="setrow"><div class="label">효 과 음 크 기 <b id="svT">80</b></div><input type="range" id="sv" min="0" max="100" step="1"></div>
   <div class="setrow"><div class="label">배 경 음 악</div>
@@ -424,6 +449,7 @@ canvas{display:block;box-shadow:0 0 0 2px var(--ink),6px 6px 0 rgba(29,26,22,.25
     <div class="l" id="hudL">第一局<span>平穩 · 평온</span></div>
     <div class="c" id="hudT">0.00</div>
     <div class="r" id="hudR">남은 사람<br><b>0 / 0</b></div>
+    <button class="hudset" data-open-set title="설정">設<small>설정</small></button>
   </div>
   <div id="stage">
     <canvas id="cv"></canvas>
@@ -910,12 +936,12 @@ const pick=a=>a[Math.floor(Math.random()*a.length)];
 function josa(name,a,b){ const c=String(name).charCodeAt(String(name).length-1);
   if(c>=0xAC00&&c<=0xD7A3) return name+(((c-0xAC00)%28)?a:b); return name+a+'('+b+')'; }
 const LINES={
-  title:['숲에 들어오려는 자, 이름과 군호를 대라.','갓 색은 마음대로 골라라. 화살은 색을 가리지 않는다.','화살은 촉만 조심하면 된다. …촉이 전부지만.','혼자 왔느냐. 벗을 데려와라. 대숲은 여럿이 흔들어야 운다.',
-         '숲을 열 자는 열고, 들어올 자는 군호를 대라.','갓 아래 얼굴이 궁금하냐. 살아남으면 보여주마. …아마도.'],
+  title:['숲에 들어오려는 자, 이름과 군호를 대라.','갓 색은 마음대로 골라라. 화살은 색을 가리지 않는다.','화살대는 신경 쓰지 마라. 붉은 촉만 보면 된다.','혼자 왔느냐. 벗을 데려와라. 대숲은 여럿이 흔들어야 운다.',
+         '숲을 열 자는 열고, 들어올 자는 군호를 대라.','갓 아래 얼굴은 묻지 마라. 살아남는 것만 생각해라.'],
   alone:['아직 혼자로군. 저 군호를 벗에게 일러 주어라.','숲은 넓다. 혼자 서 있기엔 아깝지. 군호를 퍼뜨려라.'],
-  hostWait:n=>[`아직 채비 못 한 자가 ${n}명 있다. 기다려 주거라.`,`${n}명이 아직이다. 재촉은 하지 마라… 조금만 해라.`],
+  hostWait:n=>[`아직 채비 못 한 자가 ${n}명 있다. 기다려 주거라.`,`${n}명이 아직이다. 조금만 더 기다려라.`],
   hostReady:['다들 채비를 마쳤다. 숲으로 들여보내라.','모였구나. 네가 신호를 주면 시위가 당겨진다.'],
-  guestWait:['채비가 끝났으면 \'준비\'를 눌러라.','숨 고르고, 준비.','겁먹을 것 없다. 맞아도 죽지는 않는다. 이 숲에서만.'],
+  guestWait:['채비가 끝났으면 \'준비\'를 눌러라.','숨 고르고, 준비.','겁먹을 것 없다. 처음엔 다들 맞는다.'],
   guestReady:['좋다. 방장의 신호를 기다려라.','준비된 자의 눈빛이군.'],
   busy:['지금은 숲이 시끄럽다. 이번 게임이 끝나면 들어와라.'],
   hostGone:['방장이 떠났다. 숲이 닫혔다. 다시 모여라.'],
@@ -1257,9 +1283,9 @@ function renderResult(){
   const nb=$('#nextBtn'); if(nb) nb.onclick=hostNext;
   requestAnimationFrame(fitSheets);
   { const r=G.res, w=r.length?nameOf(r[0][0]):'', l=r.length>1?nameOf(r[r.length-1][0]):'';
-    const line=r.length<2?pick([`${josa(w,'이','가')} 혼자서도 잘 버티는군.`,'혼자 맞는 화살도 아프긴 마찬가지다.'])
+    const line=r.length<2?pick([`${w}, 혼자서도 잘 버티는군.`,'혼자 맞는 화살도 아프긴 마찬가지다.'])
       :r[0][1]-r[r.length-1][1]<150?'다 같이 맞았군. 사이가 좋구나.'
-      :pick([`${w}, 제법이다. 촉이 너를 비켜 가는군. ${josa(l,'은','는')}… 촉을 보거라.`,`이번 판은 ${josa(w,'이','가')} 가져갔다. ${l}, 너무 서둘렀다.`,`${w}의 발이 가볍구나. ${l}, 숲은 다음 판에도 열린다.`]);
+      :pick([`${w}, 제법이다. 촉이 너를 비켜 가는군. ${l}, 다음엔 촉을 보거라.`,`이번 판은 ${w}의 것이다. ${l}, 너무 서둘렀다.`,`${w}의 발이 가볍구나. ${l}, 숲은 다음 판에도 열린다.`]);
     say($('#npcR'),line); }
 }
 function renderFinal(){
@@ -1275,7 +1301,7 @@ function renderFinal(){
   const ab=$('#againBtn'); if(ab) ab.onclick=hostLobby;
   requestAnimationFrame(fitSheets);
   { const c=nameOf(champ), l=loser?nameOf(loser):'';
-    say($('#npcF'), loser?`오늘 이 숲의 주인은 ${josa(c,'이다','다')}. 갓을 벗어 예를 표하마. …벗지는 않겠다. ${josa(l,'은','는')} 화살받이로 기억되리라.`
+    say($('#npcF'), loser?`오늘 이 숲의 주인은 ${c}. 이 흑립객이 고개를 숙여 예를 표하마. 그리고 ${l}, 오늘의 화살받이로 기억해 두마.`
       :`${c}, 혼자서 끝까지 왔구나. 다음엔 벗들과 오너라.`); }
 }
 
@@ -1286,9 +1312,10 @@ function startRound(ng){
   CAP=ng.cap||100;
   const sched=schedOf(ng,ng.rd), ids=sched.filter(x=>!x.at).map(x=>x.id), list=ids.map(id=>CARD[id]||CARD.calm);
   const card=modsFor(sched,0,ng.df||1);
-  local.sched=sched; local.df=ng.df||1; local.announced=sched.filter(x=>!x.at).length;
+  local.sched=sched; local.df=ng.df||1; local.announced=sched.filter(x=>!x.at).length; local.warnLeft=null;
   const later=sched.filter(x=>x.at>0).length;
-  roundLocal={ep:ng.ep,start:performance.now()+CARD_MS+(ids.length-1)*700,rd:ng.rd};
+  const showMs=2200+2600*ids.length+(later?1500:0);   // 1장 4.8초 · 2장 7.4초 · 3장 10초 + 카운트다운 3초
+  roundLocal={ep:ng.ep,start:performance.now()+showMs+3000,rd:ng.rd};
   local.card=card; local.x=W/2; local.y=H*.62; local.vx=local.vy=0; local.t=0; local.lastEl=0;
   $('#hitOv').classList.remove('side'); clearTimeout(hitSideT);
   local.inRoster=ng.ros.includes(myPeer);
@@ -1305,11 +1332,12 @@ function startRound(ng){
   $('#npcC .line').textContent='';
   setTimeout(()=>say($('#npcC'),later?pick(['오늘 숲은 변덕스럽다. 판 도중에 패가 또 뒤집힌다.','지금 패만 믿지 마라. 곧 다른 패가 끼어든다.'])
     :ids.length===1?(LINES.card[ids[0]]||LINES.card.calm)
-    :pick([`패가 ${ids.length}장이다. ${list.map(c=>c.k).join(', ')}. 전부 기억해라.`,`흉한 숲이로구나. ${list.map(c=>c.k).join('에 ')}까지… 살아서 나와라.`])),900+ (ids.length-1)*700);
+    :pick([`패가 ${ids.length}장이다. ${list.map(c=>c.k).join(', ')}. 전부 기억해라.`,`흉한 숲이로구나. ${list.map(c=>c.k).join(', ')}… 살아서 나와라.`])),1100+(ids.length-1)*900);
   setHudCards(ng.rd,list);
   $('#hint').textContent=local.inRoster?(isTouch?'화면을 대고 끌어서 움직이기':'방향키 / WASD'):'이번 판은 구경 중';
   show('game'); ovs(['cardOv']); resize();
-  [...$('#cards').children].forEach((el,i)=>setTimeout(()=>{ el.classList.add('flip'); AU.flip(); },450+i*700));
+  [...$('#cards').children].forEach((el,i)=>setTimeout(()=>{ el.classList.add('flip'); AU.flip(); },500+i*900));
+  $('#cardOv').classList.remove('dim');
   AU.setMode('game'); AU.setIntensity(0);
 }
 
@@ -1407,7 +1435,7 @@ addEventListener('blur',()=>keys.clear());
 let drag=null, dAcc={x:0,y:0};
 const stageEl=$('#game');
 stageEl.addEventListener('pointerdown',e=>{
-  if(e.target.closest('.sheet')) return;
+  if(e.target.closest('.sheet')||e.target.closest('.hudset')) return;
   drag={id:e.pointerId,x:e.clientX,y:e.clientY};
   try{stageEl.setPointerCapture(e.pointerId)}catch(_){}
 });
@@ -1423,16 +1451,23 @@ stageEl.addEventListener('pointercancel',endDrag);
 /* ---------- 캔버스 ---------- */
 const cv=$('#cv'), ctx=cv.getContext('2d');
 let scale=1, dpr=1, bg=null;
+let lastSz='';
 function resize(){
-  const st=$('#stage'); const aw=st.clientWidth-16, ah=st.clientHeight-16;
-  scale=Math.max(.4,Math.min(aw/W,ah/H));
+  const st=$('#stage'), hud=$('#hud');
+  const z=parseFloat(getComputedStyle(hud).zoom)||1;
+  cv.style.width='0px'; cv.style.height='0px';   // 캔버스가 자리를 차지하지 않게 하고 잰다
+  for(let k=0;k<3;k++){ // 위 정보줄 폭을 바꾸면 높이가 달라질 수 있어 몇 번 맞춘다
+    const aw=st.clientWidth-16, ah=st.clientHeight-16;
+    scale=Math.max(.3,Math.min(aw/W,ah/H));
+    hud.style.width=Math.min(innerWidth,Math.max(330,W*scale+60))/z+'px';
+  }
   dpr=Math.min(2.5,devicePixelRatio||1);
   cv.style.width=W*scale+'px'; cv.style.height=H*scale+'px';
-  { const z=parseFloat(getComputedStyle($('#hud')).zoom)||1; $('#hud').style.width=Math.min(innerWidth,Math.max(320,W*scale+40))/z+'px'; }
-  cv.width=Math.round(W*scale*dpr); cv.height=Math.round(H*scale*dpr);
-  bg=makeBG();
+  const sz=Math.round(W*scale*dpr)+'x'+Math.round(H*scale*dpr);
+  if(sz!==lastSz||!bg){ lastSz=sz; cv.width=Math.round(W*scale*dpr); cv.height=Math.round(H*scale*dpr); bg=makeBG(); }
 }
 addEventListener('resize',resize);
+if(window.ResizeObserver){ let rq=0; new ResizeObserver(()=>{ cancelAnimationFrame(rq); rq=requestAnimationFrame(()=>{ if($('#game').classList.contains('on')) resize(); }); }).observe($('#stage')); }
 function makeBG(){
   const c=document.createElement('canvas'); c.width=cv.width; c.height=cv.height;
   const g=c.getContext('2d'); g.scale(scale*dpr,scale*dpr);
@@ -1506,12 +1541,21 @@ function drawArrow(a,t){
   ctx.shadowBlur=0;
 }
 let bannerT=0;
+function newCardWarn(left){
+  const b=$('#newCard');
+  b.className='on warn';
+  b.innerHTML=`<div class="nh">新牌 · 곧 새 패</div><div class="nwarn">${left}</div><div class="nd">새 패가 뒤집힌다. 대비해라!</div>`;
+  clearTimeout(bannerT); bannerT=setTimeout(()=>b.classList.remove('on'),1600);
+  AU.clap();
+}
 function newCardBanner(card){
   const b=$('#newCard');
-  b.innerHTML=`<span class="nh">新牌</span><span class="nk">새 패 · <b>${card.h} ${card.k}</b></span><span class="nd">${esc(card.d.replace(/\n/g,' '))}</span>`;
-  b.classList.remove('on'); void b.offsetWidth; b.classList.add('on');
-  clearTimeout(bannerT); bannerT=setTimeout(()=>b.classList.remove('on'),3200);
-  AU.flip(); AU.clap();
+  b.className='';
+  b.innerHTML=`<div class="nh">新牌 · 새 패가 끼어들었다</div><div class="nrow"><div class="nhan">${card.h}</div><div><div class="nk">${card.k}</div><div class="nd">${esc(card.d.replace(/\n/g,' '))}</div></div></div>`;
+  void b.offsetWidth; b.classList.add('on');
+  clearTimeout(bannerT); bannerT=setTimeout(()=>b.classList.remove('on'),4200);
+  AU.flip(); AU.jing(.35);
+  const st=$('#stage'); st.classList.remove('flash'); void st.offsetWidth; st.classList.add('flash');
 }
 let fogCv=null;
 function drawFog(holes){
@@ -1531,6 +1575,8 @@ function frame(now){
   if(!$('#game').classList.contains('on')||!roundLocal||roundLocal.ghostOnly||!local.f||!G||G.ph!=='round'){ dAcc.x=dAcc.y=0; if($('#game').classList.contains('on')&&bg) drawIdle(); return; }
   const el=(now-roundLocal.start)/1000;
   if(local.sched&&el>=0){
+    const nextUp=local.sched.find(x=>x.at>el);
+    if(nextUp&&el>=nextUp.at-3){ const left=Math.ceil(nextUp.at-el); if(left!==local.warnLeft){ local.warnLeft=left; newCardWarn(left); } }
     const act=local.sched.filter(x=>x.at<=el);
     if(act.length>local.announced){
       const nw=act.slice(local.announced); local.announced=act.length;
@@ -1547,11 +1593,11 @@ function frame(now){
   if(el<0){
     if(el>-3) {
       const txt=el<-2?'三':el<-1?'二':'一';
-      if(txt!==lastCountTxt){ lastCountTxt=txt; $('#count').innerHTML=txt+'<small>'+({'三':'셋','二':'둘','一':'하나'})[txt]+'</small>'; $('#count').classList.remove('go'); AU.clap(); }
-      ovs(['countOv']);
+      if(txt!==lastCountTxt){ lastCountTxt=txt; $('#count').innerHTML=txt+'<small>'+({'三':'셋','二':'둘','一':'하나'})[txt]+'</small>'; $('#count').classList.remove('go'); AU.clap();
+        $('#cardOv').classList.add('dim'); ovs(['cardOv','countOv']); }
     }
   }else if(el<.6){
-    if(lastCountTxt!=='始'){ lastCountTxt='始'; $('#count').innerHTML='始<small>시작</small>'; $('#count').classList.add('go'); ovs(['countOv']); AU.jing(.7); AU.roundGo(G.rd); }
+    if(lastCountTxt!=='始'){ lastCountTxt='始'; $('#cardOv').classList.remove('dim'); $('#count').innerHTML='始<small>시작</small>'; $('#count').classList.add('go'); ovs(['countOv']); AU.jing(.7); AU.roundGo(G.rd); }
   }else if(lastCountTxt==='始'){ lastCountTxt=''; ovs(local.inRoster&&!local.alive?['hitOv']:[]); }
 
   // 이동
@@ -1696,16 +1742,17 @@ function syncSettings(){
   const mv=Math.round(AU.getVol('m')*100), sv=Math.round(AU.getVol('s')*100);
   $('#mv').value=mv; $('#mvT').textContent=mv; $('#sv').value=sv; $('#svT').textContent=sv;
   [...$('#bgmPick').children].forEach(b=>b.classList.toggle('on',b.dataset.v===AU.getChoice()));
+  [...$('#sndSeg').children].forEach(b=>b.classList.toggle('on',(b.dataset.v==='1')===AU.isOn()));
 }
-$('#setBtn').addEventListener('click',()=>{ AU.init(); syncSettings(); $('#setOv').classList.add('on'); fitSheets(); });
+document.querySelectorAll('[data-open-set]').forEach(b=>b.addEventListener('click',()=>{ AU.init(); syncSettings(); $('#setOv').classList.add('on'); fitSheets(); }));
 $('#setClose').addEventListener('click',()=>$('#setOv').classList.remove('on'));
 $('#setOv').addEventListener('click',e=>{ if(e.target.id==='setOv') $('#setOv').classList.remove('on'); });
 $('#mv').addEventListener('input',e=>{ AU.setVol('m',e.target.value/100); $('#mvT').textContent=e.target.value; });
 $('#sv').addEventListener('input',e=>{ AU.setVol('s',e.target.value/100); $('#svT').textContent=e.target.value; });
 $('#sv').addEventListener('change',()=>AU.clap());
 $('#bgmPick').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; AU.setChoice(b.dataset.v); if(!G) AU.setMode('lobby'); syncSettings(); });
-const sndBtn=$('#snd'); sndBtn.classList.toggle('off',!AU.isOn());
-sndBtn.addEventListener('click',()=>{ AU.init(); const o=AU.toggle(); sndBtn.classList.toggle('off',!o); if(o&&!G) AU.setMode('lobby'); });
+$('#sndSeg').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; AU.init();
+  const want=b.dataset.v==='1'; if(AU.isOn()!==want) AU.toggle(); if(want&&!G) AU.setMode('lobby'); syncSettings(); });
 document.querySelectorAll('#npcL .pt,#npcC .pt').forEach(e=>e.innerHTML=npcSVG());
 $('#npcL .bub').addEventListener('click',()=>{ const el=$('#npcL'); const pool=el._pool||LINES.title; const cur=el.querySelector('.line').textContent;
   const opts=pool.filter(x=>x!==cur); say(el,pick(opts.length?opts:pool)); AU.init(); });
@@ -1724,7 +1771,7 @@ function fitLobby(){
     const wide=innerWidth>=860&&innerWidth/innerHeight>1.15;
     lb.classList.toggle('wide',wide); lb.classList.toggle('joined',joined);
     $('#roster').classList.toggle('many',players().length>4);
-    fitTo($('#lwrap'),innerWidth-20,innerHeight-(wide?24:62),wide?1.55:1.2,.68);
+    fitTo($('#lwrap'),innerWidth-20,innerHeight-20,wide?1.55:1.2,.68);
   });
 }
 function fitSheets(){
