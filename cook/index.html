@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>빈 페이지의 요리사: 방랑일지 — 텍스트 프로토타입</title>
+<style>
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:17px;line-height:1.6;background:#f3ead8;color:#3b2f24;word-break:keep-all;overflow-wrap:anywhere}
+#app{max-width:760px;margin:0 auto;padding:0 10px 48px}
+h2{font-size:21px;margin:14px 0 6px}h3{font-size:18px;margin:10px 0 6px}p{margin:6px 0}
+.band{position:sticky;top:0;z-index:5;background:#3b2f24;color:#fbf4e6;margin:0 -10px;padding:8px 12px;display:flex;flex-wrap:wrap;gap:2px 14px;align-items:center;font-size:16px}
+.band b{color:#ffd58a}.band .seed{opacity:.8}.band .warn{color:#ffb4a1}
+.band button{margin-left:auto;background:transparent;color:#fbf4e6;border-color:#a88d6c}
+.nav{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}.nav button{flex:1 1 0;min-width:0}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+button{font:inherit;font-size:16px;line-height:1.3;padding:10px 14px;border-radius:10px;border:1px solid #8b6e4c;background:#fffaf0;color:#3b2f24;cursor:pointer;min-height:44px;max-width:100%;text-align:center}
+button.small{padding:8px 11px;min-height:40px}
+button.primary{background:#7b4a28;color:#fff;border-color:#7b4a28}
+button.ghost{background:transparent}
+button.on{background:#ecd3a2;font-weight:700;border-color:#7b4a28}
+button:disabled{opacity:.45;cursor:not-allowed}
+.card{background:#fffaf0;border:1px solid #dcc8a4;border-radius:12px;padding:12px 14px;margin:10px 0}
+.card.alert{border-color:#b5543a;background:#fff1ea}
+.card.changed{border:2px solid #3f7f5a}.card.locked{opacity:.75}
+.tip{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;background:#fff6d6;border:1px solid #e1c56a;border-radius:12px;padding:10px 12px;margin:10px 0}
+.tip>div{flex:1 1 auto;min-width:0}
+.draft{display:inline}
+.ga{display:inline-block;font-size:16px;font-weight:700;color:#8a5a12;background:#f8e3b4;border-radius:6px;padding:0 5px;margin-right:2px}
+.say{background:#f8f0e0;border-left:4px solid #c9a46c;padding:8px 10px;border-radius:6px}
+.qs{display:flex;flex-direction:column;gap:6px}.qs button{text-align:left}
+.qa{margin:8px 0;padding:8px 10px;background:#f7efe0;border-radius:8px}.qa .q{font-weight:700}
+.muted{color:#7a6a58}.good{color:#2f7048;font-weight:700}.bad{color:#a8402a;font-weight:700}.warnc{color:#9a5b00}
+.new{color:#2f7048;font-weight:700}.doubt{color:#fff;background:#a8402a;border-radius:6px;padding:0 6px;font-size:16px}
+.cross{color:#fff;background:#2f7048;border-radius:6px;padding:0 6px;font-size:16px}
+.trap{color:#fff;background:#8a5a12;border-radius:6px;padding:0 6px;font-size:16px}
+.big{font-size:19px;font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:16px;table-layout:auto}
+th,td{border-bottom:1px solid #e6d7bb;padding:6px 4px;text-align:left;vertical-align:top}
+th{color:#7a6a58;font-weight:600}
+.slot{display:block;margin:8px 0}.slot select{display:block;width:100%;margin-top:4px}
+select,input[type=text]{font:inherit;font-size:16px;padding:9px;border:1px solid #8b6e4c;border-radius:8px;background:#fff;max-width:100%}
+input[type=text]{width:100%;margin:6px 0}
+.chk{display:flex;gap:8px;align-items:center;margin:8px 0}.chk input{width:22px;height:22px}
+.preview{background:#f4ead6;border-radius:10px;padding:10px;margin:10px 0}
+.dish{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;border-top:1px dashed #dcc8a4;padding:8px 0}
+.dish>div{flex:1 1 180px;min-width:0}
+.calc{font-size:16px;background:#e8eef7;border:1px dashed #6a83a8;border-radius:8px;padding:6px 8px;margin:6px 0}
+.debug{border-color:#6a83a8;background:#f2f6fc}.debug summary{font-weight:700;cursor:pointer}
+.opt{border-top:1px dashed #dcc8a4;padding-top:6px;margin-top:8px}
+.tabs button{flex:1 1 auto}
+.cause{font-weight:700}
+.res-great{color:#2f7048}.res-success{color:#3f6a2f}.res-struggle{color:#9a5b00}.res-fail{color:#a8402a}
+textarea{width:100%;height:140px;font-size:16px;font-family:ui-monospace,monospace;margin-top:8px}
+.sticky-act{position:sticky;bottom:0;background:#f3ead8;padding:8px 0}
+.tip>button{flex:0 0 auto;white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ============================================================
+// DATA: 수치와 용어는 여기서만 바꿔요. (명세 9장 JSON 그대로 + 아래 추가 값)
+// ============================================================
+const DATA = {
+ "rules": {
+  "capTotal": 4,
+  "perAttrCap": 1.15,
+  "great": 120,
+  "success": 90,
+  "struggle": 60,
+  "luck": 5,
+  "quality": {"C": -10, "B": 0, "A": 10},
+  "roastAttr": "화",
+  "roastAdd": 1,
+  "roastCost": 10,
+  "sideMaxVal": 2,
+  "sidePerDay": 1,
+  "freshDays": 2,
+  "freshPenalty": 1,
+  "startMoney": 150,
+  "tip": {"success": 5, "great": 10},
+  "fame": {"great": 3, "success": 1, "struggle": 0, "fail": -1},
+  "customersByFame": [{"min": 0, "n": 3}, {"min": 8, "n": 4}, {"min": 16, "n": 5}],
+  "questionsOffered": 3,
+  "questionsAsked": 2,
+  "rumorsPerDay": 1,
+  "failNoVisitDays": 2,
+  "skillMasteryForA": 2
+ },
+ "ingredients": [
+  {"id": "F1", "name": "불꽃고추", "cat": "채소", "attr": "화", "val": 1, "price": 10, "tags": []},
+  {"id": "F2", "name": "화염도마뱀 꼬리", "cat": "고기", "attr": "화", "val": 2, "price": 20, "tags": []},
+  {"id": "F3", "name": "불씨버섯", "cat": "버섯", "attr": "화", "val": 3, "price": 30, "tags": []},
+  {"id": "P1", "name": "보라버섯", "cat": "버섯", "attr": "독", "val": 1, "price": 10, "tags": []},
+  {"id": "P2", "name": "이끼 달래", "cat": "채소", "attr": "독", "val": 2, "price": 20, "tags": ["파·양파"]},
+  {"id": "P3", "name": "능지두꺼비 다리", "cat": "고기", "attr": "독", "val": 3, "price": 30, "tags": []},
+  {"id": "W1", "name": "칼날풀", "cat": "채소", "attr": "풍", "val": 1, "price": 10, "tags": []},
+  {"id": "W2", "name": "들새 가슴살", "cat": "고기", "attr": "풍", "val": 2, "price": 20, "tags": []},
+  {"id": "W3", "name": "바람새 알", "cat": "알", "attr": "풍", "val": 3, "price": 30, "tags": []},
+  {"id": "B1", "name": "밥", "cat": "밥", "attr": null, "val": 0, "price": 5, "tags": []},
+  {"id": "B2", "name": "빵", "cat": "빵", "attr": null, "val": 0, "price": 5, "tags": []},
+  {"id": "B3", "name": "알", "cat": "알", "attr": null, "val": 0, "price": 5, "tags": []},
+  {"id": "B4", "name": "들양파", "cat": "채소", "attr": null, "val": 0, "price": 5, "tags": ["파·양파"]}
+ ],
+ "templates": [
+  {"id": "T1", "name": "꼬치구이", "layer": "현실 레시피", "menu": 45, "taste": 2, "roast": "필수", "slots": [["고기"], ["채소"]], "locked": false},
+  {"id": "T2", "name": "덮밥", "layer": "현실 레시피", "menu": 55, "taste": 3, "roast": "선택", "slots": [["밥"], ["고기", "알"], ["알", "채소"]], "forced": ["P1"], "locked": true},
+  {"id": "T3", "name": "죽", "layer": "현실 레시피", "menu": 35, "taste": 1, "roast": "불가", "slots": [["밥"], ["채소", "버섯"], ["채소", "버섯"]], "locked": false},
+  {"id": "T4", "name": "샌드위치", "layer": "현실 레시피", "menu": 50, "taste": 2, "roast": "선택", "slots": [["빵"], ["고기", "알"], ["채소"]], "locked": false},
+  {"id": "T5", "name": "찌개", "layer": "현실 레시피", "menu": 55, "taste": 3, "roast": "불가", "slots": [["채소", "버섯"], ["고기", "버섯"]], "forced": ["F1"], "locked": true},
+  {"id": "T6", "name": "볶음", "layer": "현실 레시피", "menu": 45, "taste": 2, "roast": "선택", "slots": [["채소", "버섯"], ["고기", "버섯", "알"]], "locked": false},
+  {"id": "D1", "name": "들새 꼬치구이", "layer": "전통요리", "menu": 35, "taste": 1, "roast": "필수", "fixed": ["W2", "W1"], "bundle": 20, "home": "바람굴", "localBonus": 5},
+  {"id": "D2", "name": "보리 마력죽", "layer": "전통요리", "menu": 35, "taste": 1, "roast": "불가", "fixed": ["B1", "P1", "P2"], "bundle": 25, "home": "이끼 숲", "localBonus": 5}
+ ],
+ "customerTypes": [
+  {"id": "C1", "name": "인간 신참", "race": "인간", "skill": -10, "budget": 45, "taboo": [], "weight": 0.3, "skillLabel": "신참"},
+  {"id": "C2", "name": "인간 보통", "race": "인간", "skill": 0, "budget": 60, "taboo": [], "weight": 0.3, "skillLabel": "보통"},
+  {"id": "C3", "name": "인간 숙련", "race": "인간", "skill": 10, "budget": 80, "taboo": [], "weight": 0.15, "skillLabel": "숙련"},
+  {"id": "C4", "name": "늑대족 보통", "race": "수인 늑대족", "skill": 0, "budget": 60, "taboo": ["파·양파"], "weight": 0.15, "skillLabel": "보통"},
+  {"id": "C5", "name": "늑대족 숙련", "race": "수인 늑대족", "skill": 10, "budget": 80, "taboo": ["파·양파"], "weight": 0.1, "skillLabel": "숙련"}
+ ],
+ "dungeons": [
+  {"id": "wind", "name": "바람굴", "base": {"풍": 3}, "reportDelay": 1, "codexStart": {"풍": 3}},
+  {"id": "moss", "name": "이끼 숲", "base": {"독": 3}, "reportDelay": 2, "codexStart": {"독": 3}},
+  {"id": "mine", "name": "열기 뿜는 옛 갱도", "base": {"화": 3}, "reportDelay": 2, "codexStart": {"화": 3}, "note": "프로토타입 전용"}
+ ],
+ "worldEvents": [
+  {"day": 3, "dungeon": "moss", "name": "바람 나방", "req": {"독": 2, "풍": 2}},
+  {"day": 6, "dungeon": "moss", "name": "바람 나방 약화", "req": {"독": 3, "풍": 1}}
+ ],
+ "rumorSources": {
+  "toto": {"label": "토토의 편지", "accuracy": 0.8},
+  "heard": {"label": "손님이 들은 이야기", "accuracy": 0.6},
+  "seen": {"label": "손님이 직접 본 것", "accuracy": 1.0}
+ },
+ "questions": [
+  {"id": "Q1", "text": "모험가 된 지 얼마나 됐어?", "kind": "실력", "reveals": "skill"},
+  {"id": "Q2", "text": "거기 가 본 적 있어?", "kind": "실력", "reveals": "skill+firstVisit"},
+  {"id": "Q3", "text": "주로 어떤 무기 써?", "kind": "실력", "reveals": "isRookie"},
+  {"id": "Q4", "text": "오늘 얼마까지 쓸 수 있어?", "kind": "예산", "reveals": "budget"},
+  {"id": "Q5", "text": "요즘 벌이는 어때?", "kind": "예산", "reveals": "budgetTier"},
+  {"id": "Q6", "text": "요즘 거기서 뭐 본 적 있어?", "kind": "던전", "reveals": "seenAnomaly"},
+  {"id": "Q7", "text": "같이 가는 사람한테 들은 얘기 있어?", "kind": "던전", "reveals": "heardRumor"},
+  {"id": "Q8", "text": "거기 가는 길은 어땠어?", "kind": "던전", "reveals": "indirectHint"},
+  {"id": "Q9", "text": "지난번엔 뭐에 당했어?", "kind": "경험", "reveals": "lastLackingAttr"},
+  {"id": "Q10", "text": "지난번 요리는 어땠어?", "kind": "경험", "reveals": "lastSatisfaction", "returningOnly": true},
+  {"id": "Q11", "text": "못 먹는 거 있어?", "kind": "취향", "reveals": "taboo"},
+  {"id": "Q12", "text": "어떤 맛 좋아해?", "kind": "취향", "reveals": "favTemplate"}
+ ],
+ "script": {
+  "1": [{"type": "C1", "dungeon": "wind", "regular": "fin"}, {"type": "C2", "dungeon": "moss"}, {"type": "C2", "dungeon": "mine"}],
+  "2": [{"type": "C1", "dungeon": "wind"}, {"type": "C3", "dungeon": "moss"}, {"type": "C2", "dungeon": "mine"}],
+  "3": [{"type": "C1", "dungeon": "moss", "regular": "fin"}, {"type": "C4", "dungeon": "wind"}, {"type": "C2", "dungeon": "mine"}],
+  "6": [{"type": "C2", "dungeon": "wind", "regular": "fin", "onlyIf": "finDay3SuccessOrBetter"}]
+ },
+ "regulars": [
+  {"id": "fin", "name": "핀", "race": "인간", "job": "신참 검사", "type": "C1", "note": "6일차에는 3일차가 성공 이상이면 실력 '보통'으로 돌아옴"}
+ ],
+ "research": {
+  "A": {"name": "연습 조리", "usesLeftovers": 2, "mastery": 1},
+  "B": {"name": "재료 대체 연구", "unlockOrder": ["T2", "T5"], "texts": {"T2": "요리책의 '간장'을 보라버섯 즙으로 대신하는 법을 찾았다", "T5": "요리책의 '된장'을 불꽃고추 장으로 대신하는 법을 찾았다"}}
+ },
+ "namePool": ["다온", "베른", "루카", "미라", "토비", "하넬", "코라", "제드", "유나", "바스", "리엔", "오르", "세나", "카일", "니아"],
+
+ // ===== 여기부터는 명세 9장 밖에서 추가한 값: 화면 용어(terms)·보조 수치(proto)·조사(josa)·화면 문구(ui)·가안 텍스트(text) =====
+ "terms": {
+  "game": "빈 페이지의 요리사: 방랑일지",
+  "village": "하솔",
+  "stall": "노점",
+  "kitchen": "조리대",
+  "book": "요리책",
+  "codex": "도감",
+  "rumors": "소문",
+  "letters": "후일담",
+  "recipes": "레시피",
+  "market": "시장",
+  "pet": "누룽지",
+  "courier": "토토",
+  "money": "돈",
+  "fame": "명성",
+  "coin": "원",
+  "side": "서비스 반찬",
+  "finished": "오늘의 완성품",
+  "note": "레시피 노트",
+  "doubt": "의심",
+  "cross": "교차 확인",
+  "trap": "정보 함정",
+  "roast": "굽기",
+  "quality": "품질",
+  "mastery": "숙련",
+  "results": {
+   "great": "대성공",
+   "success": "성공",
+   "struggle": "고전",
+   "fail": "실패"
+  },
+  "attrSay": {
+   "화": "열기(화)",
+   "독": "독기(독)",
+   "풍": "바람(풍)"
+  }
+ },
+ "proto": {
+  "build": "text-proto-1",
+  "days": 7,
+  "defaultSeed": "20261123",
+  "saveKey": "binpage-proto-save-v1",
+  "quitKey": "binpage-proto-quit-v1",
+  "saveVersion": 1,
+  "maxTries": 2,
+  "rerollLimit": 30,
+  "hintChance": 0.7,
+  "seenDaysAgo": [
+   1,
+   3
+  ],
+  "firstVisitChance": {
+   "신참": 0.6,
+   "보통": 0.3,
+   "숙련": 0.1
+  },
+  "q9NoneChance": 0.2,
+  "budgetTiers": [
+   {
+    "max": 45,
+    "key": "low"
+   },
+   {
+    "max": 60,
+    "key": "mid"
+   },
+   {
+    "max": 999999,
+    "key": "high"
+   }
+  ],
+  "unlockDay": {
+   "side": 3
+  },
+  "fixedToto": {
+   "eventIndex": 0
+  },
+  "regularEpisodes": {
+   "fin": {
+    "first": 1,
+    "second": 3
+   }
+  },
+  "randomSchedule": [
+   [
+    2,
+    4
+   ],
+   [
+    5,
+    7
+   ]
+  ],
+  "fakeAnomalies": {
+   "wind": [
+    {
+     "name": "불씨 박쥐",
+     "req": {
+      "풍": 2,
+      "화": 2
+     }
+    }
+   ],
+   "mine": [
+    {
+     "name": "독가스 틈",
+     "req": {
+      "화": 2,
+      "독": 2
+     }
+    }
+   ],
+   "moss": []
+  },
+  "crossWindow": 1,
+  "debugMoney": 100,
+  "scoreDecimals": 6,
+  "showDecimals": 1,
+  "roastKinds": {
+   "required": "필수",
+   "optional": "선택",
+   "none": "불가"
+  },
+  "pass": {
+   "q2": 0.7,
+   "infoChange": 1,
+   "letters": 0.8,
+   "repeat": 0.6,
+   "secondBest": 1,
+   "repeatFromDay": 3
+  },
+  "hintBigDiff": 2,
+  "surveyScale": 5
+ },
+ "josa": {
+  "은": [
+   "은",
+   "는"
+  ],
+  "이": [
+   "이",
+   "가"
+  ],
+  "을": [
+   "을",
+   "를"
+  ],
+  "과": [
+   "과",
+   "와"
+  ],
+  "으로": [
+   "으로",
+   "로",
+   "로"
+  ],
+  "이야": [
+   "이야",
+   "야"
+  ],
+  "이에요": [
+   "이에요",
+   "예요"
+  ],
+  "아": [
+   "아",
+   "야"
+  ],
+  "이랑": [
+   "이랑",
+   "랑"
+  ]
+ },
+ "ui": {
+  "draftTag": "[가안]",
+  "phases": {
+   "letter": "아침 · 편지",
+   "market": "아침 · 시장",
+   "day": "낮 · 영업",
+   "evening": "저녁",
+   "night": "밤 · 야영",
+   "final": "마지막 편지",
+   "result": "결과"
+  },
+  "bandDay": "{d}일차/{n}",
+  "tier": "({n}단계)",
+  "bandCust": "남은 손님",
+  "seed": "시드",
+  "randomWorldOn": "무작위 일정",
+  "noSave": "저장이 막혀 있어요(저장 없이 계속)",
+  "reset": "처음부터",
+  "resetAsk": "처음부터 다시 할까요? 지금까지 한 것은 지워져요. 같은 시드면 같은 손님·소문·운이 나와요.",
+  "seedLabel": "시드",
+  "resetGo": "처음부터 시작",
+  "cancel": "취소",
+  "close": "닫기",
+  "yes": "예",
+  "no": "아니오",
+  "none": "없음",
+  "notYet": "아직 안 함",
+  "listSep": ", ",
+  "dot": "●",
+  "pct": "%",
+  "dayN": "{d}일차",
+  "debugTitle": "디버그 (사장님 확인용)",
+  "dbgReal": "오늘 던전의 실제 요구치",
+  "dbgSched": "세계 일정(숨김)",
+  "dbgHidden": "지금 손님의 숨은 조건",
+  "dbgSkill": "실력",
+  "dbgBudget": "예산",
+  "dbgTaboo": "금기",
+  "dbgFav": "좋아하는 요리",
+  "dbgFirst": "처음 감",
+  "dbgSkip": "하루 건너뛰기",
+  "dbgMoney": "돈 +{n}",
+  "dbgRandom": "무작위 일정으로 처음부터",
+  "dbgDefault": "기본 일정으로 처음부터",
+  "dbgPreview": "판정 미리보기(지금 손님) · 실제 요구 {req} · 적합도 {fit} + 품질 {q} + 실력 {s} + 지역 {l} + 운(−5~+5) = {lo}~{hi}",
+  "calcLine": "판정: 적합도 {fit} + 품질 {q} + 실력 {s} + 지역 {l} + 운 {luck} = {score} → {res}",
+  "nightHint": "밤이에요. 요리책 레시피 페이지에서 오늘 밤 할 일을 골라 주세요.",
+  "goRecipes": "레시피 페이지 열기",
+  "readFirst": "먼저 아침 편지를 읽거나 건너뛰어 주세요.",
+  "goLetters": "편지 보기",
+  "weakNow": "약해짐(−{p})",
+  "weakTomorrow": "내일부터 약해짐",
+  "invEmpty": "재고가 비어 있어요.",
+  "bundleName": "{tpl} 묶음",
+  "noAttr": "속성 없음",
+  "boughtOn": "{d}일차에 산 것",
+  "undoBuy": "구매 취소",
+  "thItem": "재료",
+  "thAttr": "속성",
+  "thBought": "산 날",
+  "thPrice": "가격",
+  "thCat": "분류",
+  "thTag": "특징",
+  "buy": "사기",
+  "marketHint": "가진 돈보다 많이 살 수 없어요. 오늘 어떤 손님이 올지는 아직 몰라요.",
+  "bundles": "전통요리 묶음 (1인분 재료 한 세트)",
+  "myInv": "내 재고",
+  "todayCustomers": "오늘은 손님 {n}명이 와요.",
+  "openShop": "장사 시작",
+  "me": "나",
+  "allDone": "오늘 손님은 모두 다녀갔어요.",
+  "unsoldWarn": "팔지 못한 완성품 {n}개는 저녁에 누룽지가 먹어요.",
+  "endDay": "장사 마치기",
+  "toKitchen": "조리대에서 요리하기",
+  "sendAway": "미안, 오늘은 못 해 줘(돌려보내기)",
+  "soldLine": "{dish}을(를) {price}원에 팔았어요. 결과는 며칠 뒤 후일담으로 와요.",
+  "withSide": "(서비스 반찬: {side})",
+  "nextCust": "다음 손님 맞기",
+  "noMoreCust": "오늘 손님은 여기까지",
+  "leftLine": "{name}은(는) 그냥 떠났어요.",
+  "custOf": "오늘 손님 {i}/{n}",
+  "goesTo": "가는 곳: {dungeon}",
+  "askHead": "질문 고르기 (최대 {n}개, 남은 {left}개)",
+  "eveningSum": "오늘 판 요리 {n}개.",
+  "petAte": "팔지 못한 완성품 {n}개를 누룽지가 먹었어요. 돈은 돌려받지 않아요.",
+  "noWaste": "남은 완성품이 없어요.",
+  "toNight": "야영하러 가기",
+  "slotLabel": "슬롯 {i} ({cats})",
+  "choose": "재료 고르기",
+  "noneFits": "넣을 재료가 없어요",
+  "costLabel": "재료비",
+  "sideLabel": "{side} (오늘 1번, 속성값 {max} 이하 재료 1개를 무료로 붙여요)",
+  "noSide": "붙이지 않기",
+  "sideUsed": "오늘 서비스 반찬은 이미 썼어요.",
+  "capWarn": "속성 합계가 상한 {cap}보다 많아요. 넣은 순서대로 채워서 넘친 값은 사라져요: {list}",
+  "lostItem": "{name} −{n}",
+  "pvMoney": "메뉴 가격 {price} · 재료비 {cost} · 이익 {profit}",
+  "pvQuality": "품질 {q} (숙련 {m}, A까지 {need})",
+  "roastPaid": "숯값 {n} 포함",
+  "kitchenClosed": "조리대는 낮 영업 중에만 써요.",
+  "haveN": "묶음 {n}개",
+  "lockedMark": "[잠김]",
+  "noteLabel": "{tpl}: {ings}",
+  "tplInfo": "메뉴 가격 {menu} · 맛 {taste} · 굽기 {roast}",
+  "fixedLine": "고정 재료: {ings} (묶음 가격 {price})",
+  "homeLine": "{home}에 내면 지역 보정 +{n}",
+  "forcedLine": "장 대용: {ing} (재고에서 자동으로 1개 넣음)",
+  "forcedShort": "장 대용 {ing}",
+  "roastRequired": "굽기 필수: {a} +{v}, 숯값 {n}",
+  "roastIncluded": "굽기 필수: {a} +{v} (숯값은 묶음 가격에 포함)",
+  "roastOption": "굽기 ({a} +{v}, 숯값 {n})",
+  "roastNone": "이 요리는 굽기를 할 수 없어요.",
+  "cookBtn": "요리하기",
+  "clearDraft": "비우기",
+  "menuPrice": "메뉴 가격 {n}",
+  "serveTo": "{name}에게 내기",
+  "serve": "내기",
+  "noFinished": "아직 만든 요리가 없어요.",
+  "cookingFor": "지금 손님: {name} · 가는 곳 {dungeon}",
+  "cookDone": "{name} 손님은 끝났어요. 노점에서 다음 손님을 맞아 주세요.",
+  "backStall": "노점으로",
+  "noCustomer": "지금 기다리는 손님이 없어요.",
+  "pickTpl": "템플릿 고르기",
+  "needBundle": "{tpl} 묶음이 재고에 없어요.",
+  "needForced": "장 대용 재료가 없어요: {ing}",
+  "needSlots": "빈 슬롯이 있어요.",
+  "needRoastMoney": "숯값이 모자라요.",
+  "dishName": "{ing} {tpl}",
+  "cooked": "{dish}을(를) 만들었어요. 오늘의 완성품에 들어갔어요.",
+  "noteMissing": "재료가 모자라요: {list}",
+  "changedToday": "오늘 바뀜",
+  "lastCheck": "마지막 확인: {d}일차",
+  "lastCheckStart": "마지막 확인: 요리책에 처음부터 적혀 있던 내용",
+  "markDoubt": "{doubt} 표시",
+  "undoubt": "의심 지우기",
+  "tabooLabel": "금기:",
+  "tabooList": "{tags} (해당 재료: {ings})",
+  "noRaces": "아직 만난 종족이 없어요.",
+  "codexDungeons": "던전",
+  "codexRaces": "종족",
+  "codexIngs": "재료",
+  "aboutDay": "{d}일차 상태",
+  "rumorHead": "{d}일차 · {src} · {dungeon}",
+  "rumorHint": "소문에는 출처와 날짜가 붙어요. 출처가 다른 두 정보가 같은 말을 하면 '교차 확인'이 붙어요.",
+  "srcPerson": "{label}({name})",
+  "letterHead": "{who} · {dungeon} · {d}일차에 떠남",
+  "letterReward": "팁 +{tip} · 명성 {fame}",
+  "codexChanged": "도감이 바뀌었어요: {dungeon} (마지막 확인 {d}일차)",
+  "codexConfirmed": "도감 확인일 갱신: {dungeon} (마지막 확인 {d}일차, 내용은 같음)",
+  "finalLetters": "마지막 편지 (아직 도착하지 않았던 후일담을 모두 받아요)",
+  "morningLetters": "{d}일차 아침 편지",
+  "noLetters": "오늘 도착한 후일담은 없어요.",
+  "totoHead": "{courier}의 소문",
+  "toResult": "결과 보기",
+  "letterDone": "다 읽었어요",
+  "letterSkip": "건너뛰기",
+  "pastLetters": "지난 후일담",
+  "toFinal": "마지막 편지 받기",
+  "nextDay": "다음 날로 (자동 저장)",
+  "nightTitle": "오늘 밤 할 일 (하나만)",
+  "researchAHint": "남은 재료 {n}개를 써서 연습해요. 그 템플릿 숙련 +{m}.",
+  "practiceTpl": "연습할 템플릿",
+  "willUse": "쓸 재료: {list}",
+  "notEnough": "남은 재료가 {n}개가 안 돼서 고를 수 없어요.",
+  "doA": "연습 조리 하기",
+  "researchBHint": "다음 연구 대상: {tpl} (성공하면 다음 날부터 열려요)",
+  "researchBNone": "더 찾을 게 없다.",
+  "doB": "재료 대체 연구 하기",
+  "rest": "쉬기",
+  "doRest": "쉬기",
+  "practiced": "{list}(으)로 {tpl}을(를) 연습했어요. 숙련 {m}.",
+  "unlockTomorrow": "내일부터 {tpl}을(를) 만들 수 있어요.",
+  "rested": "푹 쉬었어요.",
+  "lockedHint": "재료 대체 연구(B)로 열 수 있어요.",
+  "mQ2": "질문 2개를 다 쓴 비율",
+  "mQ2v": "{a}/{b} ({p})",
+  "mInfo": "정보를 본 뒤 요리를 바꾼 횟수",
+  "mInfov": "{a}회 / {d}일 = 하루 {v}회",
+  "mLetters": "편지를 읽은 비율",
+  "mRepeat": "같은 요리 연속 비율 (3일차~)",
+  "mSecond": "차선책을 고른 횟수",
+  "mSide": "반찬 사용",
+  "mResearch": "연구 선택",
+  "mTension": "긴장감",
+  "mEtc": "기타",
+  "lineAtLeast": "{v} 이상",
+  "lineBelow": "{v} 미만",
+  "linePerDay": "1인당 하루 {v}회 이상",
+  "lineCore": "{n}회 이상 + '한 판 더' 예 (테스터 5명 중 3명)",
+  "recordOnly": "기록만",
+  "timesN": "{n}회",
+  "againIs": "한 판 더: {v}",
+  "sideItem": "{d}일차 {dungeon}({st})",
+  "stChanged": "이상 현상 중",
+  "stNormal": "평소",
+  "researchSum": "A {a} · B {b} · 쉬기 {r} · 고르는 데 평균 {s}초",
+  "tensionSum": "실패 편지 뒤 종료 {q}회 · 설문 {t}",
+  "etcSum": "하루 평균 {min}분 · 거절 {rej}회 · 누룽지가 먹은 요리 {w}개 · 최종 돈 {money} · 명성 {fame} · 시드 {seed}",
+  "passOk": "통과",
+  "passNo": "미달",
+  "resultTitle": "7일이 끝났어요",
+  "finalLine": "최종 돈 {money} · 명성 {fame}",
+  "surveyTitle": "설문 2문항",
+  "surveyAgain": "한 판 더 할래?",
+  "surveyTension": "긴장감이 있었나? (1 = 전혀, {n} = 아주)",
+  "summaryTitle": "테스트 요약",
+  "thMetric": "지표",
+  "thValue": "값",
+  "thLine": "합격선",
+  "jsonTitle": "테스트 기록(JSON)",
+  "jsonHint": "설문에 답한 뒤 '복사'를 누르고 사장님께 붙여넣어 보내 주세요. 복사가 안 되면 아래 칸을 길게 눌러 전체 선택 후 복사해요.",
+  "copy": "복사",
+  "copied": "복사했어요.",
+  "copyFail": "복사가 막혔어요. 아래 칸을 직접 선택해서 복사해 주세요.",
+  "playAgain": "처음부터 다시 하기",
+  "pageTitle": "{game} — 텍스트 프로토타입"
+ },
+ "text": {
+  "welcome": "{village}에서 {days}일 동안 노점을 열어요. 손님 이야기를 듣고, 살아 돌아올 요리를 골라 주세요. 오늘 아침엔 {courier}의 소문이 먼저 와 있어요.",
+  "tips": {
+   "market": "아침엔 {market}에서 재료를 사요. 오늘 어떤 손님이 올지는 아직 몰라요.",
+   "questions": "질문은 손님당 {n}개까지예요. 무엇을 물을지가 첫 고민이에요. 안 물어도 돼요.",
+   "cook": "템플릿을 고르고 슬롯에 재료를 넣어요. 속성 합계는 {cap}까지만 담기고, 넘친 만큼은 사라져요.",
+   "sale": "대금은 바로 받아요. 모험 결과는 며칠 뒤 아침 {letters}로 와요.",
+   "research": "밤에는 레시피 연구를 해요. A는 남은 재료로 연습해서 숙련을 올리고, B는 잠긴 레시피를 여는 연구예요.",
+   "report": "{letters} 끝 한 줄이 원인이에요. 어떤 속성이 맞았고 모자랐는지 알려 줘요.",
+   "reject": "예산보다 비싸거나 못 먹는 재료가 있으면 거절해요. 한 번 더 고를 수 있어요.",
+   "rumor": "{rumors:은} 틀릴 수도 있어요. 미심쩍은 {codex} 항목엔 '{doubt}' 표시를 달아 둘 수 있어요.",
+   "taboo": "종족마다 못 먹는 재료가 있어요. {codex}에 종족 항목이 열렸어요.",
+   "side": "오늘부터 {side:을} 하루 한 번 붙일 수 있어요. 공짜로 주는 거라 재료비만큼 손해예요.",
+   "fresh": "속성 재료는 산 날로부터 {d}일 뒤 아침부터 약해져요(속성값 −{p}).",
+   "truth": "{letters:으로} 진실이 확인되면 {codex:이} 고쳐지고 '마지막 확인' 날짜가 바뀌어요."
+  },
+  "arrive": {
+   "wind": [
+    "내일 {dungeon}에 가. 바람에 날아가지 않으려면 뭘 먹고 가야 할까?",
+    "{dungeon} 의뢰를 받았어. 든든한 거 하나 부탁해!",
+    "내일은 {dungeon}이야. 뭐 먹고 가면 좋을지 골라 줄래?"
+   ],
+   "moss": [
+    "내일 {dungeon}에 가는데, 뭐 먹고 가면 좋을까?",
+    "{dungeon}에서 약초를 따 오는 의뢰야. 숲에서 버틸 만한 걸로 부탁해.",
+    "내일 {dungeon}이야. 거기 공기가 고약하다던데… 추천해 줄래?"
+   ],
+   "mine": [
+    "내일 {dungeon}에 들어가. 뭐 먹고 가면 좋을까?",
+    "{dungeon}에서 광석 나르는 일을 맡았어. 버틸 만한 걸로 하나!",
+    "내일은 {dungeon}이야. 안이 찜통이라는데, 뭘 먹어야 해?"
+   ]
+  },
+  "fin": {
+   "arrive1": "나는 {name}! 길드에 막 등록한 검사야. 내일 첫 의뢰로 {dungeon}에 가는데… 무, 무섭진 않아! 그냥 배가 좀 고파서 그래. 뭐 먹고 가면 좋을까?",
+   "arriveGood": "또 왔어! 지난번 덕분에 길드에서 칭찬받았거든. 이번엔 {dungeon:이야}. 이번에도 부탁해!",
+   "arriveBad": "지난번엔… 좀 고생했어. 그래도 다시 왔지! 이번엔 {dungeon:이야}. 이번엔 진짜 잘할 거야.",
+   "arriveGrown": "나 이제 '신참' 딱지 뗐어! 처음 갔던 {dungeon}에 다시 가. 감회가 새롭네. 뭐 먹고 갈까?",
+   "ep1": {
+    "great": "편지 쓰는 건 처음이라 어색하네. {name:이야}!\n{dungeon}을 거의 날아다니듯 지나갔어. 다른 신참들이 다 나만 쳐다보더라니까.\n솔직히 출발 전엔 좀 떨렸어. 네 {dish} 먹고 나니까 그게 싹 사라졌어.",
+    "success": "{name:이야}! 첫 의뢰, 무사히 끝냈어.\n{dungeon}에서 몇 번 휘청했지만 넘어지진 않았어. 진짜야.\n네 {dish} 덕분에 끝까지 버텼어. 또 갈게!",
+    "struggle": "{name:이야}… 돌아오긴 했어.\n{dungeon}에서 굴러서 무릎이 다 까졌어. 허세 부리다 그런 건 아니고… 조금은 그랬나.\n그래도 {dish:은} 맛있었어. 다음엔 더 잘할 거야.",
+    "fail": "{name:이야}. 솔직하게 쓸게.\n{dungeon} 입구에서 그대로 굴러 나왔어. 다친 건 무릎이랑 자존심 정도야.\n며칠 쉬고 다시 올게. 그땐 진짜 멋지게 다녀올 거야."
+   },
+   "ep2": "{dungeon}에서 돌아왔어! 이번엔 좀 굉장했다고.\n남들이 다 돌아갈 때, 나 혼자 안쪽까지 들어가서 약초를 한 바구니 따 왔어.\n길드 아저씨가 '신참 맞냐'고 묻더라. 맞다고 했지. 아직은.\n이 정도면 다음엔 '보통' 소리 듣겠지? 네 {dish} 덕분이야.",
+   "ep3": "음… 이번엔 별로 자랑할 게 없어.\n{dungeon}에서 한참 헤매다가 결국 동료 등에 업혀 나왔어. 크게 다치진 않았어.\n괜찮아, 진짜로! 검은 다시 닦으면 되니까.\n좀 쉬고 나서 다시 찾아갈게. 그때 또 부탁해."
+  },
+  "reports": {
+   "wind": {
+    "great": [
+     "{dungeon:을} 산책하듯 다녀왔어!\n다들 벽에 붙어서 기어갈 때 나는 똑바로 걸었다니까.\n네 {dish}, 진짜 대단하더라.",
+     "{name:이야}. 의뢰를 하루 일찍 끝냈어!\n{dungeon} 깊은 데까지 갔다 왔는데 숨도 안 차더라.\n다음에도 {dish:으로} 부탁해."
+    ],
+    "success": [
+     "{dungeon}, 무사히 다녀왔어.\n몇 번 휘청했지만 끝까지 버텼지.\n{dish} 덕분에 든든했어.",
+     "{name:이야}. 의뢰는 잘 끝냈어.\n쉽진 않았지만 다친 데는 없어.\n{dish} 맛있었어, 고마워."
+    ],
+    "struggle": [
+     "{dungeon}에서 겨우 돌아왔어…\n중간에 몇 번이나 주저앉았는지 몰라.\n그래도 {dish:은} 맛있었어.",
+     "{name:이야}. 의뢰는 반쯤만 했어.\n{dungeon} 바닥에 엎드려서 한참 버텼거든.\n다음엔 더 잘 버티면 좋겠다."
+    ],
+    "fail": [
+     "솔직히 말할게. {dungeon} 입구에서 바로 굴러 나왔어.\n무릎이 다 까졌지 뭐야. 며칠 쉬어야겠어.\n{dish:은}… 다음엔 다른 걸로 부탁해.",
+     "{name:이야}. 이번엔 완전히 망했어.\n동료가 끌어내 줘서 겨우 나왔어. 크게 다치진 않았고.\n{dish} 맛은 기억나는데 힘은 하나도 안 나더라."
+    ]
+   },
+   "moss": {
+    "great": [
+     "{dungeon:을} 그냥 뚫고 지났어! 네 {dish} 덕분이야.\n약초를 바구니 가득 따 왔어. 길드에서 깜짝 놀라더라.",
+     "{name:이야}. {dungeon} 가장 깊은 샘까지 다녀왔어.\n같이 간 사람들은 다 힘들어하는데 나만 멀쩡했어.\n{dish}, 또 먹고 싶다."
+    ],
+    "success": [
+     "{dungeon}, 무사히 다녀왔어. 든든했다.\n중간에 좀 힘들었지만 금방 괜찮아졌어.",
+     "{name:이야}. 숲에서 약초 따는 일 잘 끝냈어.\n중간에 쉬긴 했지만 끝까지 갔지.\n{dish} 고마워."
+    ],
+    "struggle": [
+     "{dungeon}에서 한참 헤맸어…\n눈이 따가워서 지도도 제대로 못 봤다니까.\n{dish:은} 맛있었는데, 좀 모자랐나 봐.",
+     "{name:이야}. 의뢰는 절반만 했어.\n숲 중간에서 숨이 차서 돌아 나왔거든.\n다음엔 좀 더 버텨 볼게."
+    ],
+    "fail": [
+     "솔직히 배가 너무 불러서 졸았어.\n일어나 보니 {dungeon} 입구 그대로더라. 동료한테 엄청 혼났어.",
+     "{name:이야}. 이번엔 완전히 쓰러졌어.\n들것에 실려 나왔지만 크게 다치진 않았어. 며칠 누워 있으면 된대.\n{dish}… 다음엔 다른 걸로 부탁할게."
+    ]
+   },
+   "mine": {
+    "great": [
+     "{dungeon} 맨 아래층까지 다녀왔어!\n다들 땀범벅인데 나만 산뜻했지. 광석도 잔뜩 캤어.\n{dish}, 최고야.",
+     "{name:이야}. 의뢰받은 광석보다 두 배를 들고 나왔어.\n갱도 안이 시원하게 느껴질 정도였다니까.\n{dish} 덕분이야."
+    ],
+    "success": [
+     "{dungeon}, 무사히 다녀왔어.\n덥긴 했지만 버틸 만했어.\n{dish} 덕분에 든든했어.",
+     "{name:이야}. 광석 나르는 일 잘 끝냈어.\n땀은 한 바가지 흘렸지만 다친 데는 없어.\n{dish} 맛있었어."
+    ],
+    "struggle": [
+     "{dungeon}에서 겨우 기어 나왔어…\n중간에 물을 다 마셔 버려서 혼났어.\n{dish:은} 맛있었는데, 좀 모자랐나 봐.",
+     "{name:이야}. 의뢰는 절반만 했어.\n갱도 중간쯤에서 머리가 핑 돌아서 돌아왔거든.\n다음엔 꼭 끝까지 가 볼게."
+    ],
+    "fail": [
+     "솔직히 말할게. {dungeon}에 들어가자마자 어질어질했어.\n결국 동료 등에 업혀 나왔지. 크게 다치진 않았어.\n{dish}… 다음엔 다른 걸로 부탁해.",
+     "{name:이야}. 이번엔 완전히 망했어.\n갱도 입구에서 쓰러져서 그대로 실려 나왔어. 며칠 쉬면 괜찮대.\n그래도 {dish} 맛은 기억나."
+    ]
+   }
+  },
+  "cause": {
+   "great": "{ok} 내성이 차고 넘쳤어.",
+   "success": "{ok:은} 딱 버틸 만큼이었어.",
+   "successLack": "{ok:은} 충분했는데, {lack:은} 조금 아슬아슬했어.",
+   "successOnlyLack": "{lack:이} 조금 모자랐지만 버텼어.",
+   "struggle": "{ok:은} 막았는데 {lack:이} 장난 아니더라…",
+   "struggleOnlyLack": "{lack:이} 모자라서 한참 고생했어.",
+   "struggleNoLack": "{ok:은} 충분했는데, 아직 손이 서툴렀나 봐.",
+   "fail": "그런데 {lack:은} 하나도 못 막았어.",
+   "failSome": "{lack:이} 한참 모자랐어.",
+   "failNoLack": "{ok:은} 충분했는데, 운이 따르지 않았어."
+  },
+  "trap": {
+   "codex": "요리책에 적힌 거랑 영 딴판이었어!",
+   "rumor": [
+    "소문이랑 완전 딴판이더라!",
+    "듣던 거랑 완전히 다르던데?"
+   ]
+  },
+  "rejectBudget": [
+   "그건 비싸… 오늘은 주머니가 가벼워서.",
+   "음, 그 값이면 내일 밥값이 없어져. 좀 더 싼 건 없을까?",
+   "미안, 그건 좀 비싸. 다른 건 없어?"
+  ],
+  "rejectTaboo": [
+   "이건 못 먹어. 냄새만 맡아도 속이 뒤집혀.",
+   "앗, 이거 {taboo} 들어갔지? 난 못 먹어.",
+   "미안, 이건 몸에 안 맞아. 다른 걸로 부탁해."
+  ],
+  "leave": "아쉽지만 오늘은 그냥 갈게. 다음에 또 들를게!",
+  "sendAway": "그래, 알겠어. 다음에 또 올게!",
+  "pet": [
+   "{pet:이} 남은 요리를 꿀꺽 삼키고 꼬리를 붕붕 흔들었어요.",
+   "{pet:이} {dish:을} 먹더니 마차 바퀴에 등을 비비며 뒹굴었어요.",
+   "{pet:이} 접시까지 핥고는 '또 없어?' 하는 눈으로 쳐다봐요.",
+   "{pet:은} 한 입 먹고 잠깐 멈칫하더니… 결국 다 먹었어요.",
+   "{pet:이} 배를 두드리며 벌러덩 누웠어요. 오늘도 잘 먹었대요."
+  ],
+  "toto": "까악! {courier:이야}. {dungeon} 소식 하나 전할게. {desc}",
+  "mates": [
+   "동료",
+   "길드 친구",
+   "단짝"
+  ],
+  "daysAgo": {
+   "1": "어제",
+   "2": "그저께",
+   "3": "사흘 전에"
+  },
+  "daysAgoN": "{n}일 전에",
+  "levelWords": [
+   "",
+   "조금",
+   "꽤",
+   "엄청"
+  ],
+  "raceNote": {
+   "인간": "가리는 음식이 없어요. 대신 주머니 사정과 실력이 제각각이에요.",
+   "수인 늑대족": "피가 도는 고기를 좋아해요. 파·양파류는 몸에 맞지 않아요."
+  },
+  "ans": {
+   "skill": {
+    "신참": "아직 몇 번 안 나가 봤어. 길드에 등록한 지 얼마 안 됐거든.",
+    "보통": "이제 좀 익숙해졌지. 웬만한 의뢰는 혼자 해.",
+    "숙련": "꽤 오래 했어. 이 근처 던전은 다 훑어봤지."
+   },
+   "visit": {
+    "first": {
+     "신참": "아니, 처음이야. 사실 던전 자체가 아직 낯설어.",
+     "보통": "거긴 처음이야. 다른 데는 몇 번 다녀 봤고.",
+     "숙련": "거긴 처음인데, 비슷한 데는 숱하게 다녀 봤어."
+    },
+    "again": {
+     "신참": "딱 한 번 가 봤어. 그때 겨우 돌아왔지.",
+     "보통": "몇 번 가 봤지. 길은 알아.",
+     "숙련": "눈 감고도 다닐 수 있어."
+    }
+   },
+   "weaponRookie": "길드에서 빌린 검이야. 아직 손에 잘 안 붙어.",
+   "weapon": [
+    "손에 익은 도끼야. 같이 다닌 지 꽤 됐지.",
+    "창이야. 이 녀석 덕에 여러 번 살아 돌아왔어.",
+    "활이야. 멀리서 쏘는 게 내 방식이거든."
+   ],
+   "budget": "오늘은 {budget}{coin}까지 쓸 수 있어.",
+   "tier": {
+    "low": "요즘 좀 쪼들려. 아껴 써야 해.",
+    "mid": "그럭저럭이야. 굶진 않아.",
+    "high": "꽤 짭짤해. 맛있는 거면 좀 써도 돼."
+   },
+   "seenFirst": "거긴 처음 가. 본 게 없어.",
+   "seen": "{when} 갔을 때 봤는데, {desc}",
+   "heard": "같이 가는 {mate}한테 들었는데, {desc}",
+   "hint": "오늘 아침에 그 근처를 지나왔는데, {hint}",
+   "hintNone": "별일 없었어. 평소랑 같았어.",
+   "lack": "지난번 {dungeon}에서는 {attr}에 좀 당했어.",
+   "lackNone": "지난번엔 딱히 당한 거 없어. 든든했지.",
+   "lackFirst": "이번이 첫 의뢰라 아직 당해 본 게 없어.",
+   "sat": {
+    "1": "지난번 {dish}? 배는 찼어. 맛은… 음, 효과는 좋았어!",
+    "2": "지난번 {dish}? 괜찮았어. 또 먹을 만해.",
+    "3": "지난번 {dish}? 맛있었어! 동료한테 자랑했다니까.",
+    "4": "지난번 {dish}? 최고였어. 꿈에도 나왔어."
+   },
+   "taboo": "{taboo} 같은 건 몸에 안 맞아. 그것만 빼 줘.",
+   "tabooNone": "아무거나 잘 먹어!",
+   "fav": [
+    "따끈한 {tpl} 같은 거 좋아해.",
+    "{tpl}! {tpl}만 있으면 돼.",
+    "음… {tpl} 같은 거?"
+   ]
+  },
+  "hints": {
+   "풍": {
+    "up": "바람이 유난히 셌어.",
+    "upSmall": "바람이 좀 불더라.",
+    "down": "바람이 생각보다 잔잔하던데?",
+    "downSmall": "바람이 조금 약하던데?"
+   },
+   "독": {
+    "up": "공기가 유난히 매캐했어.",
+    "upSmall": "공기가 좀 매캐하더라.",
+    "down": "공기가 생각보다 맑던데?",
+    "downSmall": "공기가 조금 맑던데?"
+   },
+   "화": {
+    "up": "유난히 후끈했어.",
+    "upSmall": "좀 후끈하더라.",
+    "down": "생각보다 선선하던데?",
+    "downSmall": "조금 선선하던데?"
+   }
+  },
+  "state": {
+   "normal": {
+    "hear": "{dungeon:은} 평소랑 똑같대.",
+    "saw": "별일 없었어."
+   },
+   "eventGeneric": {
+    "hear": "{event:이} 나타났대.",
+    "saw": "{event:이} 있더라."
+   },
+   "events": {
+    "바람 나방": {
+     "hear": "바람을 부르는 나방이 떼로 나타났대.",
+     "saw": "바람을 부르는 나방이 떼로 날아다니더라."
+    },
+    "바람 나방 약화": {
+     "hear": "나방 떼가 전보다 줄었대.",
+     "saw": "나방 떼가 전보다 줄었더라."
+    },
+    "불씨 박쥐": {
+     "hear": "불씨를 흘리는 박쥐가 산대.",
+     "saw": "불씨를 흘리는 박쥐가 있더라."
+    },
+    "독가스 틈": {
+     "hear": "갱도 바닥 틈에서 독가스가 샌대.",
+     "saw": "갱도 바닥 틈에서 독가스가 새더라."
+    }
+   },
+   "attr": {
+    "화": {
+     "new": {
+      "hear": "열기가 {lv} 올라온대.",
+      "saw": "열기가 {lv} 올라오더라."
+     },
+     "up": {
+      "hear": "열기가 평소보다 세졌대.",
+      "saw": "열기가 평소보다 세더라."
+     },
+     "down": {
+      "hear": "열기는 좀 식었대.",
+      "saw": "열기는 좀 식었더라."
+     },
+     "same": {
+      "hear": "열기는 여전하대.",
+      "saw": "열기는 여전하더라."
+     }
+    },
+    "독": {
+     "new": {
+      "hear": "독안개가 {lv} 깔렸대.",
+      "saw": "독안개가 {lv} 깔려 있더라."
+     },
+     "up": {
+      "hear": "독안개가 평소보다 짙어졌대.",
+      "saw": "독안개가 평소보다 짙더라."
+     },
+     "down": {
+      "hear": "독안개는 좀 옅어졌대.",
+      "saw": "독안개는 좀 옅더라."
+     },
+     "same": {
+      "hear": "독안개는 평소 그대로래.",
+      "saw": "독안개는 평소 그대로더라."
+     }
+    },
+    "풍": {
+     "new": {
+      "hear": "바람이 {lv} 세게 분대.",
+      "saw": "바람이 {lv} 세게 불더라."
+     },
+     "up": {
+      "hear": "바람이 평소보다 거세졌대.",
+      "saw": "바람이 평소보다 거세더라."
+     },
+     "down": {
+      "hear": "바람은 좀 잦아들었대.",
+      "saw": "바람은 좀 잦아들었더라."
+     },
+     "same": {
+      "hear": "바람은 평소 그대로래.",
+      "saw": "바람은 평소 그대로더라."
+     }
+    }
+   }
+  }
+ }
+};
+
+// ============================================================
+// 아래는 게임 코드예요. 수치·용어를 직접 쓰지 않아요.
+// ============================================================
+"use strict";
+// ---- data shortcuts (all numbers and words live in DATA above) ----
+const T = DATA.terms, U = DATA.ui, X = DATA.text, P = DATA.proto, R = DATA.rules;
+const byId = a => Object.fromEntries(a.map(o => [o.id, o]));
+const ING = byId(DATA.ingredients), TPL = byId(DATA.templates), DUN = byId(DATA.dungeons), CT = byId(DATA.customerTypes), QS = byId(DATA.questions);
+const ATTRS = [...new Set(DATA.ingredients.map(i => i.attr).filter(Boolean))];
+const RES = Object.keys(R.fame);               // great, success, struggle, fail
+const GOOD = new Set([RES[0], RES[1]]);
+const ROOKIE = Math.min(...DATA.customerTypes.map(t => t.skill));
+const isDebug = () => /debug/.test(location.hash);
+
+let S = null, draft = null, sessionStart = Date.now(), storageOk = true;
+const ui = { reset: false, kmsg: [], copyMsg: '' };
+
+// ---- small helpers ----
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function vars(extra) { const v = {}; for (const k in T) if (typeof T[k] !== 'object') v[k] = T[k]; return Object.assign(v, extra || {}); }
+function fmt(s, extra) {
+  const v = vars(extra);
+  return String(s).replace(/\{(\w+)(?::([^}]+))?\}/g, (m, k, j) => (k in v) ? (j ? josa(v[k], j) : String(v[k])) : m);
+}
+function jong(word) { // index of final consonant of the last Hangul syllable (unicode math)
+  const w = String(word).replace(/\([^)]*\)\s*$/, '').trim(); const c = w.charCodeAt(w.length - 1);
+  return (c >= 0xAC00 && c <= 0xD7A3) ? (c - 0xAC00) % 28 : -1;
+}
+function josa(word, key) {
+  const f = DATA.josa[key]; if (!f) return word + key; const j = jong(word);
+  let s = f[0]; if (j === 0) s = f[1]; else if (j === 8 && f[2]) s = f[2];
+  return word + s;
+}
+function ga(text) { return '<span class="draft"><span class="ga">' + esc(U.draftTag) + '</span> ' + esc(text).replace(/\n/g, '<br>') + '</span>'; }
+function round(n, d) { const k = Math.pow(10, d == null ? P.showDecimals : d); return Math.round(n * k) / k; }
+function hashStr(s) {
+  let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+  for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); h1 = Math.imul(h1 ^ c, 2654435761); h2 = Math.imul(h2 ^ c, 1597334677); }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (h2 >>> 0) ^ (h1 >>> 0);
+}
+function mulberry(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function rng(...parts) { return mulberry(hashStr([S.seed, ...parts].join('|'))); }
+function rInt(r, lo, hi) { return lo + Math.floor(r() * (hi - lo + 1)); }
+function pick(r, a) { return a[Math.floor(r() * a.length)]; }
+function shuffle(r, a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function weighted(r, items, w) { let x = r() * items.reduce((s, i) => s + w(i), 0); for (const i of items) { x -= w(i); if (x < 0) return i; } return items[items.length - 1]; }
+function norm(q) { const o = {}; for (const a in q) if (q[a]) o[a] = q[a]; return o; }
+function reqEq(a, b) { a = norm(a); b = norm(b); const ka = Object.keys(a), kb = Object.keys(b); return ka.length === kb.length && ka.every(k => a[k] === b[k]); }
+function dots(q) { return ATTRS.filter(a => q[a]).map(a => a + ' ' + U.dot.repeat(q[a])).join(' · ') || U.none; }
+function attrLine(q) { return ATTRS.map(a => a + ' ' + (q[a] || 0)).join(' · '); }
+function attrKey(q) { return ATTRS.map(a => a + (q[a] || 0)).join(''); }
+function resName(r) { return T.results[r]; }
+
+// ---- fame / time / log ----
+function fameTier(f) { let n = 0; R.customersByFame.forEach((t, i) => { if (f >= t.min) n = i; }); return n; }
+function custCount(f) { return R.customersByFame[fameTier(f)].n; }
+function nowPlay() { return S.playMs + (Date.now() - sessionStart); }
+function curCust() { return S.phase === 'day' ? (S.customers[S.ci] || null) : null; }
+function log(e, data) { const c = curCust(); S.log.push(Object.assign({ e, day: S.day, cust: c ? c.idx + 1 : null, t: Math.round(nowPlay() / 1000) }, data || {})); }
+
+// ---- world (hidden schedule) ----
+function buildWorld(seed, random) {
+  if (!random) return DATA.worldEvents.map(e => ({ ...e, req: { ...e.req } }));
+  const r = mulberry(hashStr(seed + '|world')); let prev = 0;
+  return DATA.worldEvents.map((e, i) => { const g = P.randomSchedule[i] || [e.day, e.day]; let d = rInt(r, g[0], g[1]); if (d <= prev) d = prev + 1; prev = d; return { ...e, day: d, req: { ...e.req } }; });
+}
+function eventsFor(d) { return S.world.filter(e => e.dungeon === d).sort((a, b) => a.day - b.day); }
+function actualReq(d, day) { let q = { ...DUN[d].base }; eventsFor(d).forEach(e => { if (e.day <= day) q = { ...e.req }; }); return q; }
+function knownEvent(d, q) { const ev = eventsFor(d).find(e => reqEq(e.req, q)); if (ev) return ev.name; const f = (P.fakeAnomalies[d] || []).find(f => reqEq(f.req, q)); return f ? f.name : null; }
+function wrongClaim(d, actual, r) {
+  const c = [DUN[d].base, ...eventsFor(d).map(e => e.req), ...(P.fakeAnomalies[d] || []).map(f => f.req)], u = [];
+  c.forEach(x => { if (!reqEq(x, actual) && !u.some(y => reqEq(y, x))) u.push(norm(x)); });
+  return u.length ? pick(r, u) : norm(actual);
+}
+function describe(d, q, voice) {
+  const base = DUN[d].base, parts = [];
+  if (reqEq(q, base)) {
+    parts.push(fmt(X.state.normal[voice], { dungeon: DUN[d].name }));
+    ATTRS.filter(a => base[a]).forEach(a => parts.push(X.state.attr[a].same[voice]));
+    return parts.join(' ');
+  }
+  const ev = knownEvent(d, q);
+  if (ev) parts.push(X.state.events[ev] ? X.state.events[ev][voice] : fmt(X.state.eventGeneric[voice], { event: ev }));
+  ATTRS.forEach(a => {
+    const b = base[a] || 0, v = q[a] || 0; if (!b && !v) return;
+    const kind = !b ? 'new' : v > b ? 'up' : v < b ? 'down' : 'same';
+    parts.push(fmt(X.state.attr[a][kind][voice], { lv: X.levelWords[Math.min(v, X.levelWords.length - 1)] }));
+  });
+  return parts.join(' ');
+}
+
+// ---- rumors ----
+function addRumor(src, srcName, d, claim, aboutDay, text) {
+  const rm = { id: ++S.uid, day: S.day, aboutDay, src, srcName, dungeon: d, claim: norm(claim), text, cross: false };
+  S.rumors.forEach(o => {
+    if (o.dungeon === d && reqEq(o.claim, rm.claim) && (o.src + o.srcName) !== (src + srcName) && Math.abs(o.aboutDay - aboutDay) <= P.crossWindow) { o.cross = true; rm.cross = true; }
+  });
+  S.rumors.push(rm); return rm;
+}
+function makeToto(day) {
+  const r = rng('toto', day), acc = DATA.rumorSources.toto.accuracy, ev = S.world[P.fixedToto.eventIndex];
+  let d, claim;
+  if (ev && ev.day === day) { d = ev.dungeon; claim = actualReq(d, day); }
+  else {
+    const changed = DATA.dungeons.filter(x => !reqEq(actualReq(x.id, day), S.codex[x.id].req)).map(x => x.id);
+    d = changed.length ? pick(r, changed) : pick(r, DATA.dungeons).id;
+    const actual = actualReq(d, day); claim = r() < acc ? actual : wrongClaim(d, actual, r);
+  }
+  return addRumor('toto', DATA.rumorSources.toto.label, d, claim, day, fmt(X.toto, { dungeon: DUN[d].name, desc: describe(d, claim, 'hear') }));
+}
+
+// ---- state ----
+function newState(seed, random) {
+  const s = {
+    v: P.saveVersion, seed: String(seed), randomWorld: !!random, day: 1, phase: 'letter', view: 'book', page: 'letters',
+    money: R.startMoney, fame: 0, fameFloor: 0, inv: [], uid: 0, unlocked: {}, unlockNext: null, researchB: 0, mastery: {},
+    codex: {}, races: {}, raceDoubt: {}, rumors: [], letters: {}, pending: [], regular: {}, finished: [], sideUsed: false,
+    tips: {}, notes: [], log: [], playMs: 0, customers: [], ci: 0, world: null, survey: {}, dayStartMs: 0,
+    letterLogged: false, letterAt: 0, nightAt: 0, researchDone: null, lastDraftKey: '', lastFailDay: 0, evening: null
+  };
+  DATA.templates.forEach(t => { s.unlocked[t.id] = !t.locked; s.mastery[t.id] = 0; });
+  DATA.dungeons.forEach(d => { s.codex[d.id] = { req: { ...d.codexStart }, day: 0, doubt: false, changedOn: 0 }; });
+  DATA.regulars.forEach(g => { s.regular[g.id] = { history: [], absentUntil: 0, byDay: {} }; });
+  return s;
+}
+function newGame(seed, random) {
+  S = newState(seed, random); S.world = buildWorld(S.seed, random); sessionStart = Date.now();
+  draft = emptyDraft(); log('start', { seed: S.seed, randomWorld: !!random }); startDay(1);
+}
+function cond(name) { // e.g. finDay3SuccessOrBetter
+  const m = /^(\w+?)Day(\d+)SuccessOrBetter$/.exec(name || ''); if (!m) return true;
+  const g = S.regular[m[1]]; return !!g && GOOD.has(g.byDay[m[2]]);
+}
+function genCustomers(day) {
+  const n = custCount(S.fame), list = [], names = shuffle(rng('names', day), DATA.namePool); let ni = 0;
+  const nextName = () => names[(ni++) % names.length];
+  (DATA.script[day] || []).forEach((e, i) => {
+    if (list.length >= n || (e.onlyIf && !cond(e.onlyIf))) return;
+    if (e.regular && S.regular[e.regular].absentUntil >= day) return;
+    const nm = e.regular ? DATA.regulars.find(g => g.id === e.regular).name : nextName();
+    list.push(makeCustomer(day, list.length, e.type, e.dungeon, e.regular, 'f' + i, nm));
+  });
+  let k = 0;
+  while (list.length < n) {
+    const r = rng('cust', day, k++); let type, dun, tries = 0;
+    do { type = weighted(r, DATA.customerTypes, c => c.weight).id; dun = pick(r, DATA.dungeons).id; tries++; }
+    while (list.some(c => c.type === type && c.dungeon === dun) && tries < P.rerollLimit);
+    list.push(makeCustomer(day, list.length, type, dun, null, 'r' + k, nextName()));
+  }
+  return list;
+}
+function makeCustomer(day, idx, typeId, dun, regular, key, name) {
+  const r = rng('who', day, key), t = CT[typeId];
+  const c = {
+    idx, key, name, type: typeId, race: t.race, skill: t.skill, skillLabel: t.skillLabel, budget: t.budget, taboo: t.taboo.slice(), dungeon: dun,
+    regular: regular || null, fav: pick(r, DATA.templates).id, weapon: rInt(r, 0, X.ans.weapon.length - 1), mate: rInt(r, 0, X.mates.length - 1),
+    arrive: rInt(r, 0, X.arrive[dun].length - 1), asked: [], talk: [], tries: 0, done: false, shown: false
+  };
+  if (regular) {
+    const h = S.regular[regular].history, last = h[h.length - 1], g = DATA.regulars.find(x => x.id === regular);
+    c.returning = h.length > 0; c.firstVisit = !h.some(x => x.dungeon === dun);
+    const same = h.filter(x => x.dungeon === dun).pop(); c.seenTrip = same ? { daysAgo: day - same.day } : null;
+    if (last) { c.lastTrip = { dungeon: last.dungeon, daysAgo: day - last.day }; c.q9 = last.lack ? { dungeon: last.dungeon, attr: last.lack } : null; c.lastDish = last.dish; c.lastSat = last.sat; }
+    else { c.lastTrip = null; c.q9 = 'none'; }
+    c.arriveKind = !last ? 'arrive1' : (typeId !== g.type ? 'arriveGrown' : (GOOD.has(last.result) ? 'arriveGood' : 'arriveBad'));
+  } else {
+    c.returning = false; c.firstVisit = r() < (P.firstVisitChance[t.skillLabel] || 0);
+    const da = rInt(r, P.seenDaysAgo[0], P.seenDaysAgo[1]);
+    const ld = c.firstVisit ? pick(r, DATA.dungeons.filter(d => d.id !== dun)).id : dun;
+    c.lastTrip = { dungeon: ld, daysAgo: da }; c.seenTrip = c.firstVisit ? null : { daysAgo: da };
+    if (r() < P.q9NoneChance) c.q9 = null;
+    else { const st = actualReq(ld, day - da); c.q9 = { dungeon: ld, attr: pick(r, ATTRS.filter(a => st[a])) }; }
+  }
+  c.offered = shuffle(rng('qs', day, key), DATA.questions.filter(q => !q.returningOnly || c.returning)).slice(0, R.questionsOffered).map(q => q.id);
+  return c;
+}
+
+// ---- day flow ----
+function startDay(day) {
+  S.day = day; S.phase = 'letter'; S.view = 'book'; S.page = 'letters';
+  S.sideUsed = false; S.finished = []; S.ci = 0; S.letterLogged = false; S.researchDone = null; S.evening = null; S.lastDraftKey = '';
+  const arriving = S.pending.filter(p => p.arrive <= day).sort((a, b) => a.saleDay - b.saleDay || a.order - b.order);
+  S.pending = S.pending.filter(p => p.arrive > day);
+  const items = arriving.map(applyReport);
+  const toto = makeToto(day);
+  S.letters[day] = { items, toto: toto.id };
+  S.customers = genCustomers(day);
+  S.dayStartMs = nowPlay();
+  log('dayStart', { fame: S.fame, money: S.money, customers: S.customers.length });
+}
+function applyReport(p) {
+  const res = p.result, before = S.fame;
+  S.fame = Math.max(S.fameFloor, S.fame + R.fame[res]);
+  S.fameFloor = Math.max(S.fameFloor, R.customersByFame[fameTier(S.fame)].min);
+  const tip = res === RES[0] ? p.sat * R.tip.great : res === RES[1] ? p.sat * R.tip.success : 0;
+  S.money += tip;
+  const cx = S.codex[p.dungeon]; let changed = false, updated = false;
+  if (p.visitDay >= cx.day) { changed = !reqEq(cx.req, p.actual); cx.req = { ...p.actual }; cx.day = p.visitDay; cx.doubt = false; updated = true; if (changed) cx.changedOn = S.day; }
+  if (GOOD.has(res)) S.mastery[p.tpl] += 1;
+  const lines = reportLines(p);
+  log('report', { result: res, dungeon: p.dungeon, trap: !!p.trap, saleDay: p.saleDay, who: p.cust.name });
+  return { who: p.cust.name, dungeon: p.dungeon, result: res, dish: p.dish, lines: lines.main, cause: lines.cause, trap: lines.trap, tip, fame: S.fame - before, codex: updated ? { changed, day: p.visitDay } : null, calc: p.calc, saleDay: p.saleDay };
+}
+function ratios(calc) { const ok = [], lack = []; Object.entries(calc.ratios).forEach(([a, v]) => (v >= 1 ? ok : lack).push([a, v])); ok.sort((x, y) => y[1] - x[1]); lack.sort((x, y) => x[1] - y[1]); return { ok, lack }; }
+function lackOf(calc) { const r = ratios(calc); return r.lack.length ? r.lack[0][0] : null; }
+function causeLine(calc) {
+  const { ok, lack } = ratios(calc), C = X.cause, res = calc.result;
+  const v = { ok: ok.length ? T.attrSay[ok[0][0]] : '', lack: lack.length ? T.attrSay[lack[0][0]] : '' };
+  if (!ok.length && !lack.length) return '';
+  let s;
+  if (res === RES[0]) { v.ok = v.ok || T.attrSay[Object.keys(calc.ratios)[0]]; s = C.great; }
+  else if (res === RES[1]) s = ok.length && lack.length ? C.successLack : ok.length ? C.success : C.successOnlyLack;
+  else if (res === RES[2]) s = ok.length && lack.length ? C.struggle : lack.length ? C.struggleOnlyLack : C.struggleNoLack;
+  else s = lack.length ? (lack[0][1] === 0 ? C.fail : C.failSome) : C.failNoLack;
+  return fmt(s, v);
+}
+function reportLines(p) {
+  const v = { name: p.cust.name, dungeon: DUN[p.dungeon].name, dish: p.dish.name };
+  let main = null;
+  if (p.cust.regular) {
+    const ep = P.regularEpisodes[p.cust.regular];
+    if (ep && p.saleDay === ep.first) main = X.fin.ep1[p.result];
+    else if (ep && p.saleDay === ep.second) main = GOOD.has(p.result) ? X.fin.ep2 : X.fin.ep3;
+  }
+  if (!main) main = pick(rng('rep', p.saleDay, p.cust.key), X.reports[p.dungeon][p.result]);
+  let trap = null;
+  if (p.trap) trap = p.trap === 'codex' ? X.trap.codex : pick(rng('trap', p.saleDay, p.cust.key), X.trap.rumor);
+  return { main: fmt(main, v), cause: causeLine(p.calc), trap };
+}
+function toEvening() {
+  const n = S.finished.length; let line = null;
+  if (n) { line = fmt(pick(rng('pet', S.day), X.pet), { dish: S.finished[0].name }); log('wasted', { n, dishes: S.finished.map(d => d.name) }); }
+  S.evening = { n, line, sold: S.log.filter(x => x.e === 'sale' && x.day === S.day).length };
+  S.finished = []; S.phase = 'evening'; S.view = 'stall';
+}
+function toNight() { S.phase = 'night'; S.view = 'book'; S.page = 'recipes'; S.nightAt = nowPlay(); }
+function endDay() {
+  log('day', { min: round((nowPlay() - S.dayStartMs) / 60000), customers: S.customers.length });
+  if (S.unlockNext) { S.unlocked[S.unlockNext] = true; S.unlockNext = null; }
+  if (S.day >= P.days) { finalLetters(); save(); return; }
+  startDay(S.day + 1); draft = emptyDraft(); save();
+}
+function finalLetters() {
+  const items = S.pending.sort((a, b) => a.saleDay - b.saleDay || a.order - b.order).map(applyReport);
+  S.pending = []; S.letters.final = { items, toto: null };
+  S.phase = 'final'; S.view = 'book'; S.page = 'letters'; S.letterLogged = false;
+}
+
+// ---- inventory & cooking ----
+function addInv(o) { o.uid = ++S.uid; S.inv.push(o); return o; }
+function invGet(uid) { return S.inv.find(i => i.uid === uid); }
+function removeInv(uid) { S.inv = S.inv.filter(i => i.uid !== uid); }
+function isWeak(day) { return S.day >= day + R.freshDays; }
+function weakTomorrow(day) { return !isWeak(day) && S.day + 1 >= day + R.freshDays; }
+function effVal(id, day) { const g = ING[id]; if (!g.attr) return 0; return Math.max(0, g.val - (isWeak(day) ? R.freshPenalty : 0)); }
+function bestItem(id, used) { const c = S.inv.filter(i => i.id === id && !used.has(i.uid)); c.sort((a, b) => (isWeak(a.day) - isWeak(b.day)) || (a.day - b.day)); return c[0] || null; }
+function emptyDraft(tpl) { return { tpl: tpl || null, slots: [], order: [], roast: false, side: null, seq: 0 }; }
+function capApply(contribs) {
+  let total = 0; const attrs = {}, over = []; let raw = 0;
+  contribs.forEach(c => { if (!c.attr || !c.val) return; raw += c.val; const add = Math.max(0, Math.min(c.val, R.capTotal - total)); if (add < c.val) over.push({ name: c.name, lost: c.val - add }); if (add) attrs[c.attr] = (attrs[c.attr] || 0) + add; total += add; });
+  return { attrs, over, raw };
+}
+function computeDraft(d) {
+  const t = TPL[d.tpl]; if (!t) return null;
+  const o = { t, contribs: [], missing: [], complete: true, cost: 0, roast: false, roastCost: 0, uses: [] };
+  const rk = P.roastKinds;
+  if (t.fixed) {
+    const b = S.inv.filter(i => i.bundle === t.id).sort((x, y) => x.day - y.day)[0];
+    if (!b) { o.complete = false; o.missing.push(fmt(U.needBundle, { tpl: t.name })); }
+    else { o.uses.push(b); o.cost += t.bundle; t.fixed.forEach(id => o.contribs.push({ id, name: ING[id].name, attr: ING[id].attr, val: effVal(id, b.day) })); }
+  } else {
+    const used = new Set(d.slots.filter(Boolean)); if (d.side) used.add(d.side);
+    (t.forced || []).forEach(id => { const it = bestItem(id, used); if (!it) { o.complete = false; o.missing.push(fmt(U.needForced, { ing: ING[id].name })); return; } used.add(it.uid); o.uses.push(it); o.cost += ING[id].price; o.contribs.push({ id, name: ING[id].name, attr: ING[id].attr, val: effVal(id, it.day), forced: true }); });
+    if (t.slots.some((_, i) => !d.slots[i])) { o.complete = false; o.missing.push(U.needSlots); }
+    t.slots.map((_, i) => i).filter(i => d.slots[i]).sort((a, b) => d.order[a] - d.order[b]).forEach(i => {
+      const it = invGet(d.slots[i]); if (!it) return; o.uses.push(it); o.cost += ING[it.id].price; o.contribs.push({ id: it.id, name: ING[it.id].name, attr: ING[it.id].attr, val: effVal(it.id, it.day) });
+    });
+  }
+  o.roast = t.roast === rk.required || (t.roast === rk.optional && !!d.roast);
+  if (o.roast) { o.contribs.push({ name: T.roast, attr: R.roastAttr, val: R.roastAdd, roast: true }); o.roastCost = t.fixed ? 0 : R.roastCost; o.cost += o.roastCost; }
+  Object.assign(o, capApply(o.contribs));
+  o.price = t.menu; o.profit = t.menu - o.cost;
+  o.qKey = S.mastery[t.id] >= R.skillMasteryForA ? 'A' : 'B'; o.qBonus = R.quality[o.qKey];
+  if (o.roastCost > S.money) { o.complete = false; o.missing.push(U.needRoastMoney); }
+  const main = o.contribs.filter(c => c.id && ING[c.id].attr && !c.forced).sort((a, b) => ING[b.id].val - ING[a.id].val)[0];
+  o.name = t.fixed ? t.name : (main ? fmt(U.dishName, { ing: main.name, tpl: t.name }) : t.name);
+  o.tags = [...new Set(o.uses.flatMap(u => u.bundle ? TPL[u.bundle].fixed.flatMap(id => ING[id].tags) : ING[u.id].tags))];
+  return o;
+}
+function draftChanged() {
+  const c = computeDraft(draft); if (!c || !c.contribs.some(x => x.id && !x.forced) && !c.t.fixed) return;
+  const k = c.t.id + ':' + attrKey(c.attrs);
+  if (k !== S.lastDraftKey) { S.lastDraftKey = k; log('cookDraft', { tpl: c.t.id, attrs: attrKey(c.attrs) }); }
+}
+function cook() {
+  const c = computeDraft(draft); if (!c || !c.complete) return;
+  if (!c.t.fixed) {
+    const ids = c.t.slots.map((_, i) => invGet(draft.slots[i]).id), order = draft.order.slice(0, c.t.slots.length);
+    const note = { tpl: c.t.id, ids, order, roast: c.roast }, key = JSON.stringify(note);
+    if (!S.notes.some(n => JSON.stringify(n) === key)) S.notes.push(note);
+  }
+  c.uses.forEach(u => removeInv(u.uid)); S.money -= c.roastCost;
+  const dish = { uid: ++S.uid, tpl: c.t.id, name: c.name, attrs: c.attrs, price: c.price, cost: c.cost, roast: c.roast, roastCost: c.roastCost, qKey: c.qKey, qBonus: c.qBonus, tags: c.tags, ings: c.uses.map(u => u.bundle ? { bundle: u.bundle, day: u.day } : { id: u.id, day: u.day }) };
+  S.finished.push(dish);
+  log('cook', { tpl: dish.tpl, attrs: attrKey(dish.attrs), cost: dish.cost, roast: dish.roast });
+  const side = draft.side; draft = emptyDraft(draft.tpl); draft.side = side && invGet(side) ? side : null;
+  ui.kmsg = [{ text: fmt(U.cooked, { dish: dish.name }) }];
+}
+function applyNote(i) {
+  const n = S.notes[i]; if (!n) return; draft = emptyDraft(n.tpl); draft.roast = n.roast; const used = new Set(); const miss = [];
+  n.ids.map((id, si) => ({ id, si, o: n.order[si] || si })).sort((a, b) => a.o - b.o).forEach(x => {
+    const it = bestItem(x.id, used); if (!it) { miss.push(ING[x.id].name); return; } used.add(it.uid); draft.slots[x.si] = it.uid; draft.order[x.si] = ++draft.seq;
+  });
+  ui.kmsg = miss.length ? [{ text: fmt(U.noteMissing, { list: miss.join(U.listSep) }) }] : [];
+  draftChanged();
+}
+function judge(dishA, sideA, req, skill, quality, local, luck) {
+  let num = 0, den = 0; const rt = {};
+  for (const a in req) { if (!req[a]) continue; const have = (dishA[a] || 0) + (sideA[a] || 0); const cap = Math.min(have, R.perAttrCap * req[a]); num += cap; den += req[a]; rt[a] = cap / req[a]; }
+  const fit = Number((den ? num / den * 100 : 100).toFixed(P.scoreDecimals));
+  const score = Number((fit + quality + skill + local + luck).toFixed(P.scoreDecimals));
+  const result = score >= R.great ? RES[0] : score >= R.success ? RES[1] : score >= R.struggle ? RES[2] : RES[3];
+  return { fit, score, result, ratios: rt, quality, skill, local, luck };
+}
+function localBonus(tplId, dun) { const t = TPL[tplId]; return t.home && t.home === DUN[dun].name ? (t.localBonus || 0) : 0; }
+function sideAttrs(it) { return it ? { [ING[it.id].attr]: effVal(it.id, it.day) } : {}; }
+function stronger(c, sold, soldFit, actual, moneyBefore) {
+  const pool = {}; const add = (id, day) => { const k = id + '|' + effVal(id, day); pool[k] = pool[k] || { id, val: effVal(id, day), n: 0 }; pool[k].n++; };
+  S.inv.filter(i => !i.bundle).forEach(i => add(i.id, i.day)); sold.ings.filter(x => x.id).forEach(x => add(x.id, x.day));
+  const bundles = S.inv.filter(i => i.bundle).map(i => i.bundle).concat(sold.ings.filter(x => x.bundle).map(x => x.bundle));
+  const groups = Object.values(pool), money = moneyBefore + (sold.roastCost || 0), rk = P.roastKinds;
+  const ok = ids => !ids.some(id => ING[id].tags.some(t => c.taboo.includes(t)));
+  for (const t of DATA.templates) {
+    if (!S.unlocked[t.id] || t.menu > c.budget || t.menu <= sold.price) continue;
+    const roasts = t.roast === rk.required ? [true] : t.roast === rk.optional ? [false, true] : [false];
+    if (t.fixed) {
+      if (!bundles.includes(t.id) || !ok(t.fixed)) continue;
+      const a = capApply(t.fixed.map(id => ({ attr: ING[id].attr, val: ING[id].val })).concat(roasts[0] ? [{ attr: R.roastAttr, val: R.roastAdd }] : [])).attrs;
+      if (judge(a, {}, actual, 0, 0, 0, 0).fit > soldFit) return { tpl: t.id, attrs: attrKey(a) };
+      continue;
+    }
+    const base = [], need = {};
+    let fail = false; (t.forced || []).forEach(id => { const g = groups.filter(x => x.id === id).sort((p, q) => q.val - p.val)[0]; if (!g) fail = true; else { base.push({ g, attr: ING[id].attr, val: g.val, id }); need[g.id + g.val] = (need[g.id + g.val] || 0) + 1; } });
+    if (fail) continue;
+    let found = null;
+    const rec = (i, chosen) => {
+      if (found) return;
+      if (i === t.slots.length) {
+        const all = base.concat(chosen); if (!ok(all.map(x => x.id))) return;
+        for (const ro of roasts) { if (ro && R.roastCost > money) continue; const a = capApply(all.concat(ro ? [{ attr: R.roastAttr, val: R.roastAdd }] : [])).attrs; if (judge(a, {}, actual, 0, 0, 0, 0).fit > soldFit) { found = { tpl: t.id, attrs: attrKey(a), roast: ro }; return; } }
+        return;
+      }
+      for (const g of groups) {
+        if (!t.slots[i].includes(ING[g.id].cat)) continue; const k = g.id + g.val; const usedN = (need[k] || 0) + chosen.filter(x => x.g === g).length;
+        if (usedN >= g.n) continue; rec(i + 1, chosen.concat([{ g, id: g.id, attr: ING[g.id].attr, val: g.val }]));
+      }
+    };
+    rec(0, []);
+    if (found) return found;
+  }
+  return null;
+}
+function serve(uid) {
+  const c = curCust(); if (!c || c.done) return;
+  const di = S.finished.findIndex(d => d.uid === uid); if (di < 0) return; const dish = S.finished[di];
+  const side = draft.side ? invGet(draft.side) : null;
+  if (dish.price > c.budget) return reject(c, 'budget');
+  const tags = dish.tags.concat(side ? ING[side.id].tags : []); const bad = tags.find(t => c.taboo.includes(t));
+  if (bad) return reject(c, 'taboo', bad);
+  const moneyBefore = S.money; S.finished.splice(di, 1);
+  const actual = actualReq(c.dungeon, S.day), sA = sideAttrs(side);
+  const luck = rInt(rng('luck', S.day, c.key), -R.luck, R.luck);
+  const calc = judge(dish.attrs, sA, actual, c.skill, dish.qBonus, localBonus(dish.tpl, c.dungeon), luck);
+  const soldFit = judge(dish.attrs, {}, actual, 0, 0, 0, 0).fit;
+  const alt = stronger(c, dish, soldFit, actual, moneyBefore);
+  S.money += dish.price;
+  const cx = S.codex[c.dungeon];
+  const todays = S.rumors.filter(r => r.dungeon === c.dungeon && r.aboutDay === S.day && r.src !== 'seen');
+  const trap = !reqEq(cx.req, actual) ? 'codex' : todays.some(r => !reqEq(r.claim, actual)) ? 'rumor' : null;
+  const sat = TPL[dish.tpl].taste + (c.fav === dish.tpl ? 1 : 0);
+  const stock = {}; S.inv.forEach(i => { const k = i.bundle || i.id; stock[k] = (stock[k] || 0) + 1; });
+  log('sale', { tpl: dish.tpl, ings: dish.ings.map(x => x.id || x.bundle), attrs: attrKey(dish.attrs), price: dish.price, cost: dish.cost, side: side ? side.id : null, dungeon: c.dungeon, type: c.type, secondBest: !!alt, alt, stock, money: moneyBefore });
+  if (side) {
+    removeInv(side.uid); S.sideUsed = true;
+    log('sideDish', { ing: side.id, dungeon: c.dungeon, changed: !reqEq(actual, DUN[c.dungeon].base), codexDiff: !reqEq(cx.req, actual) });
+  }
+  draft.side = null;
+  S.pending.push({ arrive: S.day + DUN[c.dungeon].reportDelay, saleDay: S.day, visitDay: S.day, order: c.idx, cust: { name: c.name, key: c.key, regular: c.regular }, dungeon: c.dungeon, dish: { name: dish.name, tpl: dish.tpl }, tpl: dish.tpl, actual, calc, result: calc.result, sat, trap });
+  if (c.regular) {
+    const g = S.regular[c.regular]; g.history.push({ day: S.day, dungeon: c.dungeon, result: calc.result, lack: lackOf(calc), dish: dish.name, sat });
+    g.byDay[S.day] = calc.result; if (calc.result === RES[3]) g.absentUntil = S.day + R.failNoVisitDays;
+  }
+  c.done = true; c.sold = { dish: dish.name, price: dish.price, calc, side: side ? ING[side.id].name : null };
+  ui.kmsg = []; S.view = 'stall';
+}
+function reject(c, kind, tag) {
+  c.tries++;
+  const r = rng('rej', S.day, c.key, c.tries);
+  const line = kind === 'budget' ? pick(r, X.rejectBudget) : fmt(pick(r, X.rejectTaboo), { taboo: tag });
+  c.talk.push({ text: line }); log('reject', { reason: kind });
+  ui.kmsg = [{ text: line, ga: true }];
+  if (c.tries >= P.maxTries) { c.talk.push({ text: X.leave }); c.done = true; c.left = true; log('leave', { reason: kind }); S.view = 'stall'; }
+}
+
+// ---- questions ----
+function answer(c, qid) {
+  const q = QS[qid], A = X.ans;
+  switch (q.reveals) {
+    case 'skill': return A.skill[c.skillLabel];
+    case 'skill+firstVisit': return A.visit[c.firstVisit ? 'first' : 'again'][c.skillLabel];
+    case 'isRookie': return c.skill === ROOKIE ? A.weaponRookie : A.weapon[c.weapon];
+    case 'budget': return fmt(A.budget, { budget: c.budget });
+    case 'budgetTier': return A.tier[(P.budgetTiers.find(b => c.budget <= b.max) || P.budgetTiers[P.budgetTiers.length - 1]).key];
+    case 'seenAnomaly': {
+      if (c.firstVisit || !c.seenTrip) return A.seenFirst;
+      const da = c.seenTrip.daysAgo, d0 = S.day - da, st = actualReq(c.dungeon, d0), desc = describe(c.dungeon, st, 'saw');
+      const text = fmt(A.seen, { when: X.daysAgo[da] || fmt(X.daysAgoN, { n: da }), desc });
+      addRumor('seen', fmt(U.srcPerson, { label: DATA.rumorSources.seen.label, name: c.name }), c.dungeon, st, d0, text); return text;
+    }
+    case 'heardRumor': {
+      const r = rng('q7', S.day, c.key), actual = actualReq(c.dungeon, S.day);
+      const claim = r() < DATA.rumorSources.heard.accuracy ? actual : wrongClaim(c.dungeon, actual, r);
+      const text = fmt(A.heard, { mate: X.mates[c.mate], desc: describe(c.dungeon, claim, 'hear') });
+      addRumor('heard', fmt(U.srcPerson, { label: DATA.rumorSources.heard.label, name: c.name }), c.dungeon, claim, S.day, text); return text;
+    }
+    case 'indirectHint': {
+      const r = rng('q8', S.day, c.key), actual = actualReq(c.dungeon, S.day), base = DUN[c.dungeon].base;
+      const diffs = ATTRS.map(a => [a, (actual[a] || 0) - (base[a] || 0)]).filter(x => x[1]).sort((x, y) => Math.abs(y[1]) - Math.abs(x[1]));
+      if (!diffs.length || r() >= P.hintChance) return A.hintNone;
+      const h = X.hints[diffs[0][0]], dir = diffs[0][1] > 0 ? 'up' : 'down', small = Math.abs(diffs[0][1]) < P.hintBigDiff;
+      return fmt(A.hint, { hint: (small && h[dir + 'Small']) || h[dir] });
+    }
+    case 'lastLackingAttr':
+      if (c.q9 === 'none') return A.lackFirst;
+      if (!c.q9) return A.lackNone;
+      return fmt(A.lack, { dungeon: DUN[c.q9.dungeon].name, attr: T.attrSay[c.q9.attr] });
+    case 'lastSatisfaction': return fmt(A.sat[Math.min(c.lastSat || 1, Object.keys(A.sat).length)], { dish: c.lastDish || '' });
+    case 'taboo': return c.taboo.length ? fmt(A.taboo, { taboo: c.taboo.join(U.listSep) }) : A.tabooNone;
+    case 'favTemplate': return fmt(pick(rng('fav', S.day, c.key), A.fav), { tpl: TPL[c.fav].name });
+  }
+  return '';
+}
+function arrivalText(c) {
+  const v = { name: c.name, dungeon: DUN[c.dungeon].name };
+  if (c.regular && X.fin[c.arriveKind]) return fmt(X.fin[c.arriveKind], v);
+  return fmt(X.arrive[c.dungeon][c.arrive], v);
+}
+
+// ---- save ----
+function testStorage() { try { const k = P.saveKey + '-t'; localStorage.setItem(k, '1'); localStorage.removeItem(k); return true; } catch (e) { return false; } }
+function save() { S.playMs = nowPlay(); sessionStart = Date.now(); try { localStorage.setItem(P.saveKey, JSON.stringify(S)); storageOk = true; } catch (e) { storageOk = false; } }
+function load() { try { const s = localStorage.getItem(P.saveKey); if (!s) return null; const o = JSON.parse(s); return o && o.v === P.saveVersion ? o : null; } catch (e) { return null; } }
+function clearSave() { try { localStorage.removeItem(P.saveKey); localStorage.removeItem(P.quitKey); } catch (e) { } }
+function markQuit() {
+  if (!S || S.phase === 'result') return;
+  try { localStorage.setItem(P.quitKey, JSON.stringify({ day: S.day, phase: S.phase, t: Math.round(nowPlay() / 1000), afterFail: S.lastFailDay === S.day })); } catch (e) { }
+}
+function consumeQuit() {
+  try { const q = localStorage.getItem(P.quitKey); if (q) { const o = JSON.parse(q); S.log.push(Object.assign({ e: 'quit', cust: null }, o)); localStorage.removeItem(P.quitKey); } } catch (e) { }
+}
+
+// ---- render ----
+function tip(key, v) {
+  if (S.tips[key] || !X.tips[key]) return '';
+  return `<div class="tip"><div>${ga(fmt(X.tips[key], v))}</div><button class="small" data-a="tip" data-k="${key}">${esc(U.close)}</button></div>`;
+}
+function btn(a, label, extra, cls, dis) { return `<button class="${cls || ''}" data-a="${a}" ${extra || ''} ${dis ? 'disabled' : ''}>${esc(label)}</button>`; }
+function band() {
+  const left = S.customers.filter(c => !c.done).length;
+  return `<div class="band"><span><b>${esc(fmt(U.bandDay, { d: S.day, n: P.days }))}</b> ${esc(U.phases[S.phase])}</span>
+  <span>${esc(T.money)} <b>${S.money}</b></span><span>${esc(T.fame)} <b>${S.fame}</b> ${esc(fmt(U.tier, { n: fameTier(S.fame) }))}</span>
+  <span>${esc(U.bandCust)} <b>${['letter', 'market', 'day'].includes(S.phase) ? left : 0}</b></span>
+  <span class="seed">${esc(U.seed)} ${esc(S.seed)}${S.randomWorld ? ' · ' + esc(U.randomWorldOn) : ''}</span>
+  ${storageOk ? '' : `<span class="warn">${esc(U.noSave)}</span>`}
+  ${btn('reset-open', U.reset, '', 'small ghost')}</div>`;
+}
+function resetBox() {
+  if (!ui.reset) return '';
+  return `<div class="card alert"><p>${esc(U.resetAsk)}</p><label>${esc(U.seedLabel)} <input id="seedIn" type="text" inputmode="numeric" value="${esc(S.seed)}"></label>
+  <div class="row">${btn('reset-go', U.resetGo, '', 'primary')}${btn('reset-cancel', U.cancel)}</div></div>`;
+}
+function nav() {
+  if (S.phase === 'result') return '';
+  const lock = S.phase === 'letter' || S.phase === 'final';
+  const b = (v, l) => btn('nav', l, `data-v="${v}"`, S.view === v ? 'on' : '', lock && v !== 'book');
+  return `<div class="nav">${b('stall', T.stall)}${b('kitchen', T.kitchen)}${b('book', T.book)}</div>`;
+}
+function debugPanel() {
+  if (!isDebug()) return '';
+  const c = S.customers[S.ci];
+  const real = DATA.dungeons.map(d => `${esc(d.name)}: ${esc(dots(actualReq(d.id, S.day)))}`).join('<br>');
+  const sched = S.world.map(e => `${esc(fmt(U.dayN, { d: e.day }))} ${esc(DUN[e.dungeon].name)} ${esc(e.name)} (${esc(dots(e.req))})`).join('<br>');
+  const hid = c ? `${esc(c.name)} · ${esc(U.dbgSkill)} ${esc(c.skillLabel)}(${c.skill}) · ${esc(U.dbgBudget)} ${c.budget} · ${esc(U.dbgTaboo)} ${esc(c.taboo.join(U.listSep) || U.none)} · ${esc(U.dbgFav)} ${esc(TPL[c.fav].name)} · ${esc(U.dbgFirst)} ${c.firstVisit ? U.yes : U.no}` : esc(U.none);
+  return `<details class="card debug" open><summary>${esc(U.debugTitle)}</summary>
+  <p><b>${esc(U.dbgReal)}</b><br>${real}</p><p><b>${esc(U.dbgSched)}</b><br>${sched}</p><p><b>${esc(U.dbgHidden)}</b><br>${hid}</p>
+  <div class="row">${btn('dbg-skip', U.dbgSkip)}${btn('dbg-money', fmt(U.dbgMoney, { n: P.debugMoney }))}${btn('dbg-rand', U.dbgRandom)}${btn('dbg-default', U.dbgDefault)}</div></details>`;
+}
+function main() {
+  if (S.phase === 'result') return resultView();
+  if (S.view === 'kitchen') return kitchenView();
+  if (S.view === 'book') return bookView();
+  return stallView();
+}
+function stallView() {
+  if (S.phase === 'market') return marketView();
+  if (S.phase === 'day') return customerView();
+  if (S.phase === 'evening') return eveningView();
+  if (S.phase === 'night') return `<div class="card"><p>${esc(U.nightHint)}</p>${btn('nav', U.goRecipes, 'data-v="book" data-p="recipes"', 'primary')}</div>`;
+  return `<div class="card"><p>${esc(U.readFirst)}</p>${btn('nav', U.goLetters, 'data-v="book" data-p="letters"', 'primary')}</div>`;
+}
+function invStatus(it) {
+  if (it.bundle) { const anyAttr = TPL[it.bundle].fixed.some(id => ING[id].attr); if (!anyAttr) return ''; }
+  else if (!ING[it.id].attr) return '';
+  return isWeak(it.day) ? fmt(U.weakNow, { p: R.freshPenalty }) : weakTomorrow(it.day) ? U.weakTomorrow : '';
+}
+function invTable(withUndo) {
+  if (!S.inv.length) return `<p class="muted">${esc(U.invEmpty)}</p>`;
+  const g = {}; S.inv.forEach(it => { const k = (it.bundle || it.id) + '|' + it.day; (g[k] = g[k] || { it, n: 0, uids: [] }).n++; g[k].uids.push(it.uid); });
+  const rows = Object.values(g).sort((a, b) => a.it.day - b.it.day).map(x => {
+    const it = x.it, name = it.bundle ? fmt(U.bundleName, { tpl: TPL[it.bundle].name }) : ING[it.id].name;
+    const at = it.bundle ? '' : (ING[it.id].attr ? `${ING[it.id].attr} ${effVal(it.id, it.day)}` : U.noAttr);
+    const st = invStatus(it);
+    const undo = withUndo && it.day === S.day ? btn('unbuy', U.undoBuy, `data-u="${x.uids[x.uids.length - 1]}"`, 'small') : '';
+    return `<tr><td>${esc(name)} ×${x.n}</td><td>${esc(at)}</td><td>${esc(fmt(U.boughtOn, { d: it.day }))}${st ? `<br><span class="${isWeak(it.day) ? 'bad' : 'warnc'}">${esc(st)}</span>` : ''}</td><td>${undo}</td></tr>`;
+  }).join('');
+  return `<table><tr><th>${esc(U.thItem)}</th><th>${esc(U.thAttr)}</th><th>${esc(U.thBought)}</th><th></th></tr>${rows}</table>`;
+}
+function marketView() {
+  const anyWeak = S.inv.some(it => invStatus(it));
+  const rows = DATA.ingredients.map(i => `<tr><td>${esc(i.name)}<br><span class="muted">${esc(i.cat)}${i.tags.length ? ' · ' + esc(i.tags.join(U.listSep)) : ''}</span></td><td>${esc(i.attr ? i.attr + ' ' + i.val : U.noAttr)}</td><td>${i.price}</td><td>${btn('buy', U.buy, `data-id="${i.id}"`, 'small', S.money < i.price)}</td></tr>`).join('');
+  const bundles = DATA.templates.filter(t => t.bundle).map(t => `<tr><td>${esc(fmt(U.bundleName, { tpl: t.name }))}<br><span class="muted">${esc(t.fixed.map(id => ING[id].name).join(' + '))}</span></td><td>${esc(attrLine(capApply(t.fixed.map(id => ({ attr: ING[id].attr, val: ING[id].val }))).attrs))}</td><td>${t.bundle}</td><td>${btn('buyb', U.buy, `data-t="${t.id}"`, 'small', S.money < t.bundle)}</td></tr>`).join('');
+  return `${S.day === 1 ? tip('market') : ''}${anyWeak ? tip('fresh', { d: R.freshDays, p: R.freshPenalty }) : ''}
+  <div class="card"><h2>${esc(T.market)}</h2><p class="muted">${esc(U.marketHint)}</p>
+  <table><tr><th>${esc(U.thItem)}</th><th>${esc(U.thAttr)}</th><th>${esc(U.thPrice)}</th><th></th></tr>${rows}</table>
+  <h3>${esc(U.bundles)}</h3><table>${bundles}</table></div>
+  <div class="card"><h3>${esc(U.myInv)}</h3>${invTable(true)}</div>
+  <div class="card"><p>${esc(fmt(U.todayCustomers, { n: S.customers.length }))}</p>${btn('open-shop', U.openShop, '', 'primary')}</div>`;
+}
+function talkHtml(c) {
+  return c.talk.map(t => t.q ? `<div class="qa"><div class="q">${esc(U.me)}: ${esc(QS[t.q].text)}</div><div class="a">${esc(c.name)}: ${ga(t.text)}</div></div>` : `<div class="qa"><div class="a">${esc(c.name)}: ${ga(t.text)}</div></div>`).join('');
+}
+function customerView() {
+  const c = S.customers[S.ci];
+  if (!c) {
+    const unsold = S.finished.length;
+    return `<div class="card"><p>${esc(U.allDone)}</p>${unsold ? `<p>${esc(fmt(U.unsoldWarn, { n: unsold }))}</p>` : ''}${btn('end-day', U.endDay, '', 'primary')}</div>`;
+  }
+  if (!c.shown) { c.shown = true; log('questionsOffered', { qs: c.offered, type: c.type, dungeon: c.dungeon }); if (!S.races[c.race]) S.races[c.race] = S.day; }
+  const asked = c.asked.length, max = R.questionsAsked;
+  const qs = c.offered.map(q => btn('ask', QS[q].text, `data-q="${q}"`, 'qbtn' + (c.asked.includes(q) ? ' on' : ''), c.done || c.asked.includes(q) || asked >= max)).join('');
+  let foot;
+  if (!c.done) foot = `<div class="row">${btn('nav', U.toKitchen, 'data-v="kitchen"', 'primary')}${btn('send-away', U.sendAway, '', 'ghost')}</div>`;
+  else if (c.sold) foot = `<p class="good">${esc(fmt(U.soldLine, { dish: c.sold.dish, price: c.sold.price }))}${c.sold.side ? ' ' + esc(fmt(U.withSide, { side: c.sold.side })) : ''}</p>${isDebug() ? calcHtml(c.sold.calc) : ''}${tip('sale')}${btn('next-cust', S.ci + 1 < S.customers.length ? U.nextCust : U.noMoreCust, '', 'primary')}`;
+  else foot = `<p class="bad">${esc(fmt(U.leftLine, { name: c.name }))}</p>${btn('next-cust', S.ci + 1 < S.customers.length ? U.nextCust : U.noMoreCust, '', 'primary')}`;
+  const wolf = c.taboo.length;
+  return `${S.day === 1 && S.ci === 0 ? tip('questions', { n: max }) : ''}${wolf ? tip('taboo') : ''}
+  <div class="card cust"><div class="muted">${esc(fmt(U.custOf, { i: c.idx + 1, n: S.customers.length }))}</div>
+  <h2>${esc(c.name)} <span class="muted">· ${esc(c.race)}</span></h2>
+  <p>${esc(fmt(U.goesTo, { dungeon: DUN[c.dungeon].name }))}</p>
+  <p class="say">${ga(arrivalText(c))}</p>
+  <h3>${esc(fmt(U.askHead, { n: max, left: Math.max(0, max - asked) }))}</h3><div class="qs">${qs}</div>
+  ${talkHtml(c)}${foot}</div>`;
+}
+function eveningView() {
+  const e = S.evening || { n: 0 };
+  return `<div class="card"><h2>${esc(U.phases.evening)}</h2><p>${esc(fmt(U.eveningSum, { n: e.sold }))}</p>
+  ${e.n ? `<p>${esc(fmt(U.petAte, { n: e.n }))}</p><p class="say">${ga(e.line)}</p>` : `<p>${esc(U.noWaste)}</p>`}
+  ${btn('to-night', U.toNight, '', 'primary')}</div>`;
+}
+function calcHtml(k) {
+  return `<div class="calc">${esc(fmt(U.calcLine, { fit: round(k.fit), q: k.quality, s: k.skill, l: k.local, luck: k.luck, score: round(k.score), res: resName(k.result) }))}</div>`;
+}
+function slotSelect(t, i) {
+  const cats = t.slots[i], used = new Set(draft.slots.filter((u, j) => u && j !== i)); if (draft.side) used.add(draft.side);
+  const items = S.inv.filter(it => !it.bundle && cats.includes(ING[it.id].cat) && !used.has(it.uid));
+  const g = {}; items.forEach(it => { const k = it.id + '|' + it.day; (g[k] = g[k] || []).push(it); });
+  const opts = Object.values(g).map(list => {
+    const sel = list.find(x => x.uid === draft.slots[i]); const it = sel || list[0];
+    const label = `${ING[it.id].name} (${ING[it.id].attr ? ING[it.id].attr + ' ' + effVal(it.id, it.day) : U.noAttr}) · ${fmt(U.boughtOn, { d: it.day })} ×${list.length}${invStatus(it) ? ' · ' + invStatus(it) : ''}`;
+    return `<option value="${it.uid}" ${sel ? 'selected' : ''}>${esc(label)}</option>`;
+  }).join('');
+  return `<label class="slot">${esc(fmt(U.slotLabel, { i: i + 1, cats: cats.join('/') }))}<select data-c="slot" data-i="${i}"><option value="">${esc(items.length ? U.choose : U.noneFits)}</option>${opts}</select></label>`;
+}
+function sideSelect() {
+  if (S.day < P.unlockDay.side) return '';
+  if (S.sideUsed) return `<p class="muted">${esc(U.sideUsed)}</p>`;
+  const used = new Set(draft.slots.filter(Boolean));
+  const items = S.inv.filter(it => !it.bundle && ING[it.id].attr && ING[it.id].val <= R.sideMaxVal && !used.has(it.uid));
+  const g = {}; items.forEach(it => { const k = it.id + '|' + it.day; (g[k] = g[k] || []).push(it); });
+  const opts = Object.values(g).map(list => { const sel = list.find(x => x.uid === draft.side); const it = sel || list[0]; return `<option value="${it.uid}" ${sel ? 'selected' : ''}>${esc(`${ING[it.id].name} (${ING[it.id].attr} ${effVal(it.id, it.day)}) · ${U.costLabel} ${ING[it.id].price}`)}</option>`; }).join('');
+  return `${tip('side')}<label class="slot">${esc(fmt(U.sideLabel, { side: T.side, max: R.sideMaxVal }))}<select data-c="side"><option value="">${esc(U.noSide)}</option>${opts}</select></label>`;
+}
+function previewHtml(p, c) {
+  if (!p) return '';
+  const warn = p.raw > R.capTotal ? `<p class="bad">${esc(fmt(U.capWarn, { cap: R.capTotal, list: p.over.map(o => fmt(U.lostItem, { name: o.name, n: o.lost })).join(U.listSep) }))}</p>` : '';
+  let dbg = '';
+  if (isDebug() && c) {
+    const sd = draft.side ? invGet(draft.side) : null, act = actualReq(c.dungeon, S.day);
+    const k0 = judge(p.attrs, sideAttrs(sd), act, c.skill, p.qBonus, localBonus(p.t.id, c.dungeon), 0);
+    dbg = `<div class="calc">${esc(fmt(U.dbgPreview, { req: dots(act), fit: round(k0.fit), q: k0.quality, s: k0.skill, l: k0.local, lo: round(k0.score - R.luck), hi: round(k0.score + R.luck) }))}</div>`;
+  }
+  return `<div class="preview"><div class="big">${esc(attrLine(p.attrs))}</div>${warn}
+  <div>${esc(fmt(U.pvMoney, { price: p.price, cost: p.cost, profit: p.profit }))}</div>
+  <div class="muted">${esc(fmt(U.pvQuality, { q: p.qKey, m: S.mastery[p.t.id], need: R.skillMasteryForA }))}${p.roast && p.roastCost ? ' · ' + esc(fmt(U.roastPaid, { n: p.roastCost })) : ''}</div>
+  ${p.missing.length ? `<p class="warnc">${esc(p.missing.join(' / '))}</p>` : ''}${dbg}</div>`;
+}
+function kitchenView() {
+  if (S.phase !== 'day') return `<div class="card"><p>${esc(U.kitchenClosed)}</p></div>`;
+  const c = curCust(), t = TPL[draft.tpl], rk = P.roastKinds;
+  const tpls = DATA.templates.map(x => {
+    const lock = !S.unlocked[x.id]; const extra = x.bundle ? ` (${fmt(U.haveN, { n: S.inv.filter(i => i.bundle === x.id).length })})` : '';
+    return btn('tpl', (lock ? U.lockedMark + ' ' : '') + x.name + extra, `data-t="${x.id}"`, 'small' + (draft.tpl === x.id ? ' on' : ''), lock);
+  }).join('');
+  const notes = S.notes.length ? `<h3>${esc(T.note)}</h3><div class="row">${S.notes.map((n, i) => btn('note', fmt(U.noteLabel, { tpl: TPL[n.tpl].name, ings: n.ids.map(id => ING[id].name).join('+') }), `data-i="${i}"`, 'small', !S.unlocked[n.tpl])).join('')}</div>` : '';
+  let editor = '';
+  if (t) {
+    const p = computeDraft(draft);
+    const info = `<p class="muted">${esc(fmt(U.tplInfo, { menu: t.menu, taste: t.taste, roast: t.roast }))}</p>`;
+    let body = '';
+    if (t.fixed) body = `<p>${esc(fmt(U.fixedLine, { ings: t.fixed.map(id => ING[id].name).join(' + '), price: t.bundle }))}</p>${t.home ? `<p class="muted">${esc(fmt(U.homeLine, { home: t.home, n: t.localBonus }))}</p>` : ''}`;
+    else {
+      const forced = (t.forced || []).map(id => `<p class="muted">${esc(fmt(U.forcedLine, { ing: ING[id].name }))}</p>`).join('');
+      body = forced + t.slots.map((_, i) => slotSelect(t, i)).join('');
+    }
+    let roast = '';
+    if (t.roast === rk.required) roast = `<p>${esc(fmt(t.fixed ? U.roastIncluded : U.roastRequired, { n: R.roastCost, a: R.roastAttr, v: R.roastAdd }))}</p>`;
+    else if (t.roast === rk.optional) roast = `<label class="chk"><input type="checkbox" data-c="roast" ${draft.roast ? 'checked' : ''}> ${esc(fmt(U.roastOption, { n: R.roastCost, a: R.roastAttr, v: R.roastAdd }))}</label>`;
+    else roast = `<p class="muted">${esc(U.roastNone)}</p>`;
+    editor = `<div class="card"><h3>${esc(t.name)}</h3>${info}${body}${roast}${previewHtml(p, c)}
+      <div class="row">${btn('cook', U.cookBtn, '', 'primary', !p.complete)}${btn('clear-draft', U.clearDraft, '', 'ghost')}</div></div>`;
+  }
+  const fin = S.finished.length ? S.finished.map(d => `<div class="dish"><div><b>${esc(d.name)}</b><br><span class="muted">${esc(attrLine(d.attrs))} · ${esc(fmt(U.menuPrice, { n: d.price }))} · ${esc(T.quality)} ${d.qKey}</span></div>${btn('serve', c ? fmt(U.serveTo, { name: c.name }) : U.serve, `data-u="${d.uid}"`, 'primary small', !c || c.done)}</div>`).join('') : `<p class="muted">${esc(U.noFinished)}</p>`;
+  const msgs = ui.kmsg.map(m => `<p class="say">${m.ga ? ga(m.text) : esc(m.text)}</p>`).join('') + (ui.kmsg.some(m => m.ga) ? tip('reject') : '');
+  return `${S.day === 1 ? tip('cook', { cap: R.capTotal }) : ''}
+  <div class="card"><p>${c ? esc(fmt(c.done ? U.cookDone : U.cookingFor, { name: c.name, dungeon: DUN[c.dungeon].name })) : esc(U.noCustomer)}</p>
+  ${c && c.done ? btn('nav', U.backStall, 'data-v="stall"', 'small') : ''}
+  <h3>${esc(U.pickTpl)}</h3><div class="row">${tpls}</div>${notes}</div>
+  ${editor}
+  <div class="card"><h3>${esc(T.finished)}</h3>${msgs}${sideSelect()}${fin}</div>
+  <div class="card"><h3>${esc(U.myInv)}</h3>${invTable(false)}</div>`;
+}
+function bookView() {
+  const pages = [['codex', T.codex], ['rumors', T.rumors], ['letters', T.letters], ['recipes', T.recipes]];
+  const lock = S.phase === 'letter' || S.phase === 'final';
+  const tabs = pages.map(([k, l]) => btn('page', l, `data-p="${k}"`, 'small' + (S.page === k ? ' on' : ''), lock && k !== 'letters')).join('');
+  const body = S.page === 'codex' ? codexPage() : S.page === 'rumors' ? rumorPage() : S.page === 'recipes' ? recipePage() : letterPage();
+  return `<div class="book"><div class="row tabs">${tabs}</div>${body}</div>`;
+}
+function codexPage() {
+  const dun = DATA.dungeons.map(d => {
+    const x = S.codex[d.id]; const fresh = x.changedOn && x.changedOn === S.day;
+    return `<div class="card entry${fresh ? ' changed' : ''}"><h3>${esc(d.name)}${x.doubt ? ` <span class="doubt">${esc(T.doubt)}</span>` : ''}${fresh ? ` <span class="new">${esc(U.changedToday)}</span>` : ''}</h3>
+    <p class="big">${esc(dots(x.req))}</p><p class="muted">${esc(x.day ? fmt(U.lastCheck, { d: x.day }) : U.lastCheckStart)}</p>
+    ${btn('doubt', x.doubt ? U.undoubt : fmt(U.markDoubt, { doubt: T.doubt }), `data-d="${d.id}"`, 'small')}</div>`;
+  }).join('');
+  const races = Object.keys(S.races).map(race => {
+    const tab = [...new Set(DATA.customerTypes.filter(t => t.race === race).flatMap(t => t.taboo))];
+    const ings = DATA.ingredients.filter(i => i.tags.some(t => tab.includes(t))).map(i => i.name);
+    return `<div class="card entry"><h3>${esc(race)}${S.raceDoubt[race] ? ` <span class="doubt">${esc(T.doubt)}</span>` : ''}</h3>${X.raceNote[race] ? `<p>${ga(X.raceNote[race])}</p>` : ''}
+    <p>${esc(U.tabooLabel)} ${esc(tab.length ? fmt(U.tabooList, { tags: tab.join(U.listSep), ings: ings.join(U.listSep) }) : U.none)}</p><p class="muted">${esc(fmt(U.lastCheck, { d: S.races[race] }))}</p>
+    ${btn('rdoubt', S.raceDoubt[race] ? U.undoubt : fmt(U.markDoubt, { doubt: T.doubt }), `data-r="${esc(race)}"`, 'small')}</div>`;
+  }).join('') || `<p class="muted">${esc(U.noRaces)}</p>`;
+  const ings = DATA.ingredients.map(i => `<tr><td>${esc(i.name)}</td><td>${esc(i.cat)}</td><td>${esc(i.attr ? i.attr + ' ' + i.val : U.noAttr)}</td><td>${i.price}</td><td>${esc(i.tags.join(U.listSep))}</td></tr>`).join('');
+  return `<h2>${esc(U.codexDungeons)}</h2>${dun}<h2>${esc(U.codexRaces)}</h2>${races}
+  <h2>${esc(U.codexIngs)}</h2><div class="card"><table><tr><th>${esc(U.thItem)}</th><th>${esc(U.thCat)}</th><th>${esc(U.thAttr)}</th><th>${esc(U.thPrice)}</th><th>${esc(U.thTag)}</th></tr>${ings}</table></div>`;
+}
+function rumorCard(r) {
+  const about = r.aboutDay !== r.day ? ' · ' + fmt(U.aboutDay, { d: r.aboutDay }) : '';
+  return `<div class="card entry"><div class="muted">${esc(fmt(U.rumorHead, { d: r.day, src: r.srcName, dungeon: DUN[r.dungeon].name }))}${esc(about)}${r.cross ? ` <span class="cross">${esc(T.cross)}</span>` : ''}</div><p>${ga(r.text)}</p></div>`;
+}
+function rumorPage() {
+  const list = S.rumors.slice().reverse();
+  return `<h2>${esc(T.rumors)}</h2><p class="muted">${esc(U.rumorHint)}</p>${list.map(rumorCard).join('') || `<p class="muted">${esc(U.none)}</p>`}`;
+}
+function letterItem(it) {
+  return `<div class="card letter"><div class="muted">${esc(fmt(U.letterHead, { who: it.who, dungeon: DUN[it.dungeon].name, d: it.saleDay }))}</div>
+  <h3 class="res-${it.result}">${esc(resName(it.result))}${it.trap ? ` <span class="trap">${esc(T.trap)}</span>` : ''}</h3>
+  ${it.trap ? `<p>${ga(it.trap)}</p>` : ''}<p>${ga(it.lines)}</p>${it.cause ? `<p class="cause">${ga(it.cause)}</p>` : ''}
+  <p class="muted">${esc(fmt(U.letterReward, { tip: it.tip, fame: (it.fame >= 0 ? '+' : '') + it.fame }))}</p>
+  ${it.codex ? `<p class="${it.codex.changed ? 'new' : 'muted'}">${esc(fmt(it.codex.changed ? U.codexChanged : U.codexConfirmed, { dungeon: DUN[it.dungeon].name, d: it.codex.day }))}</p>` : ''}
+  ${isDebug() ? calcHtml(it.calc) : ''}</div>`;
+}
+function letterPage() {
+  const live = S.phase === 'letter' || S.phase === 'final';
+  const key = S.phase === 'final' ? 'final' : S.day; const L = S.letters[key] || { items: [] };
+  let head = '';
+  if (live) {
+    if (!S.letterLogged) { S.letterLogged = true; S.letterAt = nowPlay(); const fail = L.items.some(i => i.result === RES[3]); if (fail) S.lastFailDay = S.day; log('letterShown', { n: L.items.length, hasFail: fail, final: S.phase === 'final' }); }
+    const toto = L.toto ? S.rumors.find(r => r.id === L.toto) : null;
+    const totoDiff = toto && !reqEq(toto.claim, S.codex[toto.dungeon].req);
+    head = `${S.day === 1 && S.phase === 'letter' ? `<div class="card"><h2>${esc(T.game)}</h2><p>${ga(fmt(X.welcome, { days: P.days }))}</p><p class="muted">${esc(U.seed)} ${esc(S.seed)}</p></div>` : ''}
+    ${L.items.length ? tip('report') : ''}${L.items.some(i => i.codex && i.codex.changed) ? tip('truth') : ''}${totoDiff ? tip('rumor') : ''}
+    <h2>${esc(S.phase === 'final' ? U.finalLetters : fmt(U.morningLetters, { d: S.day }))}</h2>
+    ${L.items.length ? L.items.map(letterItem).join('') : `<p class="muted">${esc(U.noLetters)}</p>`}
+    ${toto ? `<h3>${esc(fmt(U.totoHead, { courier: T.courier }))}</h3>${rumorCard(toto)}` : ''}
+    <div class="row sticky-act">${btn('letter-read', S.phase === 'final' ? U.toResult : U.letterDone, '', 'primary')}${L.items.length ? btn('letter-skip', U.letterSkip, '', 'ghost') : ''}</div>`;
+  }
+  const past = Object.keys(S.letters).filter(k => k !== 'final' && Number(k) !== S.day && S.letters[k].items.length).sort((a, b) => b - a);
+  const arch = past.length ? `<h2>${esc(U.pastLetters)}</h2>` + past.map(k => `<h3>${esc(fmt(U.dayN, { d: k }))}</h3>` + S.letters[k].items.map(letterItem).join('')).join('') : '';
+  if (live) return head + arch;
+  const today = S.letters[S.day] && S.letters[S.day].items.length ? `<h2>${esc(fmt(U.morningLetters, { d: S.day }))}</h2>${S.letters[S.day].items.map(letterItem).join('')}` : '';
+  return (today || arch) ? today + arch : `<p class="muted">${esc(U.noLetters)}</p>`;
+}
+function leftovers() { return S.inv.filter(i => !i.bundle).slice().sort((a, b) => a.day - b.day || a.uid - b.uid).slice(0, DATA.research.A.usesLeftovers); }
+function recipePage() {
+  let res = '';
+  if (S.phase === 'night') {
+    if (S.researchDone) res = `<div class="card"><p>${esc(S.researchDone)}</p>${btn('next-day', S.day >= P.days ? U.toFinal : U.nextDay, '', 'primary')}</div>`;
+    else {
+      const lo = leftovers(), need = DATA.research.A.usesLeftovers, canA = lo.length >= need;
+      const opts = DATA.templates.filter(t => S.unlocked[t.id]).map(t => `<option value="${t.id}" ${ui.practice === t.id ? 'selected' : ''}>${esc(t.name)} (${esc(T.mastery)} ${S.mastery[t.id]})</option>`).join('');
+      const next = DATA.research.B.unlockOrder.find(id => !S.unlocked[id] && id !== S.unlockNext);
+      res = `${S.day === 1 ? tip('research') : ''}<div class="card"><h2>${esc(U.nightTitle)}</h2>
+      <div class="opt"><h3>A. ${esc(DATA.research.A.name)}</h3><p class="muted">${esc(fmt(U.researchAHint, { n: need, m: DATA.research.A.mastery }))}</p>
+      <label class="slot">${esc(U.practiceTpl)}<select data-c="practice">${opts}</select></label>
+      <p>${esc(canA ? fmt(U.willUse, { list: lo.map(i => ING[i.id].name + ' (' + fmt(U.boughtOn, { d: i.day }) + ')').join(U.listSep) }) : fmt(U.notEnough, { n: need }))}</p>${btn('research', U.doA, 'data-r="A"', 'primary', !canA)}</div>
+      <div class="opt"><h3>B. ${esc(DATA.research.B.name)}</h3><p class="muted">${esc(next ? fmt(U.researchBHint, { tpl: TPL[next].name }) : U.researchBNone)}</p>${btn('research', U.doB, 'data-r="B"', 'primary')}</div>
+      <div class="opt"><h3>${esc(U.rest)}</h3>${btn('research', U.doRest, 'data-r="rest"')}</div></div>`;
+    }
+  }
+  const list = DATA.templates.map(t => {
+    const lock = !S.unlocked[t.id];
+    const slots = t.fixed ? t.fixed.map(id => ING[id].name).join(' + ') : t.slots.map(s => '[' + s.join('/') + ']').join(' + ') + (t.forced ? ' + ' + fmt(U.forcedShort, { ing: t.forced.map(id => ING[id].name).join(', ') }) : '');
+    return `<div class="card entry${lock ? ' locked' : ''}"><h3>${lock ? esc(U.lockedMark) + ' ' : ''}${esc(t.name)} <span class="muted">· ${esc(t.layer)}</span></h3>
+    <p>${esc(slots)}</p><p class="muted">${esc(fmt(U.tplInfo, { menu: t.menu, taste: t.taste, roast: t.roast }))} · ${esc(T.mastery)} ${S.mastery[t.id]} (${esc(T.quality)} ${S.mastery[t.id] >= R.skillMasteryForA ? 'A' : 'B'})</p>
+    ${lock ? `<p class="muted">${esc(U.lockedHint)}</p>` : ''}</div>`;
+  }).join('');
+  return res + `<h2>${esc(T.recipes)}</h2>` + list;
+}
+function doResearch(kind) {
+  const sec = round((nowPlay() - S.nightAt) / 1000, 0); let text = '', tpl = null;
+  if (kind === 'A') {
+    const lo = leftovers(); if (lo.length < DATA.research.A.usesLeftovers) return;
+    tpl = ui.practice && S.unlocked[ui.practice] ? ui.practice : DATA.templates.find(t => S.unlocked[t.id]).id;
+    lo.forEach(i => removeInv(i.uid)); S.mastery[tpl] += DATA.research.A.mastery;
+    text = fmt(U.practiced, { tpl: TPL[tpl].name, list: lo.map(i => ING[i.id].name).join(U.listSep), m: S.mastery[tpl] });
+  } else if (kind === 'B') {
+    S.researchB++; const next = DATA.research.B.unlockOrder.find(id => !S.unlocked[id] && id !== S.unlockNext);
+    if (next) { S.unlockNext = next; tpl = next; text = DATA.research.B.texts[next] + ' ' + fmt(U.unlockTomorrow, { tpl: TPL[next].name }); }
+    else text = U.researchBNone;
+  } else text = U.rested;
+  log('research', { choice: kind, sec, tpl });
+  S.researchDone = text;
+}
+
+// ---- metrics / result ----
+function metrics() {
+  const L = S.log, by = e => L.filter(x => x.e === e);
+  const offered = by('questionsOffered'), asked = {};
+  by('questionAsked').forEach(x => { const k = x.day + '-' + x.cust; asked[k] = (asked[k] || 0) + 1; });
+  const two = offered.filter(x => (asked[x.day + '-' + x.cust] || 0) >= R.questionsAsked).length;
+  let changes = 0, last = null, pend = null, ck = null;
+  L.forEach(x => {
+    const k = x.day + '-' + x.cust; if (k !== ck) { ck = k; last = null; pend = null; }
+    if (x.e === 'cookDraft') { if (pend !== null && x.attrs !== pend) { changes++; pend = null; } last = x.attrs; }
+    else if (x.e === 'bookOpen' && (x.page === 'codex' || x.page === 'rumors') && last) pend = last;
+    else if (x.e === 'sale' || x.e === 'cook') { last = x.e === 'cook' ? last : null; if (x.e === 'sale') pend = null; }
+  });
+  const days = by('day').length || 1;
+  const shown = by('letterShown').reduce((s, x) => s + x.n, 0), read = by('letterRead').reduce((s, x) => s + x.n, 0);
+  const sales = by('sale'); let rep = 0, repBase = 0;
+  sales.forEach((s, i) => { if (s.day < P.pass.repeatFromDay) return; repBase++; const p = sales[i - 1]; if (p && p.tpl === s.tpl && p.attrs === s.attrs) rep++; });
+  const sb = sales.filter(s => s.secondBest).length;
+  const side = by('sideDish'), rs = by('research');
+  const quits = by('quit'); const dayLens = by('day').map(d => d.min);
+  return {
+    customers: offered.length, two, q2: offered.length ? two / offered.length : 0,
+    infoChanges: changes, infoPerDay: changes / days, days,
+    lettersShown: shown, lettersRead: read, letterRate: shown ? read / shown : 0,
+    repeat: repBase ? rep / repBase : 0, repeatN: rep, repeatBase: repBase, secondBest: sb,
+    side: side.map(s => ({ day: s.day, dungeon: s.dungeon, changed: s.changed })),
+    research: { A: rs.filter(r => r.choice === 'A').length, B: rs.filter(r => r.choice === 'B').length, rest: rs.filter(r => r.choice === 'rest').length, avgSec: rs.length ? round(rs.reduce((s, r) => s + r.sec, 0) / rs.length) : 0 },
+    quits: quits.length, quitsAfterFail: quits.filter(q => q.afterFail).length,
+    avgDayMin: dayLens.length ? round(dayLens.reduce((a, b) => a + b, 0) / dayLens.length) : 0,
+    rejects: by('reject').length, wasted: by('wasted').reduce((s, x) => s + x.n, 0), money: S.money, fame: S.fame, seed: S.seed
+  };
+}
+function pct(x) { return round(x * 100, 0) + U.pct; }
+function resultView() {
+  const m = metrics(), pa = P.pass, again = S.survey.again, ten = S.survey.tension;
+  const mark = ok => ok == null ? '' : ok ? `<span class="good">${esc(U.passOk)}</span>` : `<span class="bad">${esc(U.passNo)}</span>`;
+  const rows = [
+    [U.mQ2, fmt(U.mQ2v, { a: m.two, b: m.customers, p: pct(m.q2) }), fmt(U.lineAtLeast, { v: pct(pa.q2) }), m.q2 >= pa.q2],
+    [U.mInfo, fmt(U.mInfov, { a: m.infoChanges, d: m.days, v: round(m.infoPerDay) }), fmt(U.linePerDay, { v: pa.infoChange }), m.infoPerDay >= pa.infoChange],
+    [U.mLetters, fmt(U.mQ2v, { a: m.lettersRead, b: m.lettersShown, p: pct(m.letterRate) }), fmt(U.lineAtLeast, { v: pct(pa.letters) }), m.lettersShown ? m.letterRate >= pa.letters : null],
+    [U.mRepeat, fmt(U.mQ2v, { a: m.repeatN, b: m.repeatBase, p: pct(m.repeat) }), fmt(U.lineBelow, { v: pct(pa.repeat) }), m.repeatBase ? m.repeat < pa.repeat : null],
+    [U.mSecond, fmt(U.timesN, { n: m.secondBest }) + (again ? ' · ' + fmt(U.againIs, { v: again === 'yes' ? U.yes : U.no }) : ''), fmt(U.lineCore, { n: pa.secondBest }), again ? (m.secondBest >= pa.secondBest && again === 'yes') : null],
+    [U.mSide, m.side.length ? m.side.map(s => fmt(U.sideItem, { d: s.day, dungeon: DUN[s.dungeon].name, st: s.changed ? U.stChanged : U.stNormal })).join(U.listSep) : U.none, U.recordOnly, null],
+    [U.mResearch, fmt(U.researchSum, { a: m.research.A, b: m.research.B, r: m.research.rest, s: m.research.avgSec }), U.recordOnly, null],
+    [U.mTension, fmt(U.tensionSum, { q: m.quitsAfterFail, t: ten || U.notYet }), U.recordOnly, null],
+    [U.mEtc, fmt(U.etcSum, { min: m.avgDayMin, rej: m.rejects, w: m.wasted, money: m.money, fame: m.fame, seed: m.seed }), U.recordOnly, null]
+  ].map(r => `<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${mark(r[3])}</td></tr>`).join('');
+  const json = JSON.stringify({ game: T.game, build: P.build, seed: S.seed, randomWorld: S.randomWorld, survey: S.survey, summary: m, log: S.log });
+  const sv = (k, v, l) => btn('survey', l, `data-k="${k}" data-v="${v}"`, 'small' + (S.survey[k] === v ? ' on' : ''));
+  return `<div class="card"><h2>${esc(U.resultTitle)}</h2><p>${esc(fmt(U.finalLine, { money: S.money, fame: S.fame }))}</p></div>
+  <div class="card"><h3>${esc(U.surveyTitle)}</h3><p>${esc(U.surveyAgain)}</p><div class="row">${sv('again', 'yes', U.yes)}${sv('again', 'no', U.no)}</div>
+  <p>${esc(fmt(U.surveyTension, { n: P.surveyScale }))}</p><div class="row">${Array.from({ length: P.surveyScale }, (_, i) => String(i + 1)).map(n => sv('tension', n, n)).join('')}</div></div>
+  <div class="card"><h3>${esc(U.summaryTitle)}</h3><table><tr><th>${esc(U.thMetric)}</th><th>${esc(U.thValue)}</th><th>${esc(U.thLine)}</th><th></th></tr>${rows}</table></div>
+  <div class="card"><h3>${esc(U.jsonTitle)}</h3><p class="muted">${esc(U.jsonHint)}</p>${btn('copy', U.copy, '', 'primary')} <span id="copymsg" class="good">${esc(ui.copyMsg)}</span>
+  <textarea id="json" readonly>${esc(json)}</textarea></div>
+  <div class="card">${btn('reset-open', U.playAgain)}</div>`;
+}
+async function copyJSON() {
+  const ta = document.getElementById('json'); const txt = ta.value; let ok = false;
+  try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(txt); ok = true; } } catch (e) { }
+  if (!ok) { try { ta.focus(); ta.select(); ok = document.execCommand('copy'); } catch (e) { } }
+  ui.copyMsg = ok ? U.copied : U.copyFail; const m = document.getElementById('copymsg'); if (m) { m.textContent = ui.copyMsg; m.className = ok ? 'good' : 'bad'; }
+  log('copyJSON', { ok });
+}
+
+function render() {
+  document.title = fmt(U.pageTitle);
+  const app = document.getElementById('app');
+  app.innerHTML = band() + resetBox() + debugPanel() + nav() + main();
+}
+
+// ---- actions ----
+function act(a, d) {
+  const c = curCust();
+  switch (a) {
+    case 'nav': S.view = d.v; if (d.p) S.page = d.p; if (S.view === 'book') log('bookOpen', { page: S.page }); window.scrollTo(0, 0); break;
+    case 'page': S.page = d.p; log('bookOpen', { page: d.p }); break;
+    case 'tip': S.tips[d.k] = true; break;
+    case 'reset-open': ui.reset = true; window.scrollTo(0, 0); break;
+    case 'reset-cancel': ui.reset = false; break;
+    case 'reset-go': { const el = document.getElementById('seedIn'); const seed = (el && el.value.trim()) || P.defaultSeed; ui.reset = false; clearSave(); newGame(seed, false); break; }
+    case 'letter-read': case 'letter-skip': {
+      const L = S.letters[S.phase === 'final' ? 'final' : S.day]; const sec = round((nowPlay() - S.letterAt) / 1000, 0);
+      log(a === 'letter-read' ? 'letterRead' : 'letterSkipped', { n: L.items.length, sec });
+      if (S.phase === 'final') { S.phase = 'result'; save(); } else { S.phase = 'market'; S.view = 'stall'; }
+      window.scrollTo(0, 0); break;
+    }
+    case 'buy': { const i = ING[d.id]; if (S.money < i.price) break; S.money -= i.price; addInv({ id: i.id, day: S.day }); log('buy', { id: i.id, price: i.price }); break; }
+    case 'buyb': { const t = TPL[d.t]; if (S.money < t.bundle) break; S.money -= t.bundle; addInv({ bundle: t.id, day: S.day }); log('buy', { id: t.id, price: t.bundle }); break; }
+    case 'unbuy': { const it = invGet(Number(d.u)); if (!it || it.day !== S.day || S.phase !== 'market') break; S.money += it.bundle ? TPL[it.bundle].bundle : ING[it.id].price; removeInv(it.uid); log('unbuy', { id: it.bundle || it.id }); break; }
+    case 'open-shop': S.phase = 'day'; S.view = 'stall'; draft = emptyDraft(); break;
+    case 'ask': if (c && !c.done && !c.asked.includes(d.q) && c.asked.length < R.questionsAsked) { c.asked.push(d.q); log('questionAsked', { q: d.q }); c.talk.push({ q: d.q, text: answer(c, d.q) }); } break;
+    case 'send-away': if (c && !c.done) { c.done = true; c.left = true; c.talk.push({ text: X.sendAway }); log('sendAway', {}); } break;
+    case 'next-cust': if (c && c.done) { S.ci++; ui.kmsg = []; S.view = 'stall'; S.lastDraftKey = ''; window.scrollTo(0, 0); } break;
+    case 'end-day': toEvening(); break;
+    case 'to-night': toNight(); break;
+    case 'tpl': draft = emptyDraft(d.t); draft.side = null; draftChanged(); break;
+    case 'note': applyNote(Number(d.i)); break;
+    case 'clear-draft': draft = emptyDraft(draft.tpl); break;
+    case 'cook': cook(); break;
+    case 'serve': serve(Number(d.u)); break;
+    case 'doubt': S.codex[d.d].doubt = !S.codex[d.d].doubt; log('doubt', { dungeon: d.d, on: S.codex[d.d].doubt }); break;
+    case 'rdoubt': S.raceDoubt[d.r] = !S.raceDoubt[d.r]; break;
+    case 'research': doResearch(d.r); break;
+    case 'next-day': endDay(); window.scrollTo(0, 0); break;
+    case 'survey': S.survey[d.k] = d.v; log('survey', { q: d.k, v: d.v }); save(); break;
+    case 'copy': copyJSON(); return;
+    case 'dbg-skip': dbgSkip(); break;
+    case 'dbg-money': S.money += P.debugMoney; log('debugMoney', { n: P.debugMoney }); break;
+    case 'dbg-rand': clearSave(); newGame(S.seed, true); break;
+    case 'dbg-default': clearSave(); newGame(S.seed, false); break;
+  }
+  render();
+}
+function dbgSkip() {
+  if (S.phase === 'result') return;
+  if (S.phase === 'final') { S.phase = 'result'; save(); return; }
+  log('debugSkip', {});
+  S.customers.forEach(c => c.done = true); S.ci = S.customers.length;
+  if (S.finished.length) log('wasted', { n: S.finished.length, dishes: S.finished.map(x => x.name) });
+  S.finished = []; endDay();
+}
+function onChange(e) {
+  const el = e.target, k = el.dataset.c; if (!k) return;
+  if (k === 'slot') { const i = Number(el.dataset.i); draft.slots[i] = el.value ? Number(el.value) : null; draft.order[i] = ++draft.seq; draftChanged(); }
+  else if (k === 'roast') { draft.roast = el.checked; draftChanged(); }
+  else if (k === 'side') { draft.side = el.value ? Number(el.value) : null; }
+  else if (k === 'practice') { ui.practice = el.value; return; }
+  render();
+}
+
+// ---- boot ----
+function init() {
+  storageOk = testStorage();
+  const saved = load();
+  if (saved) { S = saved; sessionStart = Date.now(); draft = emptyDraft(); consumeQuit(); log('resume', {}); }
+  else newGame(P.defaultSeed, false);
+  const app = document.getElementById('app');
+  app.addEventListener('click', e => { const b = e.target.closest('[data-a]'); if (!b || b.disabled) return; act(b.dataset.a, b.dataset); });
+  app.addEventListener('change', onChange);
+  window.addEventListener('pagehide', markQuit);
+  window.addEventListener('hashchange', render);
+  render();
+}
+window.GAME = { judge, get S() { return S; }, actualReq, computeDraft, describe, newGame, metrics };
+init();
+</script>
+</body>
+</html>
